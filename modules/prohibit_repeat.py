@@ -12,6 +12,8 @@
 
 #  本项目遵守 AGPL-3.0 协议，项目地址：https://github.com/daizihan233/MiraiHanBot
 
+#  本项目遵守 AGPL-3.0 协议，项目地址：https://github.com/daizihan233/MiraiHanBot
+
 # 本项目遵守 AGPL-3.0 协议，项目地址：https://github.com/daizihan233/MiraiHanBot
 import time
 
@@ -54,9 +56,12 @@ async def repeat_record(app: Ariadne, group: Group, member: Member, message: Mes
                     r.hset(hash_name, f'{group.id},{member.id}',
                            f"{int(td[0]) + 1},{time.time()},{message.display}")
                     if int(td[0]) + 1 > 5:
-                        await app.mute_member(group, member, limit_time)
-                        await app.send_message(group, MessageChain(Plain("boom！一声枪响之后，"), At(member.id),
-                                                                   Plain(f' 被禁言了 {limit_time} 秒')))
+                        try:
+                            await app.mute_member(group, member, limit_time)
+                            await app.send_message(group, MessageChain(Plain("boom！一声枪响之后，"), At(member.id),
+                                                                       Plain(f' 被禁言了 {limit_time} 秒')))
+                        except PermissionError:
+                            print(f'{member.id} 玩不起！PermissionError')
                 else:
                     r.hset(hash_name, f'{group.id},{member.id}', f"1,{time.time()},{message.display}")
             else:
