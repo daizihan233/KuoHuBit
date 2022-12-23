@@ -12,12 +12,10 @@ channel.description("HelloWorld 创造世界")
 channel.author("HanTools")
 
 
-
 @channel.use(ListenerSchema(listening_events=[GroupMessage]))
 async def hello(app: Ariadne, group: Group, message: MessageChain):
     if message.display == "你好":
-         await app.send_message(
+        await app.send_message(
             group,
             MessageChain("HelloWorld!"),
-         )
-
+        )
