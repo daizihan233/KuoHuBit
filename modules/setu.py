@@ -36,5 +36,5 @@ async def test(app: Ariadne, group: Group, event: GroupMessage):
     await app.recall_message(b_msg)
     await app.send_message(
         group,
-        MessageChain([At(event.sender.id), Plain("看完了吗？我撤回了")]),
+        MessageChain([At(event.sender.id), Plain(" 看完了吗？我撤回了")]),
     )
