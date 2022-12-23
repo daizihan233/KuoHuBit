@@ -1,3 +1,9 @@
+#  Copyright (c) 2022. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+#  Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
+#  Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
+#  Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
+#  Vestibulum commodo. Ut rhoncus gravida arcu.
+
 from graia.ariadne.app import Ariadne
 from graia.ariadne.event.message import GroupMessage
 from graia.ariadne.message.chain import MessageChain
@@ -13,7 +19,7 @@ channel.author("HanTools")
 
 
 @channel.use(ListenerSchema(listening_events=[GroupMessage]))
-async def setu(app: Ariadne, group: Group, message: MessageChain):
+async def echo(app: Ariadne, group: Group, message: MessageChain):
     if message.display.startswith("/echo "):
         await app.send_message(
             group,
