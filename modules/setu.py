@@ -5,7 +5,7 @@
 import asyncio
 import random
 
-import requests
+from aiohttp import ClientSession
 from graia.ariadne.app import Ariadne
 from graia.ariadne.event.message import GroupMessage
 from graia.ariadne.message.chain import MessageChain
@@ -30,13 +30,17 @@ channel.author("HanTools")
     )
 )
 async def setu(app: Ariadne, group: Group, event: GroupMessage):
-    # 涩图不一样，这里不能使用缓存
     p = botfunc.get_config('setu_api2_probability')
     ch = random.randint(0, p)
     if ch == p:
-        data = requests.get(botfunc.get_config('setu_api2')).content
+        url = botfunc.get_config('setu_api2')
     else:
-        data = requests.get(botfunc.get_config('setu_api')).content
+        url = botfunc.get_config('setu_api')
+    # 涩图不一样，这里不能使用缓存
+    async with ClientSession() as session:
+        async with session.get(url) as response:
+            data = await response.read()
+
     b_msg = await app.send_group_message(group, MessageChain(Image(data_bytes=data)))
     await asyncio.sleep(botfunc.get_config('recall'))
     await app.recall_message(b_msg)
