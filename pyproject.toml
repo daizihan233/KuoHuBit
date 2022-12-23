@@ -9,6 +9,9 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.10"
 graia-ariadne = {extras = ["standard"], version = "^0.10.0"}
+pyyaml = "^6.0"
+requests = "^2.28.1"
+requests-cache = "^0.9.7"
 
 
 [build-system]
