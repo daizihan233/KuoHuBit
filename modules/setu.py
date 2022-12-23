@@ -2,6 +2,8 @@
 
 #  本项目遵守 AGPL-3.0 协议，项目地址：https://github.com/daizihan233/MiraiHanBot
 
+#  本项目遵守 AGPL-3.0 协议，项目地址：https://github.com/daizihan233/MiraiHanBot
+
 import asyncio
 
 import requests
@@ -30,7 +32,7 @@ channel.author("HanTools")
 )
 async def test(app: Ariadne, group: Group, event: GroupMessage):
     # 涩图不一样，这里不能使用缓存
-    data = requests.get('https://i1.hdslb.com/bfs/archive/5242750857121e05146d5d5b13a47a2a6dd36e98.jpg').content
+    data = requests.get(botfunc.get_config('setu_api')).content
     b_msg = await app.send_group_message(group, MessageChain(Image(data_bytes=data)))
     await asyncio.sleep(botfunc.get_config('recall'))
     await app.recall_message(b_msg)
