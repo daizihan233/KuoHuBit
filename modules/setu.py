@@ -2,6 +2,8 @@
 
 #  本项目遵守 AGPL-3.0 协议，项目地址：https://github.com/daizihan233/MiraiHanBot
 
+#  本项目遵守 AGPL-3.0 协议，项目地址：https://github.com/daizihan233/MiraiHanBot
+
 import asyncio
 import random
 
@@ -36,6 +38,7 @@ async def setu(app: Ariadne, group: Group, event: GroupMessage):
         url = botfunc.get_config('setu_api2')
     else:
         url = botfunc.get_config('setu_api')
+    print(f'使用URL：{url}（p={p}, ch={ch}, (ch == p)={ch == p}）')
     # 涩图不一样，这里不能使用缓存
     async with ClientSession() as session:
         async with session.get(url) as response:
