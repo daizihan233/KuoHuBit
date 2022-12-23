@@ -1,2 +1,3 @@
-qq: 2265453790
-verifyKey: "INITKEYjOmhWeXk"
+qq: 2265453790  # 运行时登录的 QQ 号
+verifyKey: "INITKEYjOmhWeXk"  # MAH 的 verifyKey
+recall: 60  # 涩图撤回等待时长（单位：秒）

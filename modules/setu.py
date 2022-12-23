@@ -1,12 +1,7 @@
 #  本项目遵守 AGPL-3.0 协议，项目地址：https://github.com/daizihan233/MiraiHanBot
 
 #  本项目遵守 AGPL-3.0 协议，项目地址：https://github.com/daizihan233/MiraiHanBot
-
-#  本项目遵守 AGPL-3.0 协议，项目地址：https://github.com/daizihan233/MiraiHanBot
-
-#  本项目遵守 AGPL-3.0 协议，项目地址：https://github.com/daizihan233/MiraiHanBot
-
-import time
+import asyncio
 
 from graia.ariadne.app import Ariadne
 from graia.ariadne.event.message import GroupMessage
@@ -18,6 +13,10 @@ from graia.saya import Channel
 from graia.saya.builtins.broadcast.schema import ListenerSchema
 
 import botfunc
+
+#  本项目遵守 AGPL-3.0 协议，项目地址：https://github.com/daizihan233/MiraiHanBot
+#  本项目遵守 AGPL-3.0 协议，项目地址：https://github.com/daizihan233/MiraiHanBot
+#  本项目遵守 AGPL-3.0 协议，项目地址：https://github.com/daizihan233/MiraiHanBot
 
 channel = Channel.current()
 channel.name("来份涩图")
@@ -34,5 +33,5 @@ channel.author("HanTools")
 async def test(app: Ariadne, group: Group):
     data = botfunc.session.get('https://i1.hdslb.com/bfs/archive/5242750857121e05146d5d5b13a47a2a6dd36e98.jpg').content
     b_msg = await app.send_group_message(group, MessageChain(Image(data_bytes=data)))
-    time.sleep(botfunc.get_config('recall'))
+    await asyncio.sleep(botfunc.get_config('recall'))
     await app.recall_message(b_msg)
