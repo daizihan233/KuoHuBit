@@ -10,6 +10,8 @@
 
 #  本项目遵守 AGPL-3.0 协议，项目地址：https://github.com/daizihan233/MiraiHanBot
 
+#  本项目遵守 AGPL-3.0 协议，项目地址：https://github.com/daizihan233/MiraiHanBot
+
 # 本项目遵守 AGPL-3.0 协议，项目地址：https://github.com/daizihan233/MiraiHanBot
 import time
 
@@ -48,11 +50,13 @@ async def repeat_record(app: Ariadne, group: Group, member: Member, message: Mes
             td = r.hget(hash_name, f"{group.id},{member.id}")
             td = td.split(',')
             if message.display == td[2]:
-                r.hset(hash_name, f'{group.id},{member.id}', f"{int(td[0]) + 1},{time.time()},{message.display}")
-                if int(td[0]) + 1 > 5 and time.time() - float(td[1]) < limit_time:
-                    await app.mute_member(group, member, limit_time)
-                    await app.send_message(group, MessageChain(Plain("boom！一声枪响之后，"), At(member.id),
-                                                               Plain(f' 被禁言了 {limit_time} 秒')))
+                if time.time() - float(td[1]) < limit_time:
+                    r.hset(hash_name, f'{group.id},{member.id}',
+                           f"{int(td[0]) + 1},{time.time()},{message.display}")
+                    if int(td[0]) + 1 > 5:
+                        await app.mute_member(group, member, limit_time)
+                        await app.send_message(group, MessageChain(Plain("boom！一声枪响之后，"), At(member.id),
+                                                                   Plain(f' 被禁言了 {limit_time} 秒')))
                 else:
                     r.hset(hash_name, f'{group.id},{member.id}', f"1,{time.time()},{message.display}")
             else:
