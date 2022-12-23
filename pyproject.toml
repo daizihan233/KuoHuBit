@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "bugbot"
+version = "0.1.0"
+description = "A QQ Bot"
+authors = ["HanTools233 <hantools@foxmail.com>"]
+license = "AGPL-3.0"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+graia-ariadne = {extras = ["standard"], version = "^0.10.0"}
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
