@@ -2,7 +2,10 @@
 
 #  本项目遵守 AGPL-3.0 协议，项目地址：https://github.com/daizihan233/MiraiHanBot
 
+#  本项目遵守 AGPL-3.0 协议，项目地址：https://github.com/daizihan233/MiraiHanBot
+
 import asyncio
+import random
 
 import requests
 from graia.ariadne.app import Ariadne
@@ -30,7 +33,12 @@ channel.author("HanTools")
 )
 async def setu(app: Ariadne, group: Group, event: GroupMessage):
     # 涩图不一样，这里不能使用缓存
-    data = requests.get(botfunc.get_config('setu_api')).content
+    p = botfunc.get_config('setu_api2_probability')
+    ch = random.randint(0, p)
+    if ch == p:
+        data = requests.get(botfunc.get_config('setu_api2')).content
+    else:
+        data = requests.get(botfunc.get_config('setu_api')).content
     b_msg = await app.send_group_message(group, MessageChain(Image(data_bytes=data)))
     await asyncio.sleep(botfunc.get_config('recall'))
     await app.recall_message(b_msg)
