@@ -12,12 +12,10 @@ channel.description("echo 第一个输出")
 channel.author("HanTools")
 
 
-
 @channel.use(ListenerSchema(listening_events=[GroupMessage]))
 async def setu(app: Ariadne, group: Group, message: MessageChain):
     if message.display.startswith("/echo "):
-         await app.send_message(
+        await app.send_message(
             group,
             MessageChain(f"{message.display[6:]}"),
-         )
-
+        )
