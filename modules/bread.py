@@ -2,6 +2,8 @@
 
 #  本项目遵守 AGPL-3.0 协议，项目地址：https://github.com/daizihan233/MiraiHanBot
 
+#  本项目遵守 AGPL-3.0 协议，项目地址：https://github.com/daizihan233/MiraiHanBot
+
 import random
 import time
 from functools import lru_cache
@@ -57,6 +59,8 @@ async def get_bread(app: Ariadne, group: Group, event: GroupMessage, message: Me
         res = list(result)
         res[3] = ((int(time.time()) - res[2]) // 120) * random.randint(1, 5)
         res[2] = int(time.time())
+        if res[3] > 2 ** result[1]:
+            res[3] = 2 ** result[1]
         if res[3] - data >= 0:
             res[3] -= data
             await app.send_message(group, MessageChain(
