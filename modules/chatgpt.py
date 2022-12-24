@@ -2,6 +2,8 @@
 
 #  本项目遵守 AGPL-3.0 协议，项目地址：https://github.com/daizihan233/MiraiHanBot
 
+#  本项目遵守 AGPL-3.0 协议，项目地址：https://github.com/daizihan233/MiraiHanBot
+
 import openai
 from graia.ariadne.app import Ariadne
 from graia.ariadne.event.message import GroupMessage
@@ -31,6 +33,8 @@ async def repeat_record(app: Ariadne, group: Group, member: Member, message: Mes
         engine="text-davinci-002",
         prompt=str(message),
         max_tokens=1024,
+        n=1,
+        stop=None,
         temperature=0.5
     )
     # Print the generated text
