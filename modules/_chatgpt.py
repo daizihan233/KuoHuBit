@@ -4,12 +4,24 @@
 
 #  本项目遵守 AGPL-3.0 协议，项目地址：https://github.com/daizihan233/MiraiHanBot
 
+#  本项目遵守 AGPL-3.0 协议，项目地址：https://github.com/daizihan233/MiraiHanBot
+
+#  本项目遵守 AGPL-3.0 协议，项目地址：https://github.com/daizihan233/MiraiHanBot
+
+#  本项目遵守 AGPL-3.0 协议，项目地址：https://github.com/daizihan233/MiraiHanBot
+
+#  本项目遵守 AGPL-3.0 协议，项目地址：https://github.com/daizihan233/MiraiHanBot
+
+#  本项目遵守 AGPL-3.0 协议，项目地址：https://github.com/daizihan233/MiraiHanBot
+
+#  本项目遵守 AGPL-3.0 协议，项目地址：https://github.com/daizihan233/MiraiHanBot
+
 import openai
 from graia.ariadne.app import Ariadne
 from graia.ariadne.event.message import GroupMessage
 from graia.ariadne.message.chain import MessageChain
 from graia.ariadne.message.parser.base import MentionMe
-from graia.ariadne.model import Group, Member
+from graia.ariadne.model import Group
 from graia.saya import Channel
 from graia.saya.builtins.broadcast.schema import ListenerSchema
 
@@ -26,7 +38,7 @@ channel.author("HanTools")
         listening_events=[GroupMessage]
     )
 )
-async def repeat_record(app: Ariadne, group: Group, member: Member, message: MessageChain = MentionMe()):
+async def repeat_record(app: Ariadne, group: Group, message: MessageChain = MentionMe()):
     openai.api_key = botfunc.get_cloud_config('OpenAI_Key')
     # Use the GPT-3 model
     completion = openai.Completion.create(

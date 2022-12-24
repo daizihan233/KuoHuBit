@@ -160,10 +160,6 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 
-<<<<<<< Updated upstream
-dynamic_config.yaml
-=======
 cloud.json
 dynamic_config.yaml
->>>>>>> Stashed changes
 nohup.out
