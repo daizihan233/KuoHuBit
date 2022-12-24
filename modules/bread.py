@@ -4,6 +4,8 @@
 
 #  本项目遵守 AGPL-3.0 协议，项目地址：https://github.com/daizihan233/MiraiHanBot
 
+#  本项目遵守 AGPL-3.0 协议，项目地址：https://github.com/daizihan233/MiraiHanBot
+
 import random
 import time
 from functools import lru_cache
@@ -13,7 +15,7 @@ from graia.ariadne.app import Ariadne
 from graia.ariadne.event.message import GroupMessage
 from graia.ariadne.message.chain import MessageChain
 from graia.ariadne.message.element import At, Plain
-from graia.ariadne.message.parser.base import DetectPrefix
+from graia.ariadne.message.parser.base import DetectPrefix, MatchContent
 from graia.ariadne.model import Group
 from graia.saya import Channel
 from graia.saya.builtins.broadcast.schema import ListenerSchema
@@ -89,13 +91,7 @@ async def update_bread(app: Ariadne, group: Group):
             sql = f'''UPDATE bread SET level = {res[1]}, experience={res[4]} WHERE id = {group.id}'''
             cursor.execute(sql)
             conn.commit()
-            await app.send_message(group, [Plain(f'恭喜！\n'
-                                                 f'面包厂已升级至 {res[1]} 级\n'
-                                                 f'现在的经验为 {get_e(level=res[1])}\n'
-                                                 f'最多可存储面包 {2 ** res[1]} 块\n'
-                                                 f'现有面包 {res[3]} 块')])
         else:
-            res[4] += 1
             sql = f'''UPDATE bread SET experience={res[4]} WHERE id = {group.id}'''
             cursor.execute(sql)
             conn.commit()
@@ -103,3 +99,33 @@ async def update_bread(app: Ariadne, group: Group):
         sql = f'''INSERT INTO bread(id, level, time, bread, experience) VALUES ({group.id}, 1, {int(time.time())}, 0, 2)'''
         cursor.execute(sql)
         conn.commit()
+
+
+@channel.use(
+    ListenerSchema(
+        listening_events=[GroupMessage],
+        decorators=[MatchContent("面包厂信息")],
+    )
+)
+async def setu(app: Ariadne, group: Group):
+    sql = f'''SELECT * FROM bread WHERE id = {group.id}'''
+    cursor.execute(sql)
+    result = cursor.fetchone()
+    res = list(result)
+    res[3] = ((int(time.time()) - res[2]) // 120) * random.randint(1, 5)
+    if res[3] > 2 ** result[1]:
+        res[3] = 2 ** result[1]
+    res[2] = int(time.time())
+    sql_2 = f'''UPDATE bread SET time = {res[2]}, bread = {res[3]} WHERE id = {group.id}'''
+    cursor.execute(sql_2)
+    conn.commit()
+    try:
+        await app.send_message(group, MessageChain([Plain(f'本群（{result[0]}）面包厂信息如下：\n'
+                                                          f'等级：{result[1]} 级\n'
+                                                          f'经验值：{result[4]} / {2 ** result[1]}\n'
+                                                          f'现有面包：{res[3]} / {2 ** result[1]}')]))
+    except ValueError:
+        await app.send_message(group, MessageChain([Plain(f'本群（{result[0]}）面包厂信息如下：\n'
+                                                          f'等级：{result[1]} 级\n'
+                                                          f'经验值：{result[4]} / 很大\n'
+                                                          f'现有面包：{res[3]} / 很大')]))
