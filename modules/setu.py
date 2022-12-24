@@ -29,7 +29,7 @@ channel.author("HanTools")
 )
 async def setu(app: Ariadne, group: Group, event: GroupMessage):
     p = botfunc.get_config('setu_api2_probability')
-    ch = random.randint(0, p)
+    ch = random.randint(1, p)
     if ch == p:
         url = botfunc.get_config('setu_api2')
     else:

@@ -2,7 +2,6 @@
 
 import random
 import time
-from functools import lru_cache
 
 import pymysql
 from graia.ariadne.app import Ariadne
@@ -24,13 +23,6 @@ conn = pymysql.connect(host='localhost', port=botfunc.get_cloud_config('MySQL_Po
                        password=botfunc.get_cloud_config('MySQL_Pwd'), charset='utf8mb4',
                        database='Bot_bread')
 cursor = conn.cursor()
-
-
-@lru_cache()
-def get_e(level: int):
-    if level == 1:
-        return 2
-    return 2 ** get_e(level - 1)
 
 
 @channel.use(
