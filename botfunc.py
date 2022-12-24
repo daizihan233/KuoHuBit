@@ -1,13 +1,12 @@
 #  本项目遵守 AGPL-3.0 协议，项目地址：https://github.com/daizihan233/MiraiHanBot
 
+#  本项目遵守 AGPL-3.0 协议，项目地址：https://github.com/daizihan233/MiraiHanBot
+
 import fcntl
 import json
 
 import requests_cache
 import yaml
-
-backend = requests_cache.RedisCache(host='127.0.0.1', port=6009)
-session = requests_cache.CachedSession("global_session", backend=backend, expire_after=360)
 
 
 def get_config(name: str):
@@ -55,3 +54,7 @@ def safe_file_write(filename: str, s, mode: str = "w", encode: str = "UTF-8"):
         with open(filename, mode) as f:
             fcntl.flock(f.fileno(), fcntl.LOCK_EX)
             f.write(s)
+
+
+backend = requests_cache.RedisCache(host='127.0.0.1', port=6009)
+session = requests_cache.CachedSession("global_session", backend=backend, expire_after=360)
