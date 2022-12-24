@@ -1,5 +1,7 @@
 #  本项目遵守 AGPL-3.0 协议，项目地址：https://github.com/daizihan233/MiraiHanBot
 
+#  本项目遵守 AGPL-3.0 协议，项目地址：https://github.com/daizihan233/MiraiHanBot
+
 import random
 import time
 from functools import lru_cache
@@ -90,7 +92,7 @@ async def update_bread(group: Group):
             cursor.execute(sql)
             conn.commit()
     else:
-        sql = f'''INSERT INTO bread(id, level, time, bread, experience) VALUES ({group.id}, 1, {int(time.time())}, 0, 2)'''
+        sql = f'''INSERT INTO bread(id, level, time, bread, experience) VALUES ({group.id}, 1, {int(time.time())}, 0, 0)'''
         cursor.execute(sql)
         conn.commit()
 
