@@ -36,10 +36,10 @@ async def repeat_record(app: Ariadne, group: Group, member: Member, message: Mes
         if r.hexists(hash_name, f"{group.id},{member.id}"):
             td = r.hget(hash_name, f"{group.id},{member.id}")
             td = td.split(',')
-            if message.display == td[2]:
+            if str(message) == td[2]:
                 if time.time() - float(td[1]) < limit_time:
                     r.hset(hash_name, f'{group.id},{member.id}',
-                           f"{int(td[0]) + 1},{time.time()},{message.display}")
+                           f"{int(td[0]) + 1},{time.time()},{str(message)}")
                     if int(td[0]) + 1 > 5:
                         try:
                             await app.mute_member(group, member, limit_time)
@@ -48,11 +48,11 @@ async def repeat_record(app: Ariadne, group: Group, member: Member, message: Mes
                         except PermissionError:
                             print(f'{member.id} 玩不起！PermissionError')
                 else:
-                    r.hset(hash_name, f'{group.id},{member.id}', f"1,{time.time()},{message.display}")
+                    r.hset(hash_name, f'{group.id},{member.id}', f"1,{time.time()},{str(message)}")
             else:
-                r.hset(hash_name, f'{group.id},{member.id}', f"1,{time.time()},{message.display}")
+                r.hset(hash_name, f'{group.id},{member.id}', f"1,{time.time()},{str(message)}")
         else:
-            r.hset(hash_name, f'{group.id},{member.id}', f"1,{time.time()},{message.display}")
+            r.hset(hash_name, f'{group.id},{member.id}', f"1,{time.time()},{str(message)}")
 
 
 @channel.use(
