@@ -1,11 +1,5 @@
 #  本项目遵守 AGPL-3.0 协议，项目地址：https://github.com/daizihan233/MiraiHanBot
 
-#  本项目遵守 AGPL-3.0 协议，项目地址：https://github.com/daizihan233/MiraiHanBot
-
-#  本项目遵守 AGPL-3.0 协议，项目地址：https://github.com/daizihan233/MiraiHanBot
-
-#  本项目遵守 AGPL-3.0 协议，项目地址：https://github.com/daizihan233/MiraiHanBot
-
 import random
 import time
 from functools import lru_cache
@@ -78,7 +72,7 @@ async def get_bread(app: Ariadne, group: Group, event: GroupMessage, message: Me
         listening_events=[GroupMessage]
     )
 )
-async def update_bread(app: Ariadne, group: Group):
+async def update_bread(group: Group):
     sql = f'''SELECT * FROM bread WHERE id = {group.id}'''
     cursor.execute(sql)
     result = cursor.fetchone()
