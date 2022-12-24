@@ -6,6 +6,8 @@
 
 #  本项目遵守 AGPL-3.0 协议，项目地址：https://github.com/daizihan233/MiraiHanBot
 
+#  本项目遵守 AGPL-3.0 协议，项目地址：https://github.com/daizihan233/MiraiHanBot
+
 import random
 import time
 from functools import lru_cache
@@ -23,8 +25,8 @@ from graia.saya.builtins.broadcast.schema import ListenerSchema
 import botfunc
 
 channel = Channel.current()
-channel.name("来份涩图")
-channel.description("人类有三大欲望……")
+channel.name("面包厂")
+channel.description("好吃")
 channel.author("HanTools")
 conn = pymysql.connect(host='localhost', port=botfunc.get_cloud_config('MySQL_Port'), user='root',
                        password=botfunc.get_cloud_config('MySQL_Pwd'), charset='utf8mb4',
