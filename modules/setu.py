@@ -3,6 +3,7 @@
 import asyncio
 import os
 import random
+import shutil
 import time
 
 from aiohttp import ClientSession
@@ -72,5 +73,5 @@ async def setu_7z(app: Ariadne, group: Group):
     os.system(f"7z a {fdir}/res.7z {fdir} -p{group.id}")
     await app.upload_file(data=botfunc.safe_file_read(f'{fdir}/res.7z', mode='rb'), target=group,
                           name=f"s{time.time()}.7z")
-    await asyncio.sleep(botfunc.get_config('recall'))
-    os.removedirs(fdir)
+    await asyncio.sleep(120)
+    shutil.rmtree(fdir)
