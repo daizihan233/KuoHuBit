@@ -1,20 +1,9 @@
 #  本项目遵守 AGPL-3.0 协议，项目地址：https://github.com/daizihan233/MiraiHanBot
 
-#  本项目遵守 AGPL-3.0 协议，项目地址：https://github.com/daizihan233/MiraiHanBot
-
-#  本项目遵守 AGPL-3.0 协议，项目地址：https://github.com/daizihan233/MiraiHanBot
-
-#  本项目遵守 AGPL-3.0 协议，项目地址：https://github.com/daizihan233/MiraiHanBot
-
-#  本项目遵守 AGPL-3.0 协议，项目地址：https://github.com/daizihan233/MiraiHanBot
-
-#  本项目遵守 AGPL-3.0 协议，项目地址：https://github.com/daizihan233/MiraiHanBot
-
 import asyncio
 import os
 import random
 import time
-from asyncio import subprocess
 
 from aiohttp import ClientSession
 from graia.ariadne.app import Ariadne
@@ -80,7 +69,7 @@ async def setu_7z(app: Ariadne, group: Group):
             async with session.get(url) as response:
                 data = await response.read()
         botfunc.safe_file_write(filename=f'{fdir}/{index}.png', mode='wb', s=data)
-    await subprocess.create_subprocess_shell(f"7z a {fdir}/res.7z {fdir} -p{group.id} ")
+    os.system(f"7z a {fdir}/res.7z {fdir} -p{group.id}")
     await app.upload_file(data=botfunc.safe_file_read(f'{fdir}/res.7z', mode='rb'), target=group,
                           name=f"s{time.time()}.7z")
     await asyncio.sleep(botfunc.get_config('recall'))
