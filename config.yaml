@@ -2,8 +2,8 @@ qq: 2265453790  # 运行时登录的 QQ 号
 verifyKey: "INITKEYjOmhWeXk"  # MAH 的 verifyKey
 recall: 30  # 涩图撤回等待时长（单位：秒）
 # 如果你没有那么多涩图API可以填一样的URL
-setu_api: "https://www.dmoe.cc/random.php"  # 涩图 API
+setu_api: "https://api.jiecs.top/lolicon?r18=2"  # 涩图 API
 setu_api2: "https://www.acy.moe/api/r18"  # 涩图 API 2
-setu_api2_probability: 3 # 表示【涩图 API 2】的被调用的概率为 1/n
-NewFriendRequestEvent: true  # 是否自动通过好友添加：true -> 自动通过 | false -> 自动拒绝
+setu_api2_probability: 5 # 表示【涩图 API 2】的被调用的概率为 1/n
+NewFriendReqAuestEvent: true  # 是否自动通过好友添加：true -> 自动通过 | false -> 自动拒绝
 BotInvitedJoinGroupRequestEvent: true  # 是否自动通过加群邀请：同上
