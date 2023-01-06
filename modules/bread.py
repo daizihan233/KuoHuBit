@@ -1,5 +1,9 @@
 #  本项目遵守 AGPL-3.0 协议，项目地址：https://github.com/daizihan233/MiraiHanBot
 
+#  本项目遵守 AGPL-3.0 协议，项目地址：https://github.com/daizihan233/MiraiHanBot
+
+#  本项目遵守 AGPL-3.0 协议，项目地址：https://github.com/daizihan233/MiraiHanBot
+
 import random
 import time
 
@@ -19,9 +23,10 @@ channel = Channel.current()
 channel.name("面包厂")
 channel.description("好吃")
 channel.author("HanTools")
-conn = pymysql.connect(host='localhost', port=botfunc.get_cloud_config('MySQL_Port'), user='root',
+conn = pymysql.connect(host=botfunc.get_cloud_config('MySQL_Host'), port=botfunc.get_cloud_config('MySQL_Port'),
+                       user='root',
                        password=botfunc.get_cloud_config('MySQL_Pwd'), charset='utf8mb4',
-                       database='Bot_bread')
+                       database=botfunc.get_cloud_config('MySQL_db'))
 cursor = conn.cursor()
 
 
