@@ -2,6 +2,8 @@
 
 #  本项目遵守 AGPL-3.0 协议，项目地址：https://github.com/daizihan233/MiraiHanBot
 
+#  本项目遵守 AGPL-3.0 协议，项目地址：https://github.com/daizihan233/MiraiHanBot
+
 import fcntl
 import json
 
@@ -11,7 +13,7 @@ import yaml
 
 def get_config(name: str):
     try:
-        y = yaml.load(open('config.yaml', 'r', encoding='UTF-8'), yaml.SafeLoader)
+        y = yaml.safe_load(open('config.yaml', 'r', encoding='UTF-8'))
         return y[name]
     except KeyError:
         return None
@@ -26,7 +28,7 @@ def get_cloud_config(name: str):
 
 def get_dyn_config(name: str):
     try:
-        y = yaml.load(open('dynamic_config.yaml', 'r', encoding='UTF-8'), yaml.SafeLoader)
+        y = yaml.safe_load(open('dynamic_config.yaml', 'r', encoding='UTF-8'))
         return y[name]
     except KeyError:
         return None

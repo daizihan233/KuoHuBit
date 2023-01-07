@@ -1,5 +1,7 @@
 #  本项目遵守 AGPL-3.0 协议，项目地址：https://github.com/daizihan233/MiraiHanBot
 
+#  本项目遵守 AGPL-3.0 协议，项目地址：https://github.com/daizihan233/MiraiHanBot
+
 import time
 
 import redis
@@ -63,7 +65,7 @@ async def repeat_record(app: Ariadne, group: Group, member: Member, message: Mes
 )
 async def start_mute(app: Ariadne, group: Group, event: GroupMessage):
     with open(dyn_config, 'r') as cf:
-        cfy = yaml.load(cf, yaml.SafeLoader)
+        cfy = yaml.safe_load(cf)
     cfy['mute'].append(group.id)
     cfy['mute'] = list(set(cfy["mute"]))
     with open(dyn_config, 'w') as cf:
@@ -79,7 +81,7 @@ async def start_mute(app: Ariadne, group: Group, event: GroupMessage):
 )
 async def stop_mute(app: Ariadne, group: Group, event: GroupMessage):
     with open(dyn_config, 'r') as cf:
-        cfy = yaml.load(cf, yaml.SafeLoader)
+        cfy = yaml.safe_load(cf)
     try:
         cfy['mute'].remove(group.id)
         cfy['mute'] = list(set(cfy["mute"]))
