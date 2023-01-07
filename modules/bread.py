@@ -1,9 +1,6 @@
 #  本项目遵守 AGPL-3.0 协议，项目地址：https://github.com/daizihan233/MiraiHanBot
 
-#  本项目遵守 AGPL-3.0 协议，项目地址：https://github.com/daizihan233/MiraiHanBot
-
-#  本项目遵守 AGPL-3.0 协议，项目地址：https://github.com/daizihan233/MiraiHanBot
-
+import math
 import random
 import time
 
@@ -28,6 +25,7 @@ conn = pymysql.connect(host=botfunc.get_cloud_config('MySQL_Host'), port=botfunc
                        password=botfunc.get_cloud_config('MySQL_Pwd'), charset='utf8mb4',
                        database=botfunc.get_cloud_config('MySQL_db'))
 cursor = conn.cursor()
+get_data_sql = '''SELECT * FROM bread WHERE id = %s'''
 
 
 @channel.use(
@@ -46,11 +44,11 @@ async def get_bread(app: Ariadne, group: Group, event: GroupMessage, message: Me
     except Exception as err:
         await app.send_message(group, MessageChain([At(event.sender.id), Plain(f" 报错啦……{err}")]))
     else:
-        sql = f'''SELECT * FROM bread WHERE id = {group.id}'''
-        cursor.execute(sql)
+        cursor.execute(get_data_sql, (group.id,))
         result = cursor.fetchone()
         res = list(result)
-        res[3] = ((int(time.time()) - res[2]) // 120) * random.randint(1, 5) + res[3]
+        res[3] = ((int(time.time()) - res[2]) // 60) * random.randint(1, math.ceil((res[1] ** 2 - res[3]) * 0.08)) + \
+                 res[3]
         res[2] = int(time.time())
         if res[3] > 2 ** result[1]:
             res[3] = 2 ** result[1]
@@ -61,8 +59,8 @@ async def get_bread(app: Ariadne, group: Group, event: GroupMessage, message: Me
         else:
             await app.send_message(group, MessageChain(
                 [At(event.sender.id), Plain(f" 面包不够哟~ 现在只有 {res[3]} 块面包！")]))
-        sql_2 = f'''UPDATE bread SET time = {res[2]}, bread = {res[3]} WHERE id = {group.id}'''
-        cursor.execute(sql_2)
+        sql_2 = '''UPDATE bread SET time = %s, bread = %s WHERE id = %s'''
+        cursor.execute(sql_2, (res[2], res[3], group.id))
         conn.commit()
 
 
@@ -72,8 +70,7 @@ async def get_bread(app: Ariadne, group: Group, event: GroupMessage, message: Me
     )
 )
 async def update_bread(group: Group):
-    sql = f'''SELECT * FROM bread WHERE id = {group.id}'''
-    cursor.execute(sql)
+    cursor.execute(get_data_sql, (group.id,))
     result = cursor.fetchone()
     if result:
         res = list(result)
@@ -81,16 +78,16 @@ async def update_bread(group: Group):
         if res[4] >= (2 ** res[1]):
             res[1] += 1
             res[4] = 0
-            sql = f'''UPDATE bread SET level = {res[1]}, experience={res[4]} WHERE id = {group.id}'''
-            cursor.execute(sql)
+            sql = '''UPDATE bread SET level = %s, experience = %s WHERE id = %s'''
+            cursor.execute(sql, (res[1], res[4], group.id))
             conn.commit()
         else:
-            sql = f'''UPDATE bread SET experience={res[4]} WHERE id = {group.id}'''
-            cursor.execute(sql)
+            sql = '''UPDATE bread SET experience = %s WHERE id = %s'''
+            cursor.execute(sql, (res[4], group.id))
             conn.commit()
     else:
-        sql = f'''INSERT INTO bread(id, level, time, bread, experience) VALUES ({group.id}, 1, {int(time.time())}, 0, 0)'''
-        cursor.execute(sql)
+        sql = '''INSERT INTO bread(id, level, time, bread, experience) VALUES (%s, 1, %s, 0, 0)'''
+        cursor.execute(sql, (group.id, int(time.time())))
         conn.commit()
 
 
@@ -101,16 +98,15 @@ async def update_bread(group: Group):
     )
 )
 async def setu(app: Ariadne, group: Group):
-    sql = f'''SELECT * FROM bread WHERE id = {group.id}'''
-    cursor.execute(sql)
+    cursor.execute(get_data_sql, (group.id,))
     result = cursor.fetchone()
     res = list(result)
-    res[3] = ((int(time.time()) - res[2]) // 120) * random.randint(1, 5) + res[3]
+    res[3] = ((int(time.time()) - res[2]) // 60) * random.randint(1, math.ceil((res[1] ** 2 - res[3]) * 0.08)) + res[3]
     if res[3] > 2 ** result[1]:
         res[3] = 2 ** result[1]
     res[2] = int(time.time())
-    sql_2 = f'''UPDATE bread SET time = {res[2]}, bread = {res[3]} WHERE id = {group.id}'''
-    cursor.execute(sql_2)
+    sql_2 = '''UPDATE bread SET time = %s, bread = %s WHERE id = %s'''
+    cursor.execute(sql_2, (res[2], res[3], group.id))
     conn.commit()
     try:
         await app.send_message(group, MessageChain([Plain(f'本群（{result[0]}）面包厂信息如下：\n'

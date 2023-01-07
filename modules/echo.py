@@ -3,8 +3,8 @@
 from graia.ariadne.app import Ariadne
 from graia.ariadne.event.message import GroupMessage
 from graia.ariadne.message.chain import MessageChain
+from graia.ariadne.message.parser.base import DetectPrefix
 from graia.ariadne.model import Group
-
 from graia.saya import Channel
 from graia.saya.builtins.broadcast.schema import ListenerSchema
 
@@ -15,9 +15,8 @@ channel.author("HanTools")
 
 
 @channel.use(ListenerSchema(listening_events=[GroupMessage]))
-async def echo(app: Ariadne, group: Group, message: MessageChain):
-    if message.display.startswith("/echo "):
-        await app.send_message(
-            group,
-            MessageChain(f"{message.display[6:]}"),
-        )
+async def echo(app: Ariadne, group: Group, message: MessageChain = DetectPrefix("/echo ")):
+    await app.send_message(
+        group,
+        message,
+    )
