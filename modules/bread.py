@@ -1,5 +1,7 @@
 #  本项目遵守 AGPL-3.0 协议，项目地址：https://github.com/daizihan233/MiraiHanBot
 
+#  本项目遵守 AGPL-3.0 协议，项目地址：https://github.com/daizihan233/MiraiHanBot
+
 import math
 import random
 import time
@@ -47,8 +49,7 @@ async def get_bread(app: Ariadne, group: Group, event: GroupMessage, message: Me
         cursor.execute(get_data_sql, (group.id,))
         result = cursor.fetchone()
         res = list(result)
-        res[3] = ((int(time.time()) - res[2]) // 60) * random.randint(1, math.ceil((res[1] ** 2 - res[3]) * 0.08)) + \
-                 res[3]
+        res[3] += ((int(time.time()) - res[2]) // 60) * random.randint(1, math.ceil((2 ** res[1] - res[3]) * 0.08))
         res[2] = int(time.time())
         if res[3] > 2 ** result[1]:
             res[3] = 2 ** result[1]
@@ -101,7 +102,7 @@ async def setu(app: Ariadne, group: Group):
     cursor.execute(get_data_sql, (group.id,))
     result = cursor.fetchone()
     res = list(result)
-    res[3] = ((int(time.time()) - res[2]) // 60) * random.randint(1, math.ceil((res[1] ** 2 - res[3]) * 0.08)) + res[3]
+    res[3] = ((int(time.time()) - res[2]) // 60) * random.randint(1, math.ceil((2 ** res[1] - res[3]) * 0.08)) + res[3]
     if res[3] > 2 ** result[1]:
         res[3] = 2 ** result[1]
     res[2] = int(time.time())
