@@ -13,6 +13,7 @@ from graia.ariadne.message.parser.base import MatchContent
 from graia.ariadne.model import Group, Member
 from graia.saya import Channel
 from graia.saya.builtins.broadcast.schema import ListenerSchema
+from loguru import logger
 
 import botfunc
 
@@ -47,7 +48,7 @@ async def repeat_record(app: Ariadne, group: Group, member: Member, message: Mes
                             await app.send_message(group, MessageChain(Plain("boom！一声枪响之后，"), At(member.id),
                                                                        Plain(f' 被禁言了 {limit_time} 秒')))
                         except PermissionError:
-                            print(f'{member.id} 玩不起！PermissionError')
+                            logger.warning(f'机器人权限过低，无法禁言 {member.id}')
                 else:
                     r.hset(hash_name, f'{group.id},{member.id}', f"1,{time.time()},{str(message)}")
             else:

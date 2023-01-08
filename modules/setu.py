@@ -15,6 +15,7 @@ from graia.ariadne.message.parser.base import MatchContent
 from graia.ariadne.model import Group
 from graia.saya import Channel
 from graia.saya.builtins.broadcast.schema import ListenerSchema
+from loguru import logger
 
 import botfunc
 
@@ -37,7 +38,7 @@ async def setu(app: Ariadne, group: Group):
         url = botfunc.get_config('setu_api2')
     else:
         url = botfunc.get_config('setu_api')
-    print(f'使用URL：{url}（p={p}, ch={ch}, (ch == p)={ch == p}）')
+    logger.info(f'使用URL：{url}（p={p}, ch={ch}, (ch == p)={ch == p}）')
     # 涩图不一样，这里不能使用缓存
     async with ClientSession() as session:
         async with session.get(url) as response:
@@ -64,7 +65,7 @@ async def setu_7z(app: Ariadne, group: Group):
             url = botfunc.get_config('setu_api2')
         else:
             url = botfunc.get_config('setu_api')
-        print(f'使用URL：{url}（p={p}, ch={ch}, (ch == p)={ch == p}）')
+        logger.info(f'使用URL：{url}（p={p}, ch={ch}, (ch == p)={ch == p}）')
         # 涩图不一样，这里不能使用缓存
         async with ClientSession() as session:
             async with session.get(url) as response:
@@ -73,5 +74,5 @@ async def setu_7z(app: Ariadne, group: Group):
     os.system(f"7z a {fdir}/res.7z {fdir} -p{group.id}")
     await app.upload_file(data=botfunc.safe_file_read(f'{fdir}/res.7z', mode='rb'), target=group,
                           name=f"s{time.time()}.7z")
-    await asyncio.sleep(120)
+    await asyncio.sleep(600)
     shutil.rmtree(fdir)

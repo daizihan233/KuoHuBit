@@ -13,6 +13,7 @@ from graia.ariadne.message.parser.base import DetectPrefix, MatchContent
 from graia.ariadne.model import Group
 from graia.saya import Channel
 from graia.saya.builtins.broadcast.schema import ListenerSchema
+from loguru import logger
 
 import botfunc
 
@@ -115,7 +116,15 @@ async def setu(app: Ariadne, group: Group):
                                                           f'经验值：{result[4]} / {2 ** result[1]}\n'
                                                           f'现有面包：{res[3]} / {2 ** result[1]}')]))
     except ValueError:
-        await app.send_message(group, MessageChain([Plain(f'本群（{result[0]}）面包厂信息如下：\n'
-                                                          f'等级：{result[1]} 级\n'
-                                                          f'经验值：{result[4]} / 很大\n'
-                                                          f'现有面包：{res[3]} / 很大')]))
+        logger.warning('【1】为防止 DoS 攻击程序禁止了int -> str的强制类型转换')
+        try:
+            await app.send_message(group, MessageChain([Plain(f'本群（{result[0]}）面包厂信息如下：\n'
+                                                              f'等级：{result[1]} 级\n'
+                                                              f'经验值：{result[4]} / 很大\n'
+                                                              f'现有面包：{res[3]} / 很大')]))
+        except ValueError:
+            logger.warning('【2】为防止 DoS 攻击程序禁止了int -> str的强制类型转换')
+            await app.send_message(group, MessageChain([Plain(f'本群（{result[0]}）面包厂信息如下：\n'
+                                                              f'等级：{result[1]} 级\n'
+                                                              f'经验值：很大 / 很大\n'
+                                                              f'现有面包：很大 / 很大')]))
