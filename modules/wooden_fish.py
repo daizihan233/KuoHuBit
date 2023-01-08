@@ -73,6 +73,29 @@ async def my_wf(app: Ariadne, group: Group, event: GroupMessage):
 
 @channel.use(
     ListenerSchema(
+        listening_events=[GroupMessage],
+        decorators=[MatchContent("敲木鱼")]
+    )
+)
+async def sign(app: Ariadne, group: Group, event: GroupMessage):
+    cursor.execute(
+        "INSERT INTO wooden_fish(uid, time, level, exp, de) VALUES (%s, %s, %s, %s, %s)",
+        (event.sender.id, int(time.time()), 1, 1, 0)
+    )
+    await app.send_message(
+        group,
+        MessageChain(
+            [
+                Plain(
+                    "OK！"
+                )
+            ]
+        )
+    )
+
+
+@channel.use(
+    ListenerSchema(
         listening_events=[GroupMessage]
     )
 )
