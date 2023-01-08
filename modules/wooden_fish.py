@@ -44,8 +44,8 @@ async def my_wf(app: Ariadne, group: Group, event: GroupMessage):
         while data[4] < 0:
             data[4] += round(int(int(time.time()) - data[1]) // round(pow(data[2], -1) * 10))
         cursor.execute(
-            "UPDATE wooden_fish SET de = %s WHERE uid = %s",
-            (data[4], event.sender.id)
+            "UPDATE wooden_fish SET time = %s , de = %s WHERE uid = %s",
+            (int(time.time()), data[4], event.sender.id)
         )
         await app.send_message(
             group,
