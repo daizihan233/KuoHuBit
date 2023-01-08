@@ -57,7 +57,7 @@ async def my_wf(app: Ariadne, group: Group, event: GroupMessage):
                         f"赛博账号：{event.sender.id}\n"
                         f"木鱼等级：{data[2]}\n"
                         f"木鱼经验：{data[3]}\n"
-                        f"当前速度：{pow(data[2], -1) * 10}s/周期\n"
+                        f"当前速度：{round(pow(data[2], -1) * 10, 2)}s/周期\n"
                         f"当前功德：{data[4]}")
                 ]
             )
