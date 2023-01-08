@@ -1,7 +1,5 @@
 #  本项目遵守 AGPL-3.0 协议，项目地址：https://github.com/daizihan233/MiraiHanBot
 
-#  本项目遵守 AGPL-3.0 协议，项目地址：https://github.com/daizihan233/MiraiHanBot
-
 from graia.ariadne.app import Ariadne
 from graia.ariadne.event.mirai import NudgeEvent
 from graia.ariadne.message.chain import MessageChain

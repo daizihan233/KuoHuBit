@@ -1,7 +1,3 @@
-"""
-注意：本插件偏定制性，不会在配置文件中给予相关配置
-若要禁用此插件，请将文件名改为 _imgsafe.py
-"""
 #  本项目遵守 AGPL-3.0 协议，项目地址：https://github.com/daizihan233/MiraiHanBot
 
 import graia.ariadne.message.chain
@@ -91,7 +87,8 @@ def img_safe(msg, biz, gid, uid):
             botfunc.safe_file_write('tmp114.png', requests.get(im.url).content, 'wb')
             dh = str(imagehash.dhash(Image.open('tmp114.png')))
             # 检查Redis中是否存在该图片的hash值
-            p = redis.ConnectionPool(host='43.155.59.113', port=6009, decode_responses=True)
+            p = redis.ConnectionPool(host=botfunc.get_cloud_config('Redis_Host'),
+                                     port=botfunc.get_cloud_config('Redis_port'), decode_responses=True)
             r = redis.Redis(connection_pool=p)
             if r.hexists('imh', dh):
                 dhu = r.hget('imh', dh)

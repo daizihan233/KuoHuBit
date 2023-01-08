@@ -1,13 +1,12 @@
 #  本项目遵守 AGPL-3.0 协议，项目地址：https://github.com/daizihan233/MiraiHanBot
 
-#  本项目遵守 AGPL-3.0 协议，项目地址：https://github.com/daizihan233/MiraiHanBot
-
 import time
 
 import redis
 import yaml
 from graia.ariadne.app import Ariadne
 from graia.ariadne.event.message import GroupMessage
+from graia.ariadne.event.mirai import MemberUnmuteEvent
 from graia.ariadne.message.chain import MessageChain
 from graia.ariadne.message.element import Plain, At
 from graia.ariadne.message.parser.base import MatchContent
@@ -22,6 +21,9 @@ channel.name("防刷屏")
 channel.description("人类可真无聊")
 channel.author("HanTools")
 dyn_config = 'dynamic_config.yaml'
+p = redis.ConnectionPool(host=botfunc.get_cloud_config('Redis_Host'), port=botfunc.get_cloud_config('Redis_port'))
+r = redis.Redis(connection_pool=p)
+hash_name = "bot_repeat_record"
 
 
 @channel.use(
@@ -31,10 +33,7 @@ dyn_config = 'dynamic_config.yaml'
 )
 async def repeat_record(app: Ariadne, group: Group, member: Member, message: MessageChain):
     if group.id in botfunc.get_dyn_config('mute'):
-        hash_name = "bot_repeat_record"
         limit_time = 300  # 5 分钟（5s * 60s = 300s）
-        p = redis.ConnectionPool(host='127.0.0.1', port=6009, decode_responses=True)
-        r = redis.Redis(connection_pool=p)
         if r.hexists(hash_name, f"{group.id},{member.id}"):
             td = r.hget(hash_name, f"{group.id},{member.id}")
             td = td.split(',')
@@ -90,3 +89,12 @@ async def stop_mute(app: Ariadne, group: Group, event: GroupMessage):
         await app.send_message(group, MessageChain(At(event.sender.id), Plain(" OK辣！")))
     except Exception as err:
         await app.send_message(group, MessageChain(At(event.sender.id), Plain(f" 报错辣！{err}")))
+
+
+@channel.use(
+    ListenerSchema(
+        listening_events=[MemberUnmuteEvent]
+    )
+)
+async def un_mute(group: Group, member: Member):
+    r.hdel(hash_name, f'{group.id},{member.id}')

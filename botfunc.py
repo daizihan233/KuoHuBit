@@ -1,9 +1,5 @@
 #  本项目遵守 AGPL-3.0 协议，项目地址：https://github.com/daizihan233/MiraiHanBot
 
-#  本项目遵守 AGPL-3.0 协议，项目地址：https://github.com/daizihan233/MiraiHanBot
-
-#  本项目遵守 AGPL-3.0 协议，项目地址：https://github.com/daizihan233/MiraiHanBot
-
 import fcntl
 import json
 
@@ -58,5 +54,5 @@ def safe_file_write(filename: str, s, mode: str = "w", encode: str = "UTF-8"):
             f.write(s)
 
 
-backend = requests_cache.RedisCache(host='127.0.0.1', port=6009)
+backend = requests_cache.RedisCache(host=get_cloud_config('Redis_Host'), port=get_cloud_config('Redis_port'))
 session = requests_cache.CachedSession("global_session", backend=backend, expire_after=360)

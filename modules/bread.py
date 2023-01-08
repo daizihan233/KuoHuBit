@@ -1,9 +1,5 @@
 #  本项目遵守 AGPL-3.0 协议，项目地址：https://github.com/daizihan233/MiraiHanBot
 
-#  本项目遵守 AGPL-3.0 协议，项目地址：https://github.com/daizihan233/MiraiHanBot
-
-#  本项目遵守 AGPL-3.0 协议，项目地址：https://github.com/daizihan233/MiraiHanBot
-
 import math
 import random
 import time
@@ -53,13 +49,15 @@ async def get_bread(app: Ariadne, group: Group, event: GroupMessage, message: Me
         res = list(result)
         res[3] += ((int(time.time()) - res[2]) // 60) * random.randint(0, math.ceil((2 ** res[1] - res[3]) * 0.08))
         res[2] = int(time.time())
+        # 如果面包仓库爆满则强制使其等于上限
         if res[3] > 2 ** result[1]:
             res[3] = 2 ** result[1]
+        # 如果够
         if res[3] - data >= 0:
             res[3] -= data
             await app.send_message(group, MessageChain(
                 [At(event.sender.id), Plain(f" {'🍞' * data if data < 50 else '🍞*' + str(data)}")]))
-        else:
+        else:  # 如果不够
             await app.send_message(group, MessageChain(
                 [At(event.sender.id), Plain(f" 面包不够哟~ 现在只有 {res[3]} 块面包！")]))
         sql_2 = '''UPDATE bread SET time = %s, bread = %s WHERE id = %s'''
