@@ -79,7 +79,7 @@ async def sign(app: Ariadne, group: Group, event: GroupMessage):
     try:
         cursor.execute(
             "INSERT INTO wooden_fish(uid, time, level, exp, de) VALUES (%s, %s, %s, %s, %s)",
-            (event.sender.id, int(time.time()), 1, 1, 0)
+            (event.sender.id, int(time.time()), 1, 1, random.randint(1000, 2000))
         )
         await app.send_message(
             group,
