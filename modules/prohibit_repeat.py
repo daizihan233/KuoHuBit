@@ -23,7 +23,7 @@ channel.description("人类可真无聊")
 channel.author("HanTools")
 dyn_config = 'dynamic_config.yaml'
 p = redis.ConnectionPool(host=botfunc.get_cloud_config('Redis_Host'), port=botfunc.get_cloud_config('Redis_port'))
-r = redis.Redis(connection_pool=p)
+r = redis.Redis(connection_pool=p, decode_responses=True)
 hash_name = "bot_repeat_record"
 
 
