@@ -51,7 +51,7 @@ async def my_wf(app: Ariadne, group: Group, event: GroupMessage):
                         f"\n"
                         f"赛博账号：{event.sender.id}\n"
                         f"木鱼等级：{data[2]}\n"
-                        f"木鱼经验：{data[3]}\n"
+                        f"木鱼经验：{data[3]} / {int(100 * (pow(1.14, data[2] - 1)))}\n"
                         f"当前速度：{round(pow(data[2], -1) * 10, 2)}s/周期\n"
                         f"当前功德：{data[4]}")
                 ]
@@ -104,7 +104,7 @@ async def update_bread(event: GroupMessage):
     if result:
         res = list(result)
         res[3] += random.randint(1, 5)  # 看人品加经验
-        if res[3] >= 100 * (pow(1.14, res[2] - 1)):
+        if res[3] >= int(100 * (pow(1.14, res[2] - 1))):
             res[2] += 1
             res[3] = random.randint(1, 5)  # 别问为什么这么写，问就是特色
             cursor.execute(
