@@ -42,7 +42,7 @@ async def my_wf(app: Ariadne, group: Group, event: GroupMessage):
         data[4] += round(
             sum(
                 [
-                    random.randint(-5, 5) for _ in
+                    random.randint(-2, 5) for _ in
                     range(int(int(time.time()) - data[1]) // round(pow(data[2], -1) * 10))
                 ]
             )
