@@ -40,7 +40,7 @@ async def my_wf(app: Ariadne, group: Group, event: GroupMessage):
     if data:  # 如果在数据库中
         data = list(data)
         # 防止出现负数
-        while data[4] >= 0:
+        while data[4] < 0:
             data[4] += round(
                 sum(
                     [
