@@ -4,7 +4,6 @@ import math
 import random
 import time
 
-import pymysql
 from graia.ariadne.app import Ariadne
 from graia.ariadne.event.message import GroupMessage
 from graia.ariadne.message.chain import MessageChain
@@ -15,17 +14,13 @@ from graia.saya import Channel
 from graia.saya.builtins.broadcast.schema import ListenerSchema
 from loguru import logger
 
-import botfunc
+from botfunc import cursor, conn  # MySQL
 
 channel = Channel.current()
 channel.name("面包厂")
 channel.description("好吃")
 channel.author("HanTools")
-conn = pymysql.connect(host=botfunc.get_cloud_config('MySQL_Host'), port=botfunc.get_cloud_config('MySQL_Port'),
-                       user='root',
-                       password=botfunc.get_cloud_config('MySQL_Pwd'), charset='utf8mb4',
-                       database=botfunc.get_cloud_config('MySQL_db'))
-cursor = conn.cursor()
+
 get_data_sql = '''SELECT * FROM bread WHERE id = %s'''
 
 
