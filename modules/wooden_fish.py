@@ -1,6 +1,7 @@
 import random
 import time
 
+import pymysql.err
 from graia.amnesia.message import MessageChain
 from graia.ariadne.app import Ariadne
 from graia.ariadne.event.message import GroupMessage
@@ -78,20 +79,26 @@ async def my_wf(app: Ariadne, group: Group, event: GroupMessage):
     )
 )
 async def sign(app: Ariadne, group: Group, event: GroupMessage):
-    cursor.execute(
-        "INSERT INTO wooden_fish(uid, time, level, exp, de) VALUES (%s, %s, %s, %s, %s)",
-        (event.sender.id, int(time.time()), 1, 1, 0)
-    )
-    await app.send_message(
-        group,
-        MessageChain(
-            [
-                Plain(
-                    "OK！"
-                )
-            ]
+    try:
+        cursor.execute(
+            "INSERT INTO wooden_fish(uid, time, level, exp, de) VALUES (%s, %s, %s, %s, %s)",
+            (event.sender.id, int(time.time()), 1, 1, 0)
         )
-    )
+        await app.send_message(
+            group,
+            MessageChain(
+                [
+                    Plain(
+                        "OK！"
+                    )
+                ]
+            )
+        )
+    except pymysql.err.IntegrityError:
+        await app.send_message(
+            group,
+            "你不是注册过了吗？"
+        )
 
 
 @channel.use(
