@@ -19,11 +19,6 @@ channel.description("敲赛博木鱼 ＿＿＿＿＿")
 channel.author("HanTools")
 get_data_sql = "SELECT * FROM wooden_fish WHERE uid = %s"
 
-"""
-本程序的升级经验值计算公式取自 Abjust/2kbot
-900 * pow(2, level - 1)
-"""
-
 
 @channel.use(
     ListenerSchema(
@@ -108,10 +103,10 @@ async def update_bread(event: GroupMessage):
     result = cursor.fetchone()
     if result:
         res = list(result)
-        res[3] += random.randint(0, 2)  # 看人品加经验
-        if res[3] >= 900 * pow(2, res[2] - 1):
+        res[3] += random.randint(1, 5)  # 看人品加经验
+        if res[3] >= 100 * (pow(1.14, res[2] - 1)):
             res[2] += 1
-            res[3] = random.randint(0, 2)  # 别问为什么这么写，问就是特色
+            res[3] = random.randint(1, 5)  # 别问为什么这么写，问就是特色
             cursor.execute(
                 "UPDATE wooden_fish SET level = %s, exp = %s WHERE uid = %s",
                 (res[2], res[3], event.sender.id)
