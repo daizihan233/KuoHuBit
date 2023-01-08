@@ -1,6 +1,7 @@
 #  本项目遵守 AGPL-3.0 协议，项目地址：https://github.com/daizihan233/MiraiHanBot
 
 import time
+import urllib.parse
 
 import redis
 import yaml
@@ -37,11 +38,11 @@ async def repeat_record(app: Ariadne, group: Group, member: Member, message: Mes
         limit_time = 300  # 5 分钟（5s * 60s = 300s）
         if r.hexists(hash_name, f"{group.id},{member.id}"):
             td = r.hget(hash_name, f"{group.id},{member.id}")
-            td = td.split(',')
-            if str(message) == td[2]:
+            td = str(td).split(',')
+            if str(message) == urllib.parse.unquote(td[2]):
                 if time.time() - float(td[1]) < limit_time:
                     r.hset(hash_name, f'{group.id},{member.id}',
-                           f"{int(td[0]) + 1},{time.time()},{str(message)}")
+                           f"{int(td[0]) + 1},{time.time()},{urllib.parse.quote(str(message))}")  # 这里使用 URLEncode 防止注入
                     if int(td[0]) + 1 > 5:
                         try:
                             await app.mute_member(group, member, limit_time)
@@ -50,11 +51,11 @@ async def repeat_record(app: Ariadne, group: Group, member: Member, message: Mes
                         except PermissionError:
                             logger.warning(f'机器人权限过低，无法禁言 {member.id}')
                 else:
-                    r.hset(hash_name, f'{group.id},{member.id}', f"1,{time.time()},{str(message)}")
+                    r.hset(hash_name, f'{group.id},{member.id}', f"1,{time.time()},{urllib.parse.quote(str(message))}")
             else:
-                r.hset(hash_name, f'{group.id},{member.id}', f"1,{time.time()},{str(message)}")
+                r.hset(hash_name, f'{group.id},{member.id}', f"1,{time.time()},{urllib.parse.quote(str(message))}")
         else:
-            r.hset(hash_name, f'{group.id},{member.id}', f"1,{time.time()},{str(message)}")
+            r.hset(hash_name, f'{group.id},{member.id}', f"1,{time.time()},{urllib.parse.quote(str(message))}")
 
 
 @channel.use(

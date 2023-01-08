@@ -40,7 +40,7 @@ def get_cloud_config(name: str):
 
 def get_dyn_config(name: str):
     try:
-        return _rat(logger.debug, f"{name} -> %s", dyn_yaml[name])
+        return dyn_yaml[name]
     except KeyError:
         logger.error(f'{name} 在配置文件中找不到')
         return None
