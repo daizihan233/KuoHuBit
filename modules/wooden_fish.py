@@ -42,7 +42,8 @@ async def my_wf(app: Ariadne, group: Group, event: GroupMessage):
         data[4] += round(
             sum(
                 [
-                    random.randint(0, 5) for _ in range(int(int(time.time()) - data[1]) // round(pow(data[2], -1) * 10))
+                    random.randint(-5, 5) for _ in
+                    range(int(int(time.time()) - data[1]) // round(pow(data[2], -1) * 10))
                 ]
             )
         )
@@ -111,10 +112,10 @@ async def update_bread(event: GroupMessage):
     result = cursor.fetchone()
     if result:
         res = list(result)
-        res[3] += random.randint(0, 5)  # 看人品加经验
+        res[3] += random.randint(0, 2)  # 看人品加经验
         if res[3] >= 900 * pow(2, res[2] - 1):
             res[2] += 1
-            res[3] = random.randint(0, 5)  # 别问为什么这么写，问就是特色
+            res[3] = random.randint(0, 2)  # 别问为什么这么写，问就是特色
             cursor.execute(
                 "UPDATE wooden_fish SET level = %s, exp = %s WHERE uid = %s",
                 (res[2], res[3], event.sender.id)
