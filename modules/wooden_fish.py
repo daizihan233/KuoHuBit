@@ -190,6 +190,10 @@ async def update_wf(app: Ariadne, group: Group, event: GroupMessage):
                         group.id,
                         [At(event.sender.id), Plain(f" 您疑似DoS佛祖，被封禁 1 小时")]
                     )
+                    await else_sql(
+                        "UPDATE wooden_fish SET dt = %s WHERE uid = %s",
+                        (int(time.time()) + 360, event.sender.id)
+                    )
                 else:
                     rad = random.randint(1, 5)
                     res[4] += rad  # 看人品加功德
@@ -230,6 +234,10 @@ async def getup(app: Ariadne, event: NudgeEvent):
                             await app.send_group_message(
                                 event.group_id,
                                 [At(event.supplicant), Plain(f" 您疑似DoS佛祖，被封禁 1 小时")]
+                            )
+                            await else_sql(
+                                "UPDATE wooden_fish SET dt = %s WHERE uid = %s",
+                                (int(time.time()) + 360, event.supplicant)
                             )
                         else:
                             rad = random.randint(1, 5)
