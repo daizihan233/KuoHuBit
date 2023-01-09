@@ -131,12 +131,17 @@ async def update_wf(app: Ariadne, group: Group, event: GroupMessage):
     result = cursor.fetchone()
     if result:
         res = list(result)
-        res[4] += random.randint(1, 5)  # 看人品加功德
+        rad = random.randint(1, 5)
+        res[4] += rad  # 看人品加功德
         cursor.execute(
             "UPDATE wooden_fish SET de = %s WHERE uid = %s",
             (res[4], event.sender.id)
         )
         conn.commit()
+        await app.send_message(
+            group,
+            f"功德 +{rad}"
+        )
     else:  # 查无此人
         await app.send_message(
             group,
