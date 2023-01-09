@@ -77,6 +77,7 @@ async def my_wf(app: Ariadne, group: Group, event: GroupMessage):
                     (int(time.time()), data[4], event.sender.id)
                 )
         else:
+            logger.debug(f'data[5] -> {data[5]}')
             if data[5] == 1:
                 status = '封禁中 | 永久'
             elif data[5] == 2:
