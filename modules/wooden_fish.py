@@ -181,10 +181,11 @@ async def update_wf(event: GroupMessage):
 async def update_wf(app: Ariadne, group: Group, event: GroupMessage):
     if event.sender.id not in ban_cache:
         result = await select_fetchone(get_data_sql, (event.sender.id,))
+        logger.debug(result)
         if result:
             if not result[5]:
                 res = list(result)
-                if int(time.time()) - res[7] < 3 and res[8] > 6:
+                if int(time.time()) - res[7] < 6 < res[8]:
                     ban_cache.append(event.sender.id)
                     await app.send_group_message(
                         group.id,
@@ -225,11 +226,12 @@ async def getup(app: Ariadne, event: NudgeEvent):
         if event.context_type == "group":
             logger.info(f"{event.supplicant} 在群 {event.group_id} 戳了戳 Bot")
             result = await select_fetchone(get_data_sql, (event.supplicant,))
+            logger.debug(result)
             if result:
                 if event.supplicant not in ban_cache:
                     if not result[5]:
                         res = list(result)
-                        if int(time.time()) - res[7] < 3 and res[8] > 6:
+                        if int(time.time()) - res[7] < 6 < res[8]:
                             ban_cache.append(event.supplicant)
                             await app.send_group_message(
                                 event.group_id,
