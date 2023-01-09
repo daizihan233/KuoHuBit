@@ -168,12 +168,12 @@ async def update_wf(app: Ariadne, group: Group, event: GroupMessage):
         )
         await app.send_message(
             group,
-            [At(event.sender.id), Plain(f"功德 +{rad}")]
+            [At(event.sender.id), Plain(f" 功德 +{rad}")]
         )
     else:  # 查无此人
         await app.send_message(
             group,
-            [At(event.sender.id), Plain("赛博数据库查无此人~ 请输入“给我木鱼”注册")]
+            [At(event.sender.id), Plain(" 赛博数据库查无此人~ 请输入“给我木鱼”注册")]
         )
 
 
@@ -195,12 +195,12 @@ async def getup(app: Ariadne, event: NudgeEvent):
                 )
                 await app.send_group_message(
                     event.group_id,
-                    [At(event.supplicant), Plain(f"功德 +{rad}")]
+                    [At(event.supplicant), Plain(f" 功德 +{rad}")]
                 )
             else:  # 查无此人
                 await app.send_group_message(
                     event.group_id,
-                    [At(event.supplicant), Plain("赛博数据库查无此人~ 请输入“给我木鱼”注册")]
+                    [At(event.supplicant), Plain(" 赛博数据库查无此人~ 请输入“给我木鱼”注册")]
                 )
         else:
             logger.warning('不是群内戳一戳')
