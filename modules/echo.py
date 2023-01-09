@@ -16,7 +16,13 @@ channel.author("HanTools")
 
 @channel.use(ListenerSchema(listening_events=[GroupMessage]))
 async def echo(app: Ariadne, group: Group, message: MessageChain = DetectPrefix("/echo ")):
-    await app.send_message(
-        group,
-        message,
-    )
+    if str(message).startswith('/echo'):  # 防止注入
+        await app.send_message(
+            group,
+            "小子想注入是不是？",
+        )
+    else:
+        await app.send_message(
+            group,
+            message,
+        )
