@@ -67,10 +67,10 @@ async def my_wf(app: Ariadne, group: Group, event: GroupMessage):
     )
     if data:  # 如果在数据库中
         data = list(data)
-        data[4] += int((int(int(time.time()) - data[1])) / (pow(data[2], -1) * 10))
+        data[4] += int(round(int(int(time.time()) - data[1]), 2) / round(pow(data[2], -1) * 10))
         # 防止出现负数
         while data[4] < 0:
-            data[4] += int((int(int(time.time()) - data[1])) / (pow(data[2], -1) * 10))
+            data[4] += int(round(int(int(time.time()) - data[1]), 2) / round(pow(data[2], -1) * 10, 2))
         await else_sql(
             "UPDATE wooden_fish SET time = %s , de = %s WHERE uid = %s",
             (int(time.time()), data[4], event.sender.id)
