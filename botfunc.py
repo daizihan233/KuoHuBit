@@ -73,8 +73,8 @@ def safe_file_write(filename: str, s, mode: str = "w", encode: str = "UTF-8"):
 
 backend = requests_cache.RedisCache(host=get_cloud_config('Redis_Host'), port=get_cloud_config('Redis_port'))
 session = requests_cache.CachedSession("global_session", backend=backend, expire_after=360)
-conn = aiomysql.connect(host=get_cloud_config('MySQL_Host'), port=get_cloud_config('MySQL_Port'),
-                        user='root',
-                        password=get_cloud_config('MySQL_Pwd'), charset='utf8mb4',
-                        db=get_cloud_config('MySQL_db'))
-cursor = conn.cursor()
+conn = aiomysql.create_pool(host=get_cloud_config('MySQL_Host'), port=get_cloud_config('MySQL_Port'),
+                            user='root',
+                            password=get_cloud_config('MySQL_Pwd'), charset='utf8mb4',
+                            db=get_cloud_config('MySQL_db'))
+cursor = conn.get().cursor()
