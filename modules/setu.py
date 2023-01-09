@@ -6,7 +6,6 @@ import random
 import shutil
 import time
 
-from aiohttp import ClientSession
 from graia.ariadne.app import Ariadne
 from graia.ariadne.event.message import GroupMessage
 from graia.ariadne.message.chain import MessageChain
@@ -40,9 +39,9 @@ async def setu(app: Ariadne, group: Group):
         url = botfunc.get_config('setu_api')
     logger.info(f'使用URL：{url}（p={p}, ch={ch}, (ch == p)={ch == p}）')
     # 涩图不一样，这里不能使用缓存
-    async with ClientSession() as session:
-        async with session.get(url) as response:
-            data = await response.read()
+    session = Ariadne.service.client_session
+    async with session.get(url) as response:
+        data = await response.read()
 
     b_msg = await app.send_group_message(group, MessageChain(Image(data_bytes=data)))
     await asyncio.sleep(botfunc.get_config('recall'))
@@ -67,9 +66,9 @@ async def setu_7z(app: Ariadne, group: Group):
             url = botfunc.get_config('setu_api')
         logger.info(f'使用URL：{url}（p={p}, ch={ch}, (ch == p)={ch == p}）')
         # 涩图不一样，这里不能使用缓存
-        async with ClientSession() as session:
-            async with session.get(url) as response:
-                data = await response.read()
+        session = Ariadne.service.client_session
+        async with session.get(url) as response:
+            data = await response.read()
         botfunc.safe_file_write(filename=f'{fdir}/{index}.png', mode='wb', s=data)
     os.system(f"7z a {fdir}/res.7z {fdir} -p{group.id}")
     await app.upload_file(data=botfunc.safe_file_read(f'{fdir}/res.7z', mode='rb'), target=group,
