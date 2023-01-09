@@ -198,7 +198,8 @@ async def update_wf(app: Ariadne, group: Group, event: GroupMessage):
                 else:
                     rad = random.randint(1, 5)
                     res[4] += rad  # 看人品加功德
-                    await else_sql(
+                    # 此时必须使用同步
+                    botfunc.cursor.execute(
                         "UPDATE wooden_fish SET de = %s, end = %s, end_count = %s WHERE uid = %s",
                         (res[4], res[7] if (int(time.time()) - res[7]) < 3 else int(time.time()),
                          res[8] + 1 if (int(time.time()) - res[7]) < 3 else 0, event.sender.id)
@@ -244,7 +245,7 @@ async def getup(app: Ariadne, event: NudgeEvent):
                         else:
                             rad = random.randint(1, 5)
                             res[4] += rad  # 看人品加功德
-                            await else_sql(
+                            botfunc.cursor.execute(
                                 "UPDATE wooden_fish SET de = %s, end = %s, end_count = %s WHERE uid = %s",
                                 (res[4], res[7] if (int(time.time()) - res[7]) < 3 else int(time.time()),
                                  res[8] + 1 if (int(time.time()) - res[7]) < 3 else 0, event.supplicant)
