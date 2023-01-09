@@ -1,7 +1,6 @@
 import random
 import time
 
-import pymysql.err
 from graia.amnesia.message import MessageChain
 from graia.ariadne.app import Ariadne
 from graia.ariadne.event.message import GroupMessage
@@ -30,7 +29,7 @@ get_data_sql = "SELECT * FROM wooden_fish WHERE uid = %s"
     )
 )
 async def my_wf(app: Ariadne, group: Group, event: GroupMessage):
-    cursor.execute(
+    await cursor.execute(
         get_data_sql,
         (event.sender.id,)
     )
@@ -41,7 +40,7 @@ async def my_wf(app: Ariadne, group: Group, event: GroupMessage):
         # 防止出现负数
         while data[4] < 0:
             data[4] += int((int(int(time.time()) - data[1])) / (pow(data[2], -1) * 10))
-        cursor.execute(
+        await cursor.execute(
             "UPDATE wooden_fish SET time = %s , de = %s WHERE uid = %s",
             (int(time.time()), data[4], event.sender.id)
         )
@@ -75,7 +74,7 @@ async def my_wf(app: Ariadne, group: Group, event: GroupMessage):
 )
 async def sign(app: Ariadne, group: Group, event: GroupMessage):
     try:
-        cursor.execute(
+        await cursor.execute(
             "INSERT INTO wooden_fish(uid, time, level, exp, de) VALUES (%s, %s, %s, %s, %s)",
             (event.sender.id, int(time.time()), 1, 1, random.randint(1000, 2000))
         )
@@ -89,7 +88,8 @@ async def sign(app: Ariadne, group: Group, event: GroupMessage):
                 ]
             )
         )
-    except pymysql.err.IntegrityError:
+    except Exception as err:
+        logger.warning(err)
         await app.send_message(
             group,
             "你不是注册过了吗？"
@@ -102,25 +102,25 @@ async def sign(app: Ariadne, group: Group, event: GroupMessage):
     )
 )
 async def update_wf(event: GroupMessage):
-    cursor.execute(get_data_sql, (event.sender.id,))
-    result = cursor.fetchone()
+    await cursor.execute(get_data_sql, (event.sender.id,))
+    result = await cursor.fetchone()
     if result:
         res = list(result)
         res[3] += random.randint(1, 5)  # 看人品加经验
         if res[3] >= int(100 * (pow(1.14, res[2] - 1))):
             res[2] += 1
             res[3] = random.randint(1, 5)  # 别问为什么这么写，问就是特色
-            cursor.execute(
+            await cursor.execute(
                 "UPDATE wooden_fish SET level = %s, exp = %s WHERE uid = %s",
                 (res[2], res[3], event.sender.id)
             )
-            conn.commit()
+            await conn.commit()
         else:
-            cursor.execute(
+            await cursor.execute(
                 "UPDATE wooden_fish SET exp = %s WHERE uid = %s",
                 (res[3], event.sender.id)
             )
-            conn.commit()
+            await conn.commit()
 
 
 @channel.use(
@@ -130,17 +130,17 @@ async def update_wf(event: GroupMessage):
     )
 )
 async def update_wf(app: Ariadne, group: Group, event: GroupMessage):
-    cursor.execute(get_data_sql, (event.sender.id,))
-    result = cursor.fetchone()
+    await cursor.execute(get_data_sql, (event.sender.id,))
+    result = await cursor.fetchone()
     if result:
         res = list(result)
         rad = random.randint(1, 5)
         res[4] += rad  # 看人品加功德
-        cursor.execute(
+        await cursor.execute(
             "UPDATE wooden_fish SET de = %s WHERE uid = %s",
             (res[4], event.sender.id)
         )
-        conn.commit()
+        await conn.commit()
         await app.send_message(
             group,
             f"功德 +{rad}"
@@ -157,17 +157,17 @@ async def getup(app: Ariadne, event: NudgeEvent):
     if event.target == botfunc.get_config('qq'):
         if event.context_type == "group":
             logger.info(f"{event.supplicant} 在群 {event.group_id} 戳了戳 Bot")
-            cursor.execute(get_data_sql, (event.supplicant,))
-            result = cursor.fetchone()
+            await cursor.execute(get_data_sql, (event.supplicant,))
+            result = await cursor.fetchone()
             if result:
                 res = list(result)
                 rad = random.randint(1, 5)
                 res[4] += rad  # 看人品加功德
-                cursor.execute(
+                await cursor.execute(
                     "UPDATE wooden_fish SET de = %s WHERE uid = %s",
                     (res[4], event.supplicant)
                 )
-                conn.commit()
+                await conn.commit()
                 await app.send_group_message(
                     event.group_id,
                     f"功德 +{rad}"
