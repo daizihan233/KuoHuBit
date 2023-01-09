@@ -233,11 +233,15 @@ async def getup(app: Ariadne, event: NudgeEvent):
         if event.context_type == "group":
             logger.info(f"{event.supplicant} 在群 {event.group_id} 戳了戳 Bot")
             result = await select_fetchone(get_data_sql, (event.supplicant,))
-            botfunc.cursor.execute(
-                "UPDATE wooden_fish SET de = %s, end = %s, end_count = %s WHERE uid = %s",
-                (result[4], result[7] if (int(time.time()) - result[7]) < 3 else int(time.time()),
-                 result[8] + 1 if (int(time.time()) - result[7]) < 3 else 0, event.supplicant)
-            )
+            if (int(time.time()) - result[7]) < 3:
+                await else_sql(
+                    "UPDATE wooden_fish SET end_count = wooden_fish.end_count+1 WHERE uid = %s", (event.supplicant,)
+                )
+            else:
+                await else_sql(
+                    "UPDATE wooden_fish SET end=%s, end_count = 0 WHERE uid = %s",
+                    (int(time.time()), event.supplicant)
+                )
             logger.debug(result)
             if result:
                 if event.supplicant not in ban_cache:
