@@ -20,7 +20,7 @@ channel = Channel.current()
 channel.name("赛博木鱼")
 channel.description("敲赛博木鱼 ＿＿＿＿＿")
 channel.author("HanTools")
-get_data_sql = "SELECT * FROM wooden_fish WHERE uid = %s"
+get_data_sql = "SELECT uid, time, level, exp, de FROM wooden_fish WHERE uid = %s"
 loop = asyncio.get_event_loop()
 
 

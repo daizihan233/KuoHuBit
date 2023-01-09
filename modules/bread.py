@@ -23,7 +23,7 @@ channel.name("面包厂")
 channel.description("好吃")
 channel.author("HanTools")
 loop = asyncio.get_event_loop()
-get_data_sql = '''SELECT * FROM bread WHERE id = %s'''
+get_data_sql = '''SELECT id, level, time, bread, experience FROM bread WHERE id = %s'''
 
 
 async def select_fetchone(sql, arg):
