@@ -181,6 +181,11 @@ async def update_wf(event: GroupMessage):
 async def update_wf(app: Ariadne, group: Group, event: GroupMessage):
     if event.sender.id not in ban_cache:
         result = await select_fetchone(get_data_sql, (event.sender.id,))
+        botfunc.cursor.execute(
+            "UPDATE wooden_fish SET de = %s, end = %s, end_count = %s WHERE uid = %s",
+            (result[4], result[7] if (int(time.time()) - result[7]) < 3 else int(time.time()),
+             result[8] + 1 if (int(time.time()) - result[7]) < 3 else 0, event.sender.id)
+        )
         logger.debug(result)
         if result:
             if not result[5]:
@@ -198,12 +203,6 @@ async def update_wf(app: Ariadne, group: Group, event: GroupMessage):
                 else:
                     rad = random.randint(1, 5)
                     res[4] += rad  # 看人品加功德
-                    # 此时必须使用同步
-                    botfunc.cursor.execute(
-                        "UPDATE wooden_fish SET de = %s, end = %s, end_count = %s WHERE uid = %s",
-                        (res[4], res[7] if (int(time.time()) - res[7]) < 3 else int(time.time()),
-                         res[8] + 1 if (int(time.time()) - res[7]) < 3 else 0, event.sender.id)
-                    )
                     await app.send_message(
                         group,
                         [At(event.sender.id), Plain(f" 功德 +{rad}")]
@@ -227,12 +226,17 @@ async def getup(app: Ariadne, event: NudgeEvent):
         if event.context_type == "group":
             logger.info(f"{event.supplicant} 在群 {event.group_id} 戳了戳 Bot")
             result = await select_fetchone(get_data_sql, (event.supplicant,))
+            botfunc.cursor.execute(
+                "UPDATE wooden_fish SET de = %s, end = %s, end_count = %s WHERE uid = %s",
+                (result[4], result[7] if (int(time.time()) - result[7]) < 3 else int(time.time()),
+                 result[8] + 1 if (int(time.time()) - result[7]) < 3 else 0, event.supplicant)
+            )
             logger.debug(result)
             if result:
                 if event.supplicant not in ban_cache:
                     if not result[5]:
                         res = list(result)
-                        if int(time.time()) - res[7] < 6 < res[8]:
+                        if int(time.time()) - res[7] < 1 < res[8]:
                             ban_cache.append(event.supplicant)
                             await app.send_group_message(
                                 event.group_id,
@@ -245,11 +249,6 @@ async def getup(app: Ariadne, event: NudgeEvent):
                         else:
                             rad = random.randint(1, 5)
                             res[4] += rad  # 看人品加功德
-                            botfunc.cursor.execute(
-                                "UPDATE wooden_fish SET de = %s, end = %s, end_count = %s WHERE uid = %s",
-                                (res[4], res[7] if (int(time.time()) - res[7]) < 3 else int(time.time()),
-                                 res[8] + 1 if (int(time.time()) - res[7]) < 3 else 0, event.supplicant)
-                            )
                             await app.send_group_message(
                                 event.group_id,
                                 [At(event.supplicant), Plain(f" 功德 +{rad}")]
