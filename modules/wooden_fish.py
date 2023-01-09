@@ -186,8 +186,8 @@ async def update_wf(app: Ariadne, group: Group, event: GroupMessage):
         result = await select_fetchone(get_data_sql, (event.sender.id,))
         if (int(time.time()) - result[7]) < 3:
             await else_sql(
-                "UPDATE wooden_fish SET end_count = wooden_fish.end_count+1 WHERE uid = %s", event.sender.id)
-
+                "UPDATE wooden_fish SET end_count = wooden_fish.end_count+1 WHERE uid = %s", (event.sender.id,)
+            )
         else:
             await else_sql(
                 "UPDATE wooden_fish SET end=%s, end_count = 0 WHERE uid = %s",
