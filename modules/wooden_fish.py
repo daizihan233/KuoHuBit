@@ -88,7 +88,7 @@ async def my_wf(app: Ariadne, group: Group, event: GroupMessage):
                 else:
                     status = '正常'
                     await else_sql(
-                        "UPDATE wooden_fish SET time = %s WHERE uid = %s",
+                        "UPDATE wooden_fish SET ban=0, time = %s WHERE uid = %s",
                         (int(time.time()), event.sender.id)
                     )
                     ban_cache.remove(event.sender.id)
@@ -204,7 +204,7 @@ async def update_wf(app: Ariadne, group: Group, event: GroupMessage):
                         [At(event.sender.id), Plain(f" 您疑似DoS佛祖，被封禁 1 小时")]
                     )
                     await else_sql(
-                        "UPDATE wooden_fish SET dt = %s WHERE uid = %s",
+                        "UPDATE wooden_fish SET ban=2, dt = %s WHERE uid = %s",
                         (int(time.time()) + 360, event.sender.id)
                     )
                 else:
@@ -254,7 +254,7 @@ async def getup(app: Ariadne, event: NudgeEvent):
                                 [At(event.supplicant), Plain(f" 您疑似DoS佛祖，被封禁 1 小时")]
                             )
                             await else_sql(
-                                "UPDATE wooden_fish SET dt = %s WHERE uid = %s",
+                                "UPDATE wooden_fish SET ban=2, dt = %s WHERE uid = %s",
                                 (int(time.time()) + 360, event.supplicant)
                             )
                         else:
