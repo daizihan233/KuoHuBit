@@ -163,4 +163,6 @@ async def getup(app: Ariadne, event: NudgeEvent):
             logger.info(f"{event.supplicant} 在群 {event.group_id} 戳了戳 Bot")
             await manual_update_wf(app, event.group_id, event.supplicant)
         else:
-            return
+            logger.warning('不是群内戳一戳')
+    else:
+        logger.warning('戳了戳别人')
