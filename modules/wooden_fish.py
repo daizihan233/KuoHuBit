@@ -197,7 +197,7 @@ async def update_wf(app: Ariadne, group: Group, event: GroupMessage):
         if result:
             if not result[5]:
                 res = list(result)
-                if int(time.time()) - res[7] <= 3 <= res[8]:
+                if int(time.time()) - res[7] <= 3 and 5 <= res[8]:
                     ban_cache.append(event.sender.id)
                     await app.send_group_message(
                         group.id,
@@ -247,7 +247,7 @@ async def getup(app: Ariadne, event: NudgeEvent):
                 if event.supplicant not in ban_cache:
                     if not result[5]:
                         res = list(result)
-                        if int(time.time()) - res[7] < 1 < res[8]:
+                        if int(time.time()) - res[7] <= 3 and 5 <= res[8]:
                             ban_cache.append(event.supplicant)
                             await app.send_group_message(
                                 event.group_id,
