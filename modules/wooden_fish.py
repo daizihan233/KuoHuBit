@@ -260,6 +260,7 @@ async def getup(app: Ariadne, event: NudgeEvent):
                         else:
                             rad = random.randint(1, 5)
                             res[4] += rad  # 看人品加功德
+                            await else_sql("UPDATE wooden_fish SET de = de + %s WHERE uid = %s", (rad, event.supplicant))
                             await app.send_group_message(
                                 event.group_id,
                                 [At(event.supplicant), Plain(f" 功德 +{rad}")]
