@@ -1,6 +1,8 @@
+import asyncio
 import random
 import time
 
+import aiomysql
 from graia.amnesia.message import MessageChain
 from graia.ariadne.app import Ariadne
 from graia.ariadne.event.message import GroupMessage
@@ -13,13 +15,42 @@ from graia.saya.builtins.broadcast.schema import ListenerSchema
 from loguru import logger
 
 import botfunc
-from botfunc import cursor, conn  # MySQL
 
 channel = Channel.current()
 channel.name("赛博木鱼")
 channel.description("敲赛博木鱼 ＿＿＿＿＿")
 channel.author("HanTools")
 get_data_sql = "SELECT * FROM wooden_fish WHERE uid = %s"
+loop = asyncio.get_event_loop()
+
+
+async def select_fetchone(sql, arg):
+    conn = await aiomysql.connect(host=botfunc.get_cloud_config('MySQL_Host'),
+                                  port=botfunc.get_cloud_config('MySQL_Port'),
+                                  user='root',
+                                  password=botfunc.get_cloud_config('MySQL_Pwd'), charset='utf8mb4',
+                                  db=botfunc.get_cloud_config('MySQL_db'), loop=loop)
+
+    cur = await conn.cursor()
+    await cur.execute(sql, arg)
+    r = await cur.fetchone()
+    await cur.close()
+    conn.close()
+    return r
+
+
+async def else_sql(sql, arg):
+    conn = await aiomysql.connect(host=botfunc.get_cloud_config('MySQL_Host'),
+                                  port=botfunc.get_cloud_config('MySQL_Port'),
+                                  user='root',
+                                  password=botfunc.get_cloud_config('MySQL_Pwd'), charset='utf8mb4',
+                                  db=botfunc.get_cloud_config('MySQL_db'), loop=loop)
+
+    cur = await conn.cursor()
+    await cur.execute(sql, arg)
+    await cur.execute("commit")
+    await cur.close()
+    conn.close()
 
 
 @channel.use(
@@ -29,18 +60,17 @@ get_data_sql = "SELECT * FROM wooden_fish WHERE uid = %s"
     )
 )
 async def my_wf(app: Ariadne, group: Group, event: GroupMessage):
-    await cursor.execute(
+    data = await select_fetchone(
         get_data_sql,
         (event.sender.id,)
     )
-    data = cursor.fetchone()  # 只可能返回一个数据
     if data:  # 如果在数据库中
         data = list(data)
         data[4] += int((int(int(time.time()) - data[1])) / (pow(data[2], -1) * 10))
         # 防止出现负数
         while data[4] < 0:
             data[4] += int((int(int(time.time()) - data[1])) / (pow(data[2], -1) * 10))
-        await cursor.execute(
+        await else_sql(
             "UPDATE wooden_fish SET time = %s , de = %s WHERE uid = %s",
             (int(time.time()), data[4], event.sender.id)
         )
@@ -74,7 +104,7 @@ async def my_wf(app: Ariadne, group: Group, event: GroupMessage):
 )
 async def sign(app: Ariadne, group: Group, event: GroupMessage):
     try:
-        await cursor.execute(
+        await else_sql(
             "INSERT INTO wooden_fish(uid, time, level, exp, de) VALUES (%s, %s, %s, %s, %s)",
             (event.sender.id, int(time.time()), 1, 1, random.randint(1000, 2000))
         )
@@ -102,25 +132,22 @@ async def sign(app: Ariadne, group: Group, event: GroupMessage):
     )
 )
 async def update_wf(event: GroupMessage):
-    await cursor.execute(get_data_sql, (event.sender.id,))
-    result = await cursor.fetchone()
+    result = await select_fetchone(get_data_sql, (event.sender.id,))
     if result:
         res = list(result)
         res[3] += random.randint(1, 5)  # 看人品加经验
         if res[3] >= int(100 * (pow(1.14, res[2] - 1))):
             res[2] += 1
             res[3] = random.randint(1, 5)  # 别问为什么这么写，问就是特色
-            await cursor.execute(
+            await else_sql(
                 "UPDATE wooden_fish SET level = %s, exp = %s WHERE uid = %s",
                 (res[2], res[3], event.sender.id)
             )
-            await conn.commit()
         else:
-            await cursor.execute(
+            await else_sql(
                 "UPDATE wooden_fish SET exp = %s WHERE uid = %s",
                 (res[3], event.sender.id)
             )
-            await conn.commit()
 
 
 @channel.use(
@@ -130,17 +157,15 @@ async def update_wf(event: GroupMessage):
     )
 )
 async def update_wf(app: Ariadne, group: Group, event: GroupMessage):
-    await cursor.execute(get_data_sql, (event.sender.id,))
-    result = await cursor.fetchone()
+    result = await select_fetchone(get_data_sql, (event.sender.id,))
     if result:
         res = list(result)
         rad = random.randint(1, 5)
         res[4] += rad  # 看人品加功德
-        await cursor.execute(
+        await else_sql(
             "UPDATE wooden_fish SET de = %s WHERE uid = %s",
             (res[4], event.sender.id)
         )
-        await conn.commit()
         await app.send_message(
             group,
             f"功德 +{rad}"
@@ -157,17 +182,17 @@ async def getup(app: Ariadne, event: NudgeEvent):
     if event.target == botfunc.get_config('qq'):
         if event.context_type == "group":
             logger.info(f"{event.supplicant} 在群 {event.group_id} 戳了戳 Bot")
-            await cursor.execute(get_data_sql, (event.supplicant,))
-            result = await cursor.fetchone()
+
+            result = await select_fetchone(get_data_sql, (event.supplicant,))
+
             if result:
                 res = list(result)
                 rad = random.randint(1, 5)
                 res[4] += rad  # 看人品加功德
-                await cursor.execute(
+                await else_sql(
                     "UPDATE wooden_fish SET de = %s WHERE uid = %s",
                     (res[4], event.supplicant)
                 )
-                await conn.commit()
                 await app.send_group_message(
                     event.group_id,
                     f"功德 +{rad}"
