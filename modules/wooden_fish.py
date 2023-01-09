@@ -123,8 +123,14 @@ async def update_wf(event: GroupMessage):
             conn.commit()
 
 
-async def manual_update_wf(app: Ariadne, group, event_sender_id):
-    cursor.execute(get_data_sql, (event_sender_id,))
+@channel.use(
+    ListenerSchema(
+        listening_events=[GroupMessage],
+        decorators=[MatchContent("敲木鱼")]
+    )
+)
+async def update_wf(app: Ariadne, group: Group, event: GroupMessage):
+    cursor.execute(get_data_sql, (event.sender.id,))
     result = cursor.fetchone()
     if result:
         res = list(result)
@@ -132,7 +138,7 @@ async def manual_update_wf(app: Ariadne, group, event_sender_id):
         res[4] += rad  # 看人品加功德
         cursor.execute(
             "UPDATE wooden_fish SET de = %s WHERE uid = %s",
-            (res[4], event_sender_id)
+            (res[4], event.sender.id)
         )
         conn.commit()
         await app.send_message(
@@ -146,22 +152,31 @@ async def manual_update_wf(app: Ariadne, group, event_sender_id):
         )
 
 
-@channel.use(
-    ListenerSchema(
-        listening_events=[GroupMessage],
-        decorators=[MatchContent("敲木鱼")]
-    )
-)
-async def update_wf(app: Ariadne, group: Group, event: GroupMessage):
-    await manual_update_wf(app, group, event)
-
-
 @channel.use(ListenerSchema(listening_events=[NudgeEvent]))
 async def getup(app: Ariadne, event: NudgeEvent):
     if event.target == botfunc.get_config('qq'):
         if event.context_type == "group":
             logger.info(f"{event.supplicant} 在群 {event.group_id} 戳了戳 Bot")
-            await manual_update_wf(app, event.group_id, event.supplicant)
+            cursor.execute(get_data_sql, (event.supplicant,))
+            result = cursor.fetchone()
+            if result:
+                res = list(result)
+                rad = random.randint(1, 5)
+                res[4] += rad  # 看人品加功德
+                cursor.execute(
+                    "UPDATE wooden_fish SET de = %s WHERE uid = %s",
+                    (res[4], event.supplicant)
+                )
+                conn.commit()
+                await app.send_group_message(
+                    event.group_id,
+                    f"功德 +{rad}"
+                )
+            else:  # 查无此人
+                await app.send_group_message(
+                    event.group_id,
+                    "赛博数据库查无此人~ 请输入“给我木鱼”注册"
+                )
         else:
             logger.warning('不是群内戳一戳')
     else:
