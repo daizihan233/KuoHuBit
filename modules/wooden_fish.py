@@ -20,8 +20,9 @@ channel = Channel.current()
 channel.name("赛博木鱼")
 channel.description("敲赛博木鱼 ＿＿＿＿＿")
 channel.author("HanTools")
-get_data_sql = "SELECT uid, time, level, exp, de FROM wooden_fish WHERE uid = %s"
+get_data_sql = "SELECT uid, time, level, exp, de, ban FROM wooden_fish WHERE uid = %s"
 loop = asyncio.get_event_loop()
+ban_cache = []  # 被ban人员缓存
 
 
 async def select_fetchone(sql, arg):
@@ -82,6 +83,7 @@ async def my_wf(app: Ariadne, group: Group, event: GroupMessage):
                     Plain(
                         f"\n"
                         f"赛博账号：{event.sender.id}\n"
+                        f"账号状态：{'正常' if not data[5] else '封禁'}\n"
                         f"木鱼等级：{data[2]}\n"
                         f"木鱼经验：{data[3]} / {int(100 * (pow(1.14, data[2] - 1)))}\n"
                         f"当前速度：{round(pow(data[2], -1) * 10, 2)}s/周期\n"
@@ -105,8 +107,8 @@ async def my_wf(app: Ariadne, group: Group, event: GroupMessage):
 async def sign(app: Ariadne, group: Group, event: GroupMessage):
     try:
         await else_sql(
-            "INSERT INTO wooden_fish(uid, time, level, exp, de) VALUES (%s, %s, %s, %s, %s)",
-            (event.sender.id, int(time.time()), 1, 1, random.randint(1000, 2000))
+            "INSERT INTO wooden_fish(uid, time, level, exp, de, ban) VALUES (%s, %s, %s, %s, %s, %s)",
+            (event.sender.id, int(time.time()), 1, 1, random.randint(1000, 2000), 0)
         )
         await app.send_message(
             group,
@@ -132,22 +134,26 @@ async def sign(app: Ariadne, group: Group, event: GroupMessage):
     )
 )
 async def update_wf(event: GroupMessage):
-    result = await select_fetchone(get_data_sql, (event.sender.id,))
-    if result:
-        res = list(result)
-        res[3] += random.randint(1, 5)  # 看人品加经验
-        if res[3] >= int(100 * (pow(1.14, res[2] - 1))):
-            res[2] += 1
-            res[3] = random.randint(1, 5)  # 别问为什么这么写，问就是特色
-            await else_sql(
-                "UPDATE wooden_fish SET level = %s, exp = %s WHERE uid = %s",
-                (res[2], res[3], event.sender.id)
-            )
-        else:
-            await else_sql(
-                "UPDATE wooden_fish SET exp = %s WHERE uid = %s",
-                (res[3], event.sender.id)
-            )
+    if event.sender.id not in ban_cache:
+        result = await select_fetchone(get_data_sql, (event.sender.id,))
+        if result:
+            res = list(result)
+            if not res[5]:
+                res[3] += random.randint(1, 5)  # 看人品加经验
+                if res[3] >= int(100 * (pow(1.14, res[2] - 1))):
+                    res[2] += 1
+                    res[3] = random.randint(1, 5)  # 别问为什么这么写，问就是特色
+                    await else_sql(
+                        "UPDATE wooden_fish SET level = %s, exp = %s WHERE uid = %s",
+                        (res[2], res[3], event.sender.id)
+                    )
+                else:
+                    await else_sql(
+                        "UPDATE wooden_fish SET exp = %s WHERE uid = %s",
+                        (res[3], event.sender.id)
+                    )
+            else:
+                ban_cache.append(event.sender.id)
 
 
 @channel.use(
@@ -157,52 +163,68 @@ async def update_wf(event: GroupMessage):
     )
 )
 async def update_wf(app: Ariadne, group: Group, event: GroupMessage):
-    result = await select_fetchone(get_data_sql, (event.sender.id,))
-    if result:
-        res = list(result)
-        rad = random.randint(1, 5)
-        res[4] += rad  # 看人品加功德
-        await else_sql(
-            "UPDATE wooden_fish SET de = %s WHERE uid = %s",
-            (res[4], event.sender.id)
-        )
-        await app.send_message(
-            group,
-            [At(event.sender.id), Plain(f" 功德 +{rad}")]
-        )
-    else:  # 查无此人
-        await app.send_message(
-            group,
-            [At(event.sender.id), Plain(" 赛博数据库查无此人~ 请输入“给我木鱼”注册")]
-        )
-
-
-@channel.use(ListenerSchema(listening_events=[NudgeEvent]))
-async def getup(app: Ariadne, event: NudgeEvent):
-    if event.target == botfunc.get_config('qq'):
-        if event.context_type == "group":
-            logger.info(f"{event.supplicant} 在群 {event.group_id} 戳了戳 Bot")
-
-            result = await select_fetchone(get_data_sql, (event.supplicant,))
-
-            if result:
+    if event.sender.id not in ban_cache:
+        result = await select_fetchone(get_data_sql, (event.sender.id,))
+        if result:
+            if not result[5]:
                 res = list(result)
                 rad = random.randint(1, 5)
                 res[4] += rad  # 看人品加功德
                 await else_sql(
                     "UPDATE wooden_fish SET de = %s WHERE uid = %s",
-                    (res[4], event.supplicant)
+                    (res[4], event.sender.id)
                 )
-                await app.send_group_message(
-                    event.group_id,
-                    [At(event.supplicant), Plain(f" 功德 +{rad}")]
+                await app.send_message(
+                    group,
+                    [At(event.sender.id), Plain(f" 功德 +{rad}")]
                 )
-            else:  # 查无此人
-                await app.send_group_message(
-                    event.group_id,
-                    [At(event.supplicant), Plain(" 赛博数据库查无此人~ 请输入“给我木鱼”注册")]
+            else:
+                ban_cache.append(event.sender.id)
+                await app.send_message(
+                    group,
+                    [At(event.sender.id), Plain(f" 你已被佛祖封禁")]
                 )
+        else:  # 查无此人
+            await app.send_message(
+                group,
+                [At(event.sender.id), Plain(" 赛博数据库查无此人~ 请输入“给我木鱼”注册")]
+            )
+
+
+@channel.use(ListenerSchema(listening_events=[NudgeEvent]))
+async def getup(app: Ariadne, event: NudgeEvent):
+    if event.supplicant not in ban_cache:
+        if event.target == botfunc.get_config('qq'):
+            if event.context_type == "group":
+                logger.info(f"{event.supplicant} 在群 {event.group_id} 戳了戳 Bot")
+
+                result = await select_fetchone(get_data_sql, (event.supplicant,))
+
+                if result:
+                    if not result[5]:
+                        res = list(result)
+                        rad = random.randint(1, 5)
+                        res[4] += rad  # 看人品加功德
+                        await else_sql(
+                            "UPDATE wooden_fish SET de = %s WHERE uid = %s",
+                            (res[4], event.supplicant)
+                        )
+                        await app.send_group_message(
+                            event.group_id,
+                            [At(event.supplicant), Plain(f" 功德 +{rad}")]
+                        )
+                    else:
+                        ban_cache.append(event.supplicant)
+                        await app.send_group_message(
+                            event.supplicant,
+                            [At(event.supplicant), Plain(f" 你已被佛祖封禁")]
+                        )
+                else:  # 查无此人
+                    await app.send_group_message(
+                        event.group_id,
+                        [At(event.supplicant), Plain(" 赛博数据库查无此人~ 请输入“给我木鱼”注册")]
+                    )
+            else:
+                logger.warning('不是群内戳一戳')
         else:
-            logger.warning('不是群内戳一戳')
-    else:
-        logger.warning('戳了戳别人')
+            logger.warning('戳了戳别人')
