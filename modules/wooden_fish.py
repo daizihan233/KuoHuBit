@@ -60,14 +60,14 @@ async def my_wf(app: Ariadne, group: Group, event: GroupMessage):
     else:  # 查无此人
         await app.send_message(
             group,
-            "赛博数据库查无此人~ 请输入“敲木鱼“注册"
+            "赛博数据库查无此人~ 请输入“注册木鱼“注册"
         )
 
 
 @channel.use(
     ListenerSchema(
         listening_events=[GroupMessage],
-        decorators=[MatchContent("敲木鱼")]
+        decorators=[MatchContent("注册木鱼")]
     )
 )
 async def sign(app: Ariadne, group: Group, event: GroupMessage):
@@ -98,7 +98,7 @@ async def sign(app: Ariadne, group: Group, event: GroupMessage):
         listening_events=[GroupMessage]
     )
 )
-async def update_bread(event: GroupMessage):
+async def update_wf(event: GroupMessage):
     cursor.execute(get_data_sql, (event.sender.id,))
     result = cursor.fetchone()
     if result:
@@ -118,3 +118,27 @@ async def update_bread(event: GroupMessage):
                 (res[3], event.sender.id)
             )
             conn.commit()
+
+
+@channel.use(
+    ListenerSchema(
+        listening_events=[GroupMessage],
+        decorators=[MatchContent("敲木鱼")]
+    )
+)
+async def update_wf(app: Ariadne, group: Group, event: GroupMessage):
+    cursor.execute(get_data_sql, (event.sender.id,))
+    result = cursor.fetchone()
+    if result:
+        res = list(result)
+        res[4] += random.randint(1, 5)  # 看人品加功德
+        cursor.execute(
+            "UPDATE wooden_fish SET de = %s WHERE uid = %s",
+            (res[4], event.sender.id)
+        )
+        conn.commit()
+    else:  # 查无此人
+        await app.send_message(
+            group,
+            "赛博数据库查无此人~ 请输入“注册木鱼“注册"
+        )
