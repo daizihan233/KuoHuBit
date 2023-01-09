@@ -26,7 +26,7 @@ ban_cache = []  # 被ban人员缓存
 cd_cache = {}  # 冷却缓存
 
 
-async def select_fetchone(sql, arg):
+async def select_fetchone(sql, arg=None):
     conn = await aiomysql.connect(host=botfunc.get_cloud_config('MySQL_Host'),
                                   port=botfunc.get_cloud_config('MySQL_Port'),
                                   user='root',
@@ -34,7 +34,10 @@ async def select_fetchone(sql, arg):
                                   db=botfunc.get_cloud_config('MySQL_db'), loop=loop)
 
     cur = await conn.cursor()
-    await cur.execute(sql, arg)
+    if arg:
+        await cur.execute(sql, arg)
+    else:
+        await cur.execute(sql)
     r = await cur.fetchone()
     await cur.close()
     conn.close()
@@ -181,16 +184,22 @@ async def update_wf(event: GroupMessage):
 async def update_wf(app: Ariadne, group: Group, event: GroupMessage):
     if event.sender.id not in ban_cache:
         result = await select_fetchone(get_data_sql, (event.sender.id,))
-        botfunc.cursor.execute(
-            "UPDATE wooden_fish SET de = %s, end = %s, end_count = %s WHERE uid = %s",
-            (result[4], result[7] if (int(time.time()) - result[7]) < 3 else int(time.time()),
-             result[8] + 1 if (int(time.time()) - result[7]) < 3 else 0, event.sender.id)
-        )
+        if (int(time.time()) - result[7]) < 3:
+            await else_sql(
+                "UPDATE wooden_fish SET end_count = %s+1 WHERE uid = %s",
+                (result[7] if (int(time.time()) - result[7]) < 3 else int(time.time()),
+                 result[8] + 1 if (int(time.time()) - result[7]) < 3 else 0, event.sender.id)
+            )
+        else:
+            await else_sql(
+                "UPDATE wooden_fish SET end=%s, end_count = 0 WHERE uid = %s",
+                int(time.time())
+            )
         logger.debug(result)
         if result:
             if not result[5]:
                 res = list(result)
-                if int(time.time()) - res[7] < 6 < res[8]:
+                if int(time.time()) - res[7] <= 3 <= res[8]:
                     ban_cache.append(event.sender.id)
                     await app.send_group_message(
                         group.id,
