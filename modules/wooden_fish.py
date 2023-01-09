@@ -5,12 +5,15 @@ import pymysql.err
 from graia.amnesia.message import MessageChain
 from graia.ariadne.app import Ariadne
 from graia.ariadne.event.message import GroupMessage
+from graia.ariadne.event.mirai import NudgeEvent
 from graia.ariadne.message.element import At, Plain
 from graia.ariadne.message.parser.base import MatchContent
 from graia.ariadne.model import Group
 from graia.saya import Channel
 from graia.saya.builtins.broadcast.schema import ListenerSchema
+from loguru import logger
 
+import botfunc
 from botfunc import cursor, conn  # MySQL
 
 channel = Channel.current()
@@ -60,14 +63,14 @@ async def my_wf(app: Ariadne, group: Group, event: GroupMessage):
     else:  # 查无此人
         await app.send_message(
             group,
-            "赛博数据库查无此人~ 请输入“注册木鱼“注册"
+            "赛博数据库查无此人~ 请输入“给我木鱼”注册"
         )
 
 
 @channel.use(
     ListenerSchema(
         listening_events=[GroupMessage],
-        decorators=[MatchContent("注册木鱼")]
+        decorators=[MatchContent("给我木鱼")]
     )
 )
 async def sign(app: Ariadne, group: Group, event: GroupMessage):
@@ -120,14 +123,8 @@ async def update_wf(event: GroupMessage):
             conn.commit()
 
 
-@channel.use(
-    ListenerSchema(
-        listening_events=[GroupMessage],
-        decorators=[MatchContent("敲木鱼")]
-    )
-)
-async def update_wf(app: Ariadne, group: Group, event: GroupMessage):
-    cursor.execute(get_data_sql, (event.sender.id,))
+async def manual_update_wf(app: Ariadne, group, event_sender_id):
+    cursor.execute(get_data_sql, (event_sender_id,))
     result = cursor.fetchone()
     if result:
         res = list(result)
@@ -135,7 +132,7 @@ async def update_wf(app: Ariadne, group: Group, event: GroupMessage):
         res[4] += rad  # 看人品加功德
         cursor.execute(
             "UPDATE wooden_fish SET de = %s WHERE uid = %s",
-            (res[4], event.sender.id)
+            (res[4], event_sender_id)
         )
         conn.commit()
         await app.send_message(
@@ -145,5 +142,25 @@ async def update_wf(app: Ariadne, group: Group, event: GroupMessage):
     else:  # 查无此人
         await app.send_message(
             group,
-            "赛博数据库查无此人~ 请输入“注册木鱼“注册"
+            "赛博数据库查无此人~ 请输入“给我木鱼”注册"
         )
+
+
+@channel.use(
+    ListenerSchema(
+        listening_events=[GroupMessage],
+        decorators=[MatchContent("敲木鱼")]
+    )
+)
+async def update_wf(app: Ariadne, group: Group, event: GroupMessage):
+    await manual_update_wf(app, group, event)
+
+
+@channel.use(ListenerSchema(listening_events=[NudgeEvent]))
+async def getup(app: Ariadne, event: NudgeEvent):
+    if event.target == botfunc.get_config('qq'):
+        if event.context_type == "group":
+            logger.info(f"{event.supplicant} 在群 {event.group_id} 戳了戳 Bot")
+            await manual_update_wf(app, event.group_id, event.supplicant)
+        else:
+            return
