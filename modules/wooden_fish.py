@@ -68,14 +68,13 @@ async def my_wf(app: Ariadne, group: Group, event: GroupMessage):
     )
     status = '正常'
     if data:  # 如果在数据库中
-        if event.sender.id not in ban_cache:
-            if not data[5]:
-                data = list(data)
-                data[4] += int(round(int(int(time.time()) - data[1]), 2) / round(pow(data[2], -1) * 10))
-                await else_sql(
-                    "UPDATE wooden_fish SET time = %s , de = %s WHERE uid = %s",
-                    (int(time.time()), data[4], event.sender.id)
-                )
+        if event.sender.id not in ban_cache and not data[5]:
+            data = list(data)
+            data[4] += int(round(int(int(time.time()) - data[1]), 2) / round(pow(data[2], -1) * 10))
+            await else_sql(
+                "UPDATE wooden_fish SET time = %s , de = %s WHERE uid = %s",
+                (int(time.time()), data[4], event.sender.id)
+            )
         else:
             logger.debug(f'data[5] -> {data[5]}')
             if data[5] == 1:
