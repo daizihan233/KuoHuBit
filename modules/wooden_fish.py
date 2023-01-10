@@ -167,26 +167,18 @@ async def my_wf(app: Ariadne, group: Group, event: GroupMessage):
 async def sign(app: Ariadne, group: Group, event: GroupMessage):
     if event.sender.id not in ban_cache:
         result = await select_fetchone(get_data_sql, (event.sender.id,))
-        if (int(time.time()) - result[7]) < botfunc.get_config('count_ban'):
-            await else_sql(
-                "UPDATE wooden_fish SET end_count = wooden_fish.end_count+1 WHERE uid = %s", (event.sender.id,)
-            )
-        else:
-            await else_sql(
-                "UPDATE wooden_fish SET end=%s, end_count = 0 WHERE uid = %s",
-                (int(time.time()), event.sender.id)
-            )
-        if int(time.time()) - result[7] <= botfunc.get_config('count_ban') and 5 <= result[8]:
-            ban_cache.append(event.sender.id)
-            await app.send_group_message(
-                group.id,
-                [At(event.sender.id), Plain(f" 您疑似DoS佛祖，被封禁 1 小时")]
-            )
-            await else_sql(
-                "UPDATE wooden_fish SET ban=2, dt = unix_timestamp(now()) + 3600 WHERE uid = %s",
-                (event.sender.id,)
-            )
-            return
+        if result is not None:
+            if int(time.time()) - result[7] <= botfunc.get_config('count_ban') and 5 <= result[8]:
+                ban_cache.append(event.sender.id)
+                await app.send_group_message(
+                    group.id,
+                    [At(event.sender.id), Plain(f" 您疑似DoS佛祖，被封禁 1 小时")]
+                )
+                await else_sql(
+                    "UPDATE wooden_fish SET ban=2, dt = unix_timestamp(now()) + 3600 WHERE uid = %s",
+                    (event.sender.id,)
+                )
+                return
         try:
             await else_sql(
                 "INSERT INTO wooden_fish(uid, time, level, exp, de, ban, dt, end, end_count) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)",
@@ -202,12 +194,23 @@ async def sign(app: Ariadne, group: Group, event: GroupMessage):
                     ]
                 )
             )
+            return
         except Exception as err:
             logger.warning(err)
             await app.send_message(
                 group,
                 "你不是注册过了吗？"
             )
+            result = await select_fetchone(get_data_sql, (event.sender.id,))
+            if (int(time.time()) - result[7]) < botfunc.get_config('count_ban'):
+                await else_sql(
+                    "UPDATE wooden_fish SET end_count = wooden_fish.end_count+1 WHERE uid = %s", (event.sender.id,)
+                )
+            else:
+                await else_sql(
+                    "UPDATE wooden_fish SET end=%s, end_count = 0 WHERE uid = %s",
+                    (int(time.time()), event.sender.id)
+                )
 
 
 @channel.use(
