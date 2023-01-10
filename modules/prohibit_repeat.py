@@ -3,7 +3,6 @@
 import time
 import urllib.parse
 
-import redis
 import yaml
 from graia.ariadne.app import Ariadne
 from graia.ariadne.event.message import GroupMessage
@@ -17,14 +16,13 @@ from graia.saya.builtins.broadcast.schema import ListenerSchema
 from loguru import logger
 
 import botfunc
+from botfunc import r
 
 channel = Channel.current()
 channel.name("防刷屏")
 channel.description("人类可真无聊")
 channel.author("HanTools")
 dyn_config = 'dynamic_config.yaml'
-p = redis.ConnectionPool(host=botfunc.get_cloud_config('Redis_Host'), port=botfunc.get_cloud_config('Redis_port'))
-r = redis.Redis(connection_pool=p, decode_responses=True)
 hash_name = "bot_repeat_record"
 
 

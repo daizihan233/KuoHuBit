@@ -2,6 +2,7 @@ import fcntl
 import json
 
 import pymysql
+import redis
 import requests_cache
 import yaml
 from loguru import logger
@@ -66,3 +67,5 @@ conn = pymysql.connect(host=get_cloud_config('MySQL_Host'), port=get_cloud_confi
                        password=get_cloud_config('MySQL_Pwd'), charset='utf8mb4',
                        database=get_cloud_config('MySQL_db'))
 cursor = conn.cursor()
+p = redis.ConnectionPool(host=get_cloud_config('Redis_Host'), port=get_cloud_config('Redis_port'))
+r = redis.Redis(connection_pool=p, decode_responses=True)
