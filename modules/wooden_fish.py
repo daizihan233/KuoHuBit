@@ -119,7 +119,7 @@ async def my_wf(app: Ariadne, group: Group, event: GroupMessage):
                 else:
                     status = '正常'
                     await else_sql(
-                        "UPDATE wooden_fish SET ban=0, time = %s WHERE uid = %s",
+                        "UPDATE wooden_fish SET ban=0, time = %s, dt=0, end=0, end_count=0 WHERE uid = %s",
                         (int(time.time()), event.sender.id)
                     )
                     try:
