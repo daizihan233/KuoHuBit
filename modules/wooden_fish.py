@@ -271,22 +271,25 @@ async def update_wf(app: Ariadne, group: Group, event: GroupMessage):
                         group,
                         [At(event.sender.id), Plain(f" 功德 +{rad}")]
                     )
+                    if (int(time.time()) - result[7]) < botfunc.get_config('count_ban'):
+                        await else_sql(
+                            "UPDATE wooden_fish SET end_count = wooden_fish.end_count+1 WHERE uid = %s",
+                            (event.sender.id,)
+                        )
+                    else:
+                        await else_sql(
+                            "UPDATE wooden_fish SET end=%s, end_count = 0 WHERE uid = %s",
+                            (int(time.time()), event.sender.id)
+                        )
                     await else_sql("UPDATE wooden_fish SET de = de + %s WHERE uid = %s", (rad, event.sender.id))
+
             else:
                 ban_cache.append(event.sender.id)
                 await app.send_message(
                     group,
                     [At(event.sender.id), Plain(f" 你已被佛祖封禁")]
                 )
-            if (int(time.time()) - result[7]) < botfunc.get_config('count_ban'):
-                await else_sql(
-                    "UPDATE wooden_fish SET end_count = wooden_fish.end_count+1 WHERE uid = %s", (event.sender.id,)
-                )
-            else:
-                await else_sql(
-                    "UPDATE wooden_fish SET end=%s, end_count = 0 WHERE uid = %s",
-                    (int(time.time()), event.sender.id)
-                )
+
         else:  # 查无此人
             await app.send_message(
                 group,
@@ -323,8 +326,19 @@ async def getup(app: Ariadne, event: NudgeEvent):
                                 event.group_id,
                                 [At(event.supplicant), Plain(f" 功德 +{rad}")]
                             )
+                            if (int(time.time()) - result[7]) < botfunc.get_config('count_ban'):
+                                await else_sql(
+                                    "UPDATE wooden_fish SET end_count = wooden_fish.end_count+1 WHERE uid = %s",
+                                    (event.supplicant,)
+                                )
+                            else:
+                                await else_sql(
+                                    "UPDATE wooden_fish SET end=%s, end_count = 0 WHERE uid = %s",
+                                    (int(time.time()), event.supplicant)
+                                )
                             await else_sql("UPDATE wooden_fish SET de = de + %s WHERE uid = %s",
                                            (rad, event.supplicant))
+
                     else:
                         ban_cache.append(event.supplicant)
                         await app.send_group_message(
@@ -335,15 +349,7 @@ async def getup(app: Ariadne, event: NudgeEvent):
                     if result[5] == 2:
                         await else_sql("UPDATE wooden_fish SET dt = %s WHERE uid = %s",
                                        (int(time.time() + 360), event.supplicant))
-                if (int(time.time()) - result[7]) < botfunc.get_config('count_ban'):
-                    await else_sql(
-                        "UPDATE wooden_fish SET end_count = wooden_fish.end_count+1 WHERE uid = %s", (event.supplicant,)
-                    )
-                else:
-                    await else_sql(
-                        "UPDATE wooden_fish SET end=%s, end_count = 0 WHERE uid = %s",
-                        (int(time.time()), event.supplicant)
-                    )
+
             else:  # 查无此人
                 await app.send_group_message(
                     event.group_id,
