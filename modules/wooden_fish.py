@@ -23,7 +23,8 @@ channel.author("HanTools")
 get_data_sql = "SELECT uid, time, level, exp, de, ban, dt, end, end_count FROM wooden_fish WHERE uid = %s"
 loop = asyncio.get_event_loop()
 ban_cache = []  # 被ban人员缓存
-cd_cache = {}  # 冷却缓存
+details_cache = []
+forever_ban_cache = []
 
 
 async def select_fetchone(sql, arg=None):
@@ -65,12 +66,15 @@ async def else_sql(sql, arg):
     )
 )
 async def my_wf(app: Ariadne, group: Group, event: GroupMessage):
+    if event.sender.id in forever_ban_cache:
+        return
     data = await select_fetchone(
         get_data_sql,
         (event.sender.id,)
     )
     logger.debug(data)
     status = '正常'
+    flag = False
     if data:  # 如果在数据库中
         if event.sender.id not in ban_cache and not data[5]:
             data = list(data)
@@ -81,35 +85,59 @@ async def my_wf(app: Ariadne, group: Group, event: GroupMessage):
             )
         else:
             logger.debug(f'data[5] -> {data[5]}')
+
             if data[5] == 1:
                 status = '封禁中 | 永久'
+                details_cache.append(event.sender.id)
+                forever_ban_cache.append(event.sender.id)
             elif data[5] == 2:
                 if int(time.time()) < data[6]:
                     status = f'封禁中 | 直至 {time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(data[6]))}'
+                    flag = True
                 else:
                     status = '正常'
                     await else_sql(
                         "UPDATE wooden_fish SET ban=0, time = %s WHERE uid = %s",
                         (int(time.time()), event.sender.id)
                     )
+                    result = await select_fetchone(get_data_sql, (event.sender.id,))
+                    if int(time.time()) - result[7] <= 3 and 5 <= result[8]:
+                        ban_cache.append(event.sender.id)
+                        await app.send_group_message(
+                            group.id,
+                            [At(event.sender.id), Plain(f" 您疑似DoS佛祖，被封禁 1 小时")]
+                        )
+                        await else_sql(
+                            "UPDATE wooden_fish SET ban=2, dt = %s WHERE uid = %s",
+                            (int(time.time()) + 360, event.sender.id)
+                        )
+                        return
                     ban_cache.remove(event.sender.id)
-        await app.send_message(
-            group,
-            MessageChain(
-                [
-                    At(event.sender.id),
-                    Plain(
-                        f"\n"
-                        f"赛博账号：{event.sender.id}\n"
-                        f"账号状态：{status}\n"
-                        f"木鱼等级：{data[2]}\n"
-                        f"木鱼经验：{data[3]} / {int(100 * (pow(1.14, data[2] - 1)))}\n"
-                        f"当前速度：{round(pow(data[2], -1) * 10, 2)}s/周期\n"
-                        f"当前功德：{data[4]}\n"
-                        f"{'【Tips：封禁后如果要解禁请发送“我的木鱼”以刷新状态】' if data[5] else '【敲电子木鱼，见机甲佛祖，取赛博真经】'}")
-                ]
+                    try:
+                        details_cache.remove(event.sender.id)
+                    except ValueError:
+                        pass
+
+        if event.sender.id not in forever_ban_cache + details_cache:
+            await app.send_message(
+                group,
+                MessageChain(
+                    [
+                        At(event.sender.id),
+                        Plain(
+                            f"\n"
+                            f"赛博账号：{event.sender.id}\n"
+                            f"账号状态：{status}\n"
+                            f"木鱼等级：{data[2]}\n"
+                            f"木鱼经验：{data[3]} / {int(100 * (pow(1.14, data[2] - 1)))}\n"
+                            f"当前速度：{round(pow(data[2], -1) * 10, 2)}s/周期\n"
+                            f"当前功德：{data[4]}\n"
+                            f"{'【Tips：封禁后如果要解禁请发送“我的木鱼”以刷新状态】' if data[5] else '【敲电子木鱼，见机甲佛祖，取赛博真经】'}")
+                    ]
+                )
             )
-        )
+            if flag:
+                details_cache.append(event.sender.id)
     else:  # 查无此人
         await app.send_message(
             group,
@@ -125,6 +153,18 @@ async def my_wf(app: Ariadne, group: Group, event: GroupMessage):
 )
 async def sign(app: Ariadne, group: Group, event: GroupMessage):
     if event.sender.id not in ban_cache:
+        result = await select_fetchone(get_data_sql, (event.sender.id,))
+        if int(time.time()) - result[7] <= 3 and 5 <= result[8]:
+            ban_cache.append(event.sender.id)
+            await app.send_group_message(
+                group.id,
+                [At(event.sender.id), Plain(f" 您疑似DoS佛祖，被封禁 1 小时")]
+            )
+            await else_sql(
+                "UPDATE wooden_fish SET ban=2, dt = %s WHERE uid = %s",
+                (int(time.time()) + 360, event.sender.id)
+            )
+            return
         try:
             await else_sql(
                 "INSERT INTO wooden_fish(uid, time, level, exp, de, ban, dt, end, end_count) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)",
@@ -262,7 +302,8 @@ async def getup(app: Ariadne, event: NudgeEvent):
                         else:
                             rad = random.randint(1, 5)
                             res[4] += rad  # 看人品加功德
-                            await else_sql("UPDATE wooden_fish SET de = de + %s WHERE uid = %s", (rad, event.supplicant))
+                            await else_sql("UPDATE wooden_fish SET de = de + %s WHERE uid = %s",
+                                           (rad, event.supplicant))
                             await app.send_group_message(
                                 event.group_id,
                                 [At(event.supplicant), Plain(f" 功德 +{rad}")]
