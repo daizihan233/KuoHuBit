@@ -229,6 +229,11 @@ async def update_wf(event: GroupMessage):
                         "UPDATE wooden_fish SET level = %s, exp = %s WHERE uid = %s",
                         (res[2], res[3], event.sender.id)
                     )
+                    res[4] += int(int(int(time.time()) - res[1]) / pow(res[2], -1) * 10)
+                    await else_sql(
+                        "UPDATE wooden_fish SET time = unix_timestamp(now()) , de = %s WHERE uid = %s",
+                        (res[4], event.sender.id)
+                    )
                 else:
                     await else_sql(
                         "UPDATE wooden_fish SET exp = %s WHERE uid = %s",
