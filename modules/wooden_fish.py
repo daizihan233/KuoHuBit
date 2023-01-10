@@ -90,8 +90,8 @@ async def my_wf(app: Ariadne, group: Group, event: GroupMessage):
                 )
             else:
                 await else_sql(
-                    "UPDATE wooden_fish SET ban=2, dt = unix_timestamp(now()) + 3600 WHERE uid = %s",
-                    (event.sender.id,)
+                    "UPDATE wooden_fish SET end=%s, end_count = 0 WHERE uid = %s",
+                    (int(time.time()), event.sender.id)
                 )
             if int(time.time()) - result[7] <= 3 and 5 <= result[8]:
                 ban_cache.append(event.sender.id)
