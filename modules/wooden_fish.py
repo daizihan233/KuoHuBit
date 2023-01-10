@@ -104,7 +104,10 @@ async def my_wf(app: Ariadne, group: Group, event: GroupMessage):
                     (event.sender.id,)
                 )
                 return
-            ban_cache.remove(event.sender.id)
+            try:
+                ban_cache.remove(event.sender.id)
+            except ValueError:
+                pass
             try:
                 details_cache.remove(event.sender.id)
             except ValueError:
