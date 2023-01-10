@@ -125,13 +125,13 @@ async def my_wf(app: Ariadne, group: Group, event: GroupMessage):
                     try:
                         ban_cache.remove(event.sender.id)
                     except ValueError:
-                        pass
+                        logger.warning("ban_cache: ValueError")
                     try:
                         details_cache.remove(event.sender.id)
                     except ValueError:
-                        pass
+                        logger.warning("details_cache: ValueError")
 
-        if event.sender.id not in forever_ban_cache + details_cache:
+        if event.sender.id not in forever_ban_cache and event.sender.id not in details_cache:
             await app.send_message(
                 group,
                 MessageChain(
