@@ -69,6 +69,7 @@ async def my_wf(app: Ariadne, group: Group, event: GroupMessage):
         get_data_sql,
         (event.sender.id,)
     )
+    logger.debug(data)
     status = '正常'
     if data:  # 如果在数据库中
         if event.sender.id not in ban_cache and not data[5]:
