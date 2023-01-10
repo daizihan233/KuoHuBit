@@ -80,8 +80,8 @@ async def my_wf(app: Ariadne, group: Group, event: GroupMessage):
             data = list(data)
             data[4] += int(int(int(time.time()) - data[1]) / pow(data[2], -1) * 10)
             await else_sql(
-                "UPDATE wooden_fish SET time = %s , de = %s WHERE uid = %s",
-                (int(time.time()), data[4], event.sender.id)
+                "UPDATE wooden_fish SET time = unix_timestamp(now()) , de = %s WHERE uid = %s",
+                (data[4], event.sender.id)
             )
             result = await select_fetchone(get_data_sql, (event.sender.id,))
             if (int(time.time()) - result[7]) < 3:
@@ -90,8 +90,8 @@ async def my_wf(app: Ariadne, group: Group, event: GroupMessage):
                 )
             else:
                 await else_sql(
-                    "UPDATE wooden_fish SET end=%s, end_count = 0 WHERE uid = %s",
-                    (int(time.time()), event.sender.id)
+                    "UPDATE wooden_fish SET end=unix_timestamp(now()), end_count = 0 WHERE uid = %s",
+                    (event.sender.id,)
                 )
             if int(time.time()) - result[7] <= 3 and 5 <= result[8]:
                 ban_cache.append(event.sender.id)
@@ -100,8 +100,8 @@ async def my_wf(app: Ariadne, group: Group, event: GroupMessage):
                     [At(event.sender.id), Plain(f" 您疑似DoS佛祖，被封禁 1 小时")]
                 )
                 await else_sql(
-                    "UPDATE wooden_fish SET ban=2, dt = %s WHERE uid = %s",
-                    (int(time.time()) + 360, event.sender.id)
+                    "UPDATE wooden_fish SET ban=2, dt = unix_timestamp(now()) + 360 WHERE uid = %s",
+                    (event.sender.id,)
                 )
                 return
             ban_cache.remove(event.sender.id)
@@ -126,7 +126,6 @@ async def my_wf(app: Ariadne, group: Group, event: GroupMessage):
                         "UPDATE wooden_fish SET ban=0, time = %s WHERE uid = %s",
                         (int(time.time()), event.sender.id)
                     )
-
 
         if event.sender.id not in forever_ban_cache + details_cache:
             await app.send_message(
