@@ -277,8 +277,6 @@ async def update_wf(app: Ariadne, group: Group, event: GroupMessage):
                     )
                 else:
                     rad = random.randint(1, 5)
-                    res[4] += rad  # 看人品加功德
-
                     await app.send_message(
                         group,
                         [At(event.sender.id), Plain(f" 功德 +{rad}")]
