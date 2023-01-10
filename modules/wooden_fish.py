@@ -104,14 +104,7 @@ async def my_wf(app: Ariadne, group: Group, event: GroupMessage):
                     (event.sender.id,)
                 )
                 return
-            try:
-                ban_cache.remove(event.sender.id)
-            except ValueError:
-                pass
-            try:
-                details_cache.remove(event.sender.id)
-            except ValueError:
-                pass
+
         else:
             logger.debug(f'data[5] -> {data[5]}')
 
@@ -129,6 +122,14 @@ async def my_wf(app: Ariadne, group: Group, event: GroupMessage):
                         "UPDATE wooden_fish SET ban=0, time = %s WHERE uid = %s",
                         (int(time.time()), event.sender.id)
                     )
+                    try:
+                        ban_cache.remove(event.sender.id)
+                    except ValueError:
+                        pass
+                    try:
+                        details_cache.remove(event.sender.id)
+                    except ValueError:
+                        pass
 
         if event.sender.id not in forever_ban_cache + details_cache:
             await app.send_message(
