@@ -83,6 +83,32 @@ async def my_wf(app: Ariadne, group: Group, event: GroupMessage):
                 "UPDATE wooden_fish SET time = %s , de = %s WHERE uid = %s",
                 (int(time.time()), data[4], event.sender.id)
             )
+            result = await select_fetchone(get_data_sql, (event.sender.id,))
+            if (int(time.time()) - result[7]) < 3:
+                await else_sql(
+                    "UPDATE wooden_fish SET end_count = wooden_fish.end_count+1 WHERE uid = %s", (event.sender.id,)
+                )
+            else:
+                await else_sql(
+                    "UPDATE wooden_fish SET end=%s, end_count = 0 WHERE uid = %s",
+                    (int(time.time()), event.sender.id)
+                )
+            if int(time.time()) - result[7] <= 3 and 5 <= result[8]:
+                ban_cache.append(event.sender.id)
+                await app.send_group_message(
+                    group.id,
+                    [At(event.sender.id), Plain(f" 您疑似DoS佛祖，被封禁 1 小时")]
+                )
+                await else_sql(
+                    "UPDATE wooden_fish SET ban=2, dt = %s WHERE uid = %s",
+                    (int(time.time()) + 360, event.sender.id)
+                )
+                return
+            ban_cache.remove(event.sender.id)
+            try:
+                details_cache.remove(event.sender.id)
+            except ValueError:
+                pass
         else:
             logger.debug(f'data[5] -> {data[5]}')
 
@@ -100,23 +126,7 @@ async def my_wf(app: Ariadne, group: Group, event: GroupMessage):
                         "UPDATE wooden_fish SET ban=0, time = %s WHERE uid = %s",
                         (int(time.time()), event.sender.id)
                     )
-                    result = await select_fetchone(get_data_sql, (event.sender.id,))
-                    if int(time.time()) - result[7] <= 3 and 5 <= result[8]:
-                        ban_cache.append(event.sender.id)
-                        await app.send_group_message(
-                            group.id,
-                            [At(event.sender.id), Plain(f" 您疑似DoS佛祖，被封禁 1 小时")]
-                        )
-                        await else_sql(
-                            "UPDATE wooden_fish SET ban=2, dt = %s WHERE uid = %s",
-                            (int(time.time()) + 360, event.sender.id)
-                        )
-                        return
-                    ban_cache.remove(event.sender.id)
-                    try:
-                        details_cache.remove(event.sender.id)
-                    except ValueError:
-                        pass
+
 
         if event.sender.id not in forever_ban_cache + details_cache:
             await app.send_message(
@@ -154,6 +164,15 @@ async def my_wf(app: Ariadne, group: Group, event: GroupMessage):
 async def sign(app: Ariadne, group: Group, event: GroupMessage):
     if event.sender.id not in ban_cache:
         result = await select_fetchone(get_data_sql, (event.sender.id,))
+        if (int(time.time()) - result[7]) < 3:
+            await else_sql(
+                "UPDATE wooden_fish SET end_count = wooden_fish.end_count+1 WHERE uid = %s", (event.sender.id,)
+            )
+        else:
+            await else_sql(
+                "UPDATE wooden_fish SET end=%s, end_count = 0 WHERE uid = %s",
+                (int(time.time()), event.sender.id)
+            )
         if int(time.time()) - result[7] <= 3 and 5 <= result[8]:
             ban_cache.append(event.sender.id)
             await app.send_group_message(
