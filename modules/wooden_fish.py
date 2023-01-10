@@ -90,7 +90,7 @@ async def my_wf(app: Ariadne, group: Group, event: GroupMessage):
                 )
             else:
                 await else_sql(
-                    "UPDATE wooden_fish SET end=unix_timestamp(now()), end_count = 0 WHERE uid = %s",
+                    "UPDATE wooden_fish SET ban=2, dt = unix_timestamp(now()) + 3600 WHERE uid = %s",
                     (event.sender.id,)
                 )
             if int(time.time()) - result[7] <= 3 and 5 <= result[8]:
@@ -100,7 +100,7 @@ async def my_wf(app: Ariadne, group: Group, event: GroupMessage):
                     [At(event.sender.id), Plain(f" 您疑似DoS佛祖，被封禁 1 小时")]
                 )
                 await else_sql(
-                    "UPDATE wooden_fish SET ban=2, dt = unix_timestamp(now()) + 360 WHERE uid = %s",
+                    "UPDATE wooden_fish SET ban=2, dt = unix_timestamp(now()) + 3600 WHERE uid = %s",
                     (event.sender.id,)
                 )
                 return
@@ -183,8 +183,8 @@ async def sign(app: Ariadne, group: Group, event: GroupMessage):
                 [At(event.sender.id), Plain(f" 您疑似DoS佛祖，被封禁 1 小时")]
             )
             await else_sql(
-                "UPDATE wooden_fish SET ban=2, dt = %s WHERE uid = %s",
-                (int(time.time()) + 360, event.sender.id)
+                "UPDATE wooden_fish SET ban=2, dt = unix_timestamp(now()) + 3600 WHERE uid = %s",
+                (event.sender.id,)
             )
             return
         try:
@@ -267,8 +267,8 @@ async def update_wf(app: Ariadne, group: Group, event: GroupMessage):
                         [At(event.sender.id), Plain(f" 您疑似DoS佛祖，被封禁 1 小时")]
                     )
                     await else_sql(
-                        "UPDATE wooden_fish SET ban=2, dt = %s WHERE uid = %s",
-                        (int(time.time()) + 360, event.sender.id)
+                        "UPDATE wooden_fish SET ban=2, dt = unix_timestamp(now()) + 3600 WHERE uid = %s",
+                        (event.sender.id,)
                     )
                 else:
                     rad = random.randint(1, 5)
@@ -318,8 +318,8 @@ async def getup(app: Ariadne, event: NudgeEvent):
                                 [At(event.supplicant), Plain(f" 您疑似DoS佛祖，被封禁 1 小时")]
                             )
                             await else_sql(
-                                "UPDATE wooden_fish SET ban=2, dt = %s WHERE uid = %s",
-                                (int(time.time()) + 360, event.supplicant)
+                                "UPDATE wooden_fish SET ban=2, dt = unix_timestamp(now()) + 3600 WHERE uid = %s",
+                                (event.supplicant,)
                             )
                         else:
                             rad = random.randint(1, 5)
