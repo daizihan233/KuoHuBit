@@ -370,6 +370,11 @@ async def getup(app: Ariadne, event: NudgeEvent):
         decorators=[MatchRegex("哈+")]
     )
 )
-async def subtract_gd(message: MessageChain, event: GroupMessage):
+async def subtract_gd(app: Ariadne, message: MessageChain, group: Group, event: GroupMessage):
     logger.info('功德 -')
-    await else_sql("UPDATE wooden_fish SET de=de-%s WHERE uid=%s", (str(message).count('哈') * 100, event.sender.id))
+    await else_sql("UPDATE wooden_fish SET de=de-%s WHERE uid=%s",
+                   (gd := str(message).count('哈') * 100, event.sender.id))
+    await app.send_message(
+        group,
+        f"功德 -{gd}"
+    )
