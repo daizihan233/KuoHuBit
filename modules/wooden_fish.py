@@ -75,6 +75,7 @@ async def my_wf(app: Ariadne, group: Group, event: GroupMessage):
     logger.debug(data)
     status = '正常'
     flag = False
+    flag2 = False
     if data:  # 如果在数据库中
         if event.sender.id not in ban_cache and not data[5]:
             data = list(data)
@@ -110,8 +111,8 @@ async def my_wf(app: Ariadne, group: Group, event: GroupMessage):
 
             if data[5] == 1:
                 status = '封禁中 | 永久'
-                details_cache.append(event.sender.id)
-                forever_ban_cache.append(event.sender.id)
+                flag = True
+                flag2 = True
             elif data[5] == 2:
                 if int(time.time()) < data[6]:
                     status = f'封禁中 | 直至 {time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(data[6]))}'
@@ -151,6 +152,8 @@ async def my_wf(app: Ariadne, group: Group, event: GroupMessage):
             )
             if flag:
                 details_cache.append(event.sender.id)
+            if flag2:
+                forever_ban_cache.append(event.sender.id)
     else:  # 查无此人
         await app.send_message(
             group,
@@ -389,6 +392,6 @@ async def subtract_gd(app: Ariadne, group: Group, message: MessageChain, event: 
 )
 async def jue_fo(app: Ariadne, group: Group, event: GroupMessage):
     if event.sender.id not in ban_cache:
-        await else_sql("UPDATE wooden_fish SET de=0 WHERE uid=%s",
+        await else_sql("UPDATE wooden_fish SET ban=1 WHERE uid=%s",
                        (event.sender.id,))
-        await app.send_message(group, "敢撅佛祖？功德扣光！")
+        await app.send_message(group, "敢撅佛祖？我给你ban咯！")
