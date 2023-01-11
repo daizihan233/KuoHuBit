@@ -371,10 +371,24 @@ async def getup(app: Ariadne, event: NudgeEvent):
     )
 )
 async def subtract_gd(app: Ariadne, group: Group, message: MessageChain, event: GroupMessage):
-    logger.info('功德 -')
-    try:
-        await else_sql("UPDATE wooden_fish SET de=de-wooden_fish.level*10*%s WHERE uid=%s",
-                       (gd := str(message).count("1"), event.sender.id,))
-        await app.send_message(group, f"佛祖：{'哈 * ' + str(gd) if gd > 50 else '哈' * gd}（功德 -{gd * 10}）")
-    except Exception as err:
-        logger.error(err)
+    if event.sender.id not in ban_cache:
+        gd = str(message).count("1")
+        try:
+            await else_sql("UPDATE wooden_fish SET de=de-wooden_fish.level*10*%s WHERE uid=%s",
+                           (gd, event.sender.id,))
+            await app.send_message(group, f"佛祖：{'哈 * ' + str(gd) if gd > 50 else '哈' * gd}（功德 -{gd * 10}）")
+        except Exception as err:
+            logger.error(err)
+
+
+@channel.use(
+    ListenerSchema(
+        listening_events=[GroupMessage],
+        decorators=[MatchContent("撅佛祖")]
+    )
+)
+async def jue_fo(app: Ariadne, group: Group, event: GroupMessage):
+    if event.sender.id not in ban_cache:
+        await else_sql("UPDATE wooden_fish SET de=0 WHERE uid=%s",
+                       (event.sender.id,))
+        await app.send_message(group, "敢撅佛祖？功德扣光！")
