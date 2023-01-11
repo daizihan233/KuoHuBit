@@ -372,9 +372,12 @@ async def getup(app: Ariadne, event: NudgeEvent):
 )
 async def subtract_gd(app: Ariadne, message: MessageChain, group: Group, event: GroupMessage):
     logger.info('功德 -')
-    await else_sql("UPDATE wooden_fish SET de=de-%s WHERE uid=%s",
-                   (gd := str(message).count('哈') * 100, event.sender.id))
-    await app.send_message(
-        group,
-        f"功德 -{gd}"
-    )
+    try:
+        await else_sql("UPDATE wooden_fish SET de=de-%s WHERE uid=%s",
+                       (gd := str(message).count('哈') * 100, event.sender.id))
+        await app.send_message(
+            group,
+            f"功德 -{gd}"
+        )
+    except Exception as err:
+        logger.error(err)
