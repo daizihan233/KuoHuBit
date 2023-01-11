@@ -8,7 +8,7 @@ from graia.ariadne.app import Ariadne
 from graia.ariadne.event.message import GroupMessage
 from graia.ariadne.event.mirai import NudgeEvent
 from graia.ariadne.message.element import At, Plain
-from graia.ariadne.message.parser.base import MatchContent
+from graia.ariadne.message.parser.base import MatchContent, MatchRegex
 from graia.ariadne.model import Group
 from graia.saya import Channel
 from graia.saya.builtins.broadcast.schema import ListenerSchema
@@ -362,3 +362,14 @@ async def getup(app: Ariadne, event: NudgeEvent):
             logger.warning('不是群内戳一戳')
     else:
         logger.warning('戳了戳别人')
+
+
+@channel.use(
+    ListenerSchema(
+        listening_events=[GroupMessage],
+        decorators=[MatchRegex("哈+")]
+    )
+)
+async def subtract_gd(message: MessageChain, event: GroupMessage):
+    logger.info('功德 -')
+    await else_sql("UPDATE wooden_fish SET de=de-%s WHERE uid=%s", (str(message).count('哈'), event.sender.id))
