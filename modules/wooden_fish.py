@@ -78,7 +78,7 @@ async def my_wf(app: Ariadne, group: Group, event: GroupMessage):
     if data:  # 如果在数据库中
         if event.sender.id not in ban_cache and not data[5]:
             data = list(data)
-            data[4] += int(int(int(time.time()) - data[1]) / pow(data[2], -1) * 10)
+            data[4] += int(int(int(time.time()) - data[1]) / (pow(data[2], -1) * 60))
             await else_sql(
                 "UPDATE wooden_fish SET time = unix_timestamp(now()) , de = %s WHERE uid = %s",
                 (data[4], event.sender.id)
