@@ -375,6 +375,6 @@ async def subtract_gd(app: Ariadne, group: Group, message: MessageChain, event: 
     try:
         await else_sql("UPDATE wooden_fish SET de=de-wooden_fish.level*10*%s WHERE uid=%s",
                        (gd := str(message).count("1"), event.sender.id,))
-        await app.send_message(group, f"佛祖：哈哈哈（功德 -{gd * 10}）")
+        await app.send_message(group, f"佛祖：{'哈 * ' + str(gd) if gd > 50 else '哈' * gd}（功德 -{gd * 10}）")
     except Exception as err:
         logger.error(err)
