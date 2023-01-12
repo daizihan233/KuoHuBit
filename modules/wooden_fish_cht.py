@@ -6,7 +6,6 @@ import aiomysql
 from graia.amnesia.message import MessageChain
 from graia.ariadne.app import Ariadne
 from graia.ariadne.event.message import GroupMessage
-from graia.ariadne.event.mirai import NudgeEvent
 from graia.ariadne.message.element import At, Plain
 from graia.ariadne.message.parser.base import MatchContent, MatchRegex
 from graia.ariadne.model import Group
@@ -254,70 +253,6 @@ async def update_wf(app: Ariadne, group: Group, event: GroupMessage):
                 group,
                 [At(event.sender.id), Plain(" 賽博數據庫查無此人~ 請輸入“給我木魚”註冊")]
             )
-
-
-@channel.use(ListenerSchema(listening_events=[NudgeEvent]))
-async def getup(app: Ariadne, event: NudgeEvent):
-    if event.target == botfunc.get_config('qq'):
-        if event.context_type == "group":
-            logger.info(f"{event.supplicant} 在群 {event.group_id} 戳了戳 Bot")
-            result = await select_fetchone(get_data_sql, (event.supplicant,))
-            logger.debug(result)
-            if result:
-                if event.supplicant not in ban_cache:
-                    if not result[5]:
-                        res = list(result)
-                        if int(time.time()) - res[7] <= botfunc.get_config('count_ban') and 5 <= res[8]:
-                            ban_cache.append(event.supplicant)
-                            await app.send_group_message(
-                                event.group_id,
-                                [At(event.supplicant), Plain(f" 您疑似 DoS 佛祖，被封禁 1 小時")]
-                            )
-                            await else_sql(
-                                "UPDATE wooden_fish SET ban=2, dt = unix_timestamp(now()) + 3600 WHERE uid = %s",
-                                (event.supplicant,)
-                            )
-                        else:
-                            rad = random.randint(1, 5)
-                            res[4] += rad  # 看人品加功德
-
-                            await app.send_group_message(
-                                event.group_id,
-                                [At(event.supplicant), Plain(f" 功德 +{rad}")]
-                            )
-                            if (int(time.time()) - result[7]) < botfunc.get_config('count_ban'):
-                                await else_sql(
-                                    "UPDATE wooden_fish SET end_count = wooden_fish.end_count+1 WHERE uid = %s",
-                                    (event.supplicant,)
-                                )
-                            else:
-                                await else_sql(
-                                    "UPDATE wooden_fish SET end=%s, end_count = 0 WHERE uid = %s",
-                                    (int(time.time()), event.supplicant)
-                                )
-                            await else_sql("UPDATE wooden_fish SET de = de + %s WHERE uid = %s",
-                                           (rad, event.supplicant))
-
-                    else:
-                        ban_cache.append(event.supplicant)
-                        await app.send_group_message(
-                            event.supplicant,
-                            [At(event.supplicant), Plain(f" 你已被佛祖封禁")]
-                        )
-                else:
-                    if result[5] == 2:
-                        await else_sql("UPDATE wooden_fish SET dt = %s WHERE uid = %s",
-                                       (int(time.time() + 360), event.supplicant))
-
-            else:  # 查无此人
-                await app.send_group_message(
-                    event.group_id,
-                    [At(event.supplicant), Plain(" 賽博數據庫查無此人~ 請輸入“給我木魚”註冊")]
-                )
-        else:
-            logger.warning('不是群内戳一戳')
-    else:
-        logger.warning('戳了戳别人')
 
 
 @channel.use(
