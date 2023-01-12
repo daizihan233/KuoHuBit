@@ -59,7 +59,6 @@ async def repeat_record(app: Ariadne, group: Group, member: Member, message: Mes
 
 @listen(GroupMessage)
 @decorate(MatchContent("开启本群防刷屏"))
-@decorate(MatchContent("開啟本群防刷屏"))
 async def start_mute(app: Ariadne, group: Group, event: GroupMessage):
     with open(dyn_config, 'r') as cf:
         cfy = yaml.safe_load(cf)
@@ -72,7 +71,6 @@ async def start_mute(app: Ariadne, group: Group, event: GroupMessage):
 
 @listen(GroupMessage)
 @decorate(MatchContent("关闭本群防刷屏"))
-@decorate(MatchContent("關閉本群防刷屏"))
 async def stop_mute(app: Ariadne, group: Group, event: GroupMessage):
     with open(dyn_config, 'r') as cf:
         cfy = yaml.safe_load(cf)
