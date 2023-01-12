@@ -8,8 +8,8 @@ from graia.ariadne.message.chain import MessageChain
 from graia.ariadne.message.element import At, Plain
 from graia.ariadne.message.parser.base import MatchContent
 from graia.ariadne.model import Group
+from graia.ariadne.util.saya import listen, decorate
 from graia.saya import Channel
-from graia.saya.builtins.broadcast.schema import ListenerSchema
 
 import botfunc
 
@@ -19,12 +19,9 @@ channel.description("上班是不可能上班的~")
 channel.author("HanTools")
 
 
-@channel.use(
-    ListenerSchema(
-        listening_events=[GroupMessage],
-        decorators=[MatchContent("鱼")],
-    )
-)
+@listen(GroupMessage)
+@decorate(MatchContent("鱼"))
+@decorate(MatchContent("魚"))
 async def fish(app: Ariadne, group: Group, event: GroupMessage):
     data: str = json.loads(botfunc.session.get("http://bjb.yunwj.top/php/mo-yu/php.php").text)['wb']
     data: str = data.replace('【换行】', '\n')

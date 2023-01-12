@@ -11,6 +11,7 @@ from graia.ariadne.message.chain import MessageChain
 from graia.ariadne.message.element import Plain, At
 from graia.ariadne.message.parser.base import MatchContent
 from graia.ariadne.model import Group, Member
+from graia.ariadne.util.saya import listen, decorate
 from graia.saya import Channel
 from graia.saya.builtins.broadcast.schema import ListenerSchema
 from loguru import logger
@@ -56,12 +57,9 @@ async def repeat_record(app: Ariadne, group: Group, member: Member, message: Mes
             r.hset(hash_name, f'{group.id},{member.id}', f"1,{time.time()},{urllib.parse.quote(str(message))}")
 
 
-@channel.use(
-    ListenerSchema(
-        listening_events=[GroupMessage],
-        decorators=[MatchContent("开启本群防刷屏")],
-    )
-)
+@listen(GroupMessage)
+@decorate(MatchContent("开启本群防刷屏"))
+@decorate(MatchContent("開啟本群防刷屏"))
 async def start_mute(app: Ariadne, group: Group, event: GroupMessage):
     with open(dyn_config, 'r') as cf:
         cfy = yaml.safe_load(cf)
@@ -72,12 +70,9 @@ async def start_mute(app: Ariadne, group: Group, event: GroupMessage):
     await app.send_message(group, MessageChain(At(event.sender.id), Plain(" OK辣！")))
 
 
-@channel.use(
-    ListenerSchema(
-        listening_events=[GroupMessage],
-        decorators=[MatchContent("关闭本群防刷屏")],
-    )
-)
+@listen(GroupMessage)
+@decorate(MatchContent("关闭本群防刷屏"))
+@decorate(MatchContent("關閉本群防刷屏"))
 async def stop_mute(app: Ariadne, group: Group, event: GroupMessage):
     with open(dyn_config, 'r') as cf:
         cfy = yaml.safe_load(cf)

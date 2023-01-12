@@ -10,6 +10,7 @@ from graia.ariadne.event.mirai import NudgeEvent
 from graia.ariadne.message.element import At, Plain
 from graia.ariadne.message.parser.base import MatchContent, MatchRegex
 from graia.ariadne.model import Group
+from graia.ariadne.util.saya import listen, decorate
 from graia.saya import Channel
 from graia.saya.builtins.broadcast.schema import ListenerSchema
 from loguru import logger
@@ -59,12 +60,9 @@ async def else_sql(sql, arg):
     conn.close()
 
 
-@channel.use(
-    ListenerSchema(
-        listening_events=[GroupMessage],
-        decorators=[MatchContent("我的木鱼")]
-    )
-)
+@listen(GroupMessage)
+@decorate(MatchContent("我的木鱼"))
+@decorate(MatchContent("我的木魚"))
 async def my_wf(app: Ariadne, group: Group, event: GroupMessage):
     if event.sender.id in forever_ban_cache:
         return
@@ -161,12 +159,9 @@ async def my_wf(app: Ariadne, group: Group, event: GroupMessage):
         )
 
 
-@channel.use(
-    ListenerSchema(
-        listening_events=[GroupMessage],
-        decorators=[MatchContent("给我木鱼")]
-    )
-)
+@listen(GroupMessage)
+@decorate(MatchContent("给我木鱼"))
+@decorate(MatchContent("給我木魚"))
 async def sign(app: Ariadne, group: Group, event: GroupMessage):
     if event.sender.id not in ban_cache:
         result = await select_fetchone(get_data_sql, (event.sender.id,))
@@ -249,12 +244,9 @@ async def update_wf(event: GroupMessage):
                 ban_cache.append(event.sender.id)
 
 
-@channel.use(
-    ListenerSchema(
-        listening_events=[GroupMessage],
-        decorators=[MatchContent("敲木鱼")]
-    )
-)
+@listen(GroupMessage)
+@decorate(MatchContent("敲木鱼"))
+@decorate(MatchContent("敲木魚"))
 async def update_wf(app: Ariadne, group: Group, event: GroupMessage):
     if event.sender.id not in ban_cache:
         result = await select_fetchone(get_data_sql, (event.sender.id,))
@@ -384,12 +376,8 @@ async def subtract_gd(app: Ariadne, group: Group, message: MessageChain, event: 
             logger.error(err)
 
 
-@channel.use(
-    ListenerSchema(
-        listening_events=[GroupMessage],
-        decorators=[MatchContent("撅佛祖")]
-    )
-)
+@listen(GroupMessage)
+@decorate(MatchContent("撅佛祖"))  # [简]繁体与简体写法一致 | [繁]繁體與簡體寫法一致
 async def jue_fo(app: Ariadne, group: Group, event: GroupMessage):
     if event.sender.id not in ban_cache:
         await else_sql("UPDATE wooden_fish SET ban=1 WHERE uid=%s",

@@ -12,6 +12,7 @@ from graia.ariadne.message.chain import MessageChain
 from graia.ariadne.message.element import At, Plain
 from graia.ariadne.message.parser.base import DetectPrefix, MatchContent
 from graia.ariadne.model import Group
+from graia.ariadne.util.saya import listen, decorate
 from graia.saya import Channel
 from graia.saya.builtins.broadcast.schema import ListenerSchema
 from loguru import logger
@@ -115,12 +116,9 @@ async def update_bread(group: Group):
         await else_sql(sql, (group.id, int(time.time())))
 
 
-@channel.use(
-    ListenerSchema(
-        listening_events=[GroupMessage],
-        decorators=[MatchContent("面包厂信息")],
-    )
-)
+@listen(GroupMessage)
+@decorate(MatchContent("面包厂信息"))
+@decorate(MatchContent("麵包廠信息"))
 async def setu(app: Ariadne, group: Group):
     result = await select_fetchone(get_data_sql, (group.id,))
 
