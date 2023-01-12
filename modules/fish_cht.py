@@ -18,7 +18,7 @@ channel = Channel.current()
 channel.name("摸魚日記")
 channel.description("上班是不可能上班的~")
 channel.author("HanTools")
-opc = opencc.OpenCC('mix2s')
+opc = opencc.OpenCC('s2t')
 
 
 @listen(GroupMessage)
