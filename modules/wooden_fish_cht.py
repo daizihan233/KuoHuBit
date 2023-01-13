@@ -7,11 +7,10 @@ from graia.amnesia.message import MessageChain
 from graia.ariadne.app import Ariadne
 from graia.ariadne.event.message import GroupMessage
 from graia.ariadne.message.element import At, Plain
-from graia.ariadne.message.parser.base import MatchContent, MatchRegex
+from graia.ariadne.message.parser.base import MatchContent
 from graia.ariadne.model import Group
 from graia.ariadne.util.saya import listen, decorate
 from graia.saya import Channel
-from graia.saya.builtins.broadcast.schema import ListenerSchema
 from loguru import logger
 
 import botfunc
@@ -253,20 +252,3 @@ async def update_wf(app: Ariadne, group: Group, event: GroupMessage):
                 group,
                 [At(event.sender.id), Plain(" 賽博數據庫查無此人~ 請輸入“給我木魚”註冊")]
             )
-
-
-@channel.use(
-    ListenerSchema(
-        listening_events=[GroupMessage],
-        decorators=[MatchRegex("1+")]
-    )
-)
-async def subtract_gd(app: Ariadne, group: Group, message: MessageChain, event: GroupMessage):
-    if event.sender.id not in ban_cache:
-        gd = str(message).count("1")
-        try:
-            await else_sql("UPDATE wooden_fish SET de=de-wooden_fish.level*10*%s WHERE uid=%s",
-                           (gd, event.sender.id,))
-            await app.send_message(group, f"佛祖：{'哈 * ' + str(gd) if gd > 50 else '哈' * gd}（功德 -{gd * 10}）")
-        except Exception as err:
-            logger.error(err)
