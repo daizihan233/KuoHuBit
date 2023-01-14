@@ -1,6 +1,6 @@
-# MiraiHanBot
+# KuoHuBit
 
-HanBot的Mirai重写版本<br>
+一个很屑的QQBot | 基于 Mirai 与 Graia<br>
 本项目参照 [Mirai](https://github.com/mamoe/mirai) 的许可证，使用 AGPL-3.0 开源
 
 # 关于安全性
@@ -10,13 +10,6 @@ HanBot的Mirai重写版本<br>
 [![OSCS Status](https://www.oscs1024.com/platform/badge/MiraiHanBot.svg?size=large)](https://www.murphysec.com/accept?code=d5a14e49b16c03faa60dea3ad8b144b2&type=1&from=2)<br>
 [![Security Status](https://www.murphysec.com/platform3/v3/badge/1611322149306925056.svg)](https://www.murphysec.com/accept?code=0f43d798e91a32b0f4b909eb701a2012&type=1&from=2&t=2)
 
-## JetBrains PyCharm 的代码分析结果
-
-- 安全性警告
-    - HTTP 链接不安全
-        - 原因：人家 API 不支持 HTTPS 我也没办法啊
-- 拼写错误
-    - 简单查看过后，均不属于拼写错误，单纯误报
 
 # 其他的机器人
 
