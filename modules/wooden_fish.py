@@ -148,10 +148,13 @@ async def my_wf(app: Ariadne, group: Group, event: GroupMessage):
                 (event.sender.id,)
             )
             if data[5] >= 1:
+                logger.debug('【1】ee')
                 gongde = "ee%.3f （=10^10^%.3f）" % (data[5], data[5])
             elif data[4] >= 1:
+                logger.debug('【2】e')
                 gongde = "e%.3f （=10^%.3f）" % (data[4], data[4])
             else:
+                logger.debug('【3】n')
                 gongde = data[3]
             await app.send_message(
                 group,
