@@ -44,7 +44,7 @@ async def select_fetchone(sql, arg=None):
     r = await cur.fetchone()
     await cur.close()
     conn.close()
-    return list(r)
+    return list(r) if r else None
 
 
 async def else_sql(sql, arg):
