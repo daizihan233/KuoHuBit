@@ -75,11 +75,11 @@ async def my_wf(app: Ariadne, group: Group, event: GroupMessage):
     if data:  # 如果在数据库中
         if event.sender.id not in ban_cache and not data[7]:
             data = list(data)
-            data[4] += int(int(int(time.time()) - data[1]) / (60 * np.power(0.95, data[2]))) * (
-                        data[4] * data[6] + data[2])
+            data[3] += int(int(int(time.time()) - data[1]) / (60 * np.power(0.95, data[2]))) * (
+                    data[4] * data[6] + data[2])
             await else_sql(
                 "UPDATE woodenfish SET time = unix_timestamp(now()) , de = %s WHERE uid = %s",
-                (data[4], event.sender.id)
+                (data[3], event.sender.id)
             )
             result = await select_fetchone(get_data_sql, (event.sender.id,))
             if (int(time.time()) - result[9]) < botfunc.get_config('count_ban'):
@@ -140,11 +140,6 @@ async def my_wf(app: Ariadne, group: Group, event: GroupMessage):
                 data[4] = 0
                 await else_sql("UPDATE woodenfish SET ee = %s, e = 0 WHERE uid = %s",
                                (data[5], event.sender.id))
-            logger.debug(data)
-            data = await select_fetchone(
-                get_data_sql,
-                (event.sender.id,)
-            )
             if data[5] >= 1:
                 gongde = "ee%.3f （=10^10^%.3f）" % (data[5], data[5])
             elif data[4] >= 1:
