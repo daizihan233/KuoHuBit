@@ -158,7 +158,7 @@ async def my_wf(app: Ariadne, group: Group, event: GroupMessage):
                             f"木鱼等级：{data[2]}\n"
                             f"涅槃值　：{data[6]}\n"
                             f"当前速度：{round(pow(data[2], -1) * 10, 2)}s/周期\n"
-                            f"当前功德：{gongde}\n"
+                            f"当前功德：{gongde} / {10 * data[6]} ← 当超过这个值时你应该考虑“涅槃转生”\n"
                             f"{'【Tips：封禁后如果要解禁请发送“我的木鱼”以刷新状态】' if data[7] else '【敲电子木鱼，见机甲佛祖，取赛博真经】'}")
                     ]
                 )
