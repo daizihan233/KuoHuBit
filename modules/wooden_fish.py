@@ -143,6 +143,10 @@ async def my_wf(app: Ariadne, group: Group, event: GroupMessage):
                 await else_sql("UPDATE woodenfish SET ee = %s, e = 0 WHERE uid = %s",
                                (data[5], event.sender.id))
             logger.debug(data)
+            data = await select_fetchone(
+                get_data_sql,
+                (event.sender.id,)
+            )
             if data[5] >= 1:
                 gongde = "ee%.3f （=10^10^%.3f）" % (data[5], data[5])
             elif data[4] >= 1:
