@@ -375,7 +375,7 @@ async def update_fish(app: Ariadne, group: Group, event: GroupMessage):
                     )
                 else:
                     if np.power(10, result[5]) + result[4] >= result[2] + 2:
-                        await else_sql("UPDATE woodenfish SET level = level+1, e = e-level+2 WHERE uid = @uid",
+                        await else_sql("UPDATE woodenfish SET level = level+1, e = e-level+2 WHERE uid = %s",
                                        (event.sender.id,))
                         await app.send_message(
                             group,
@@ -393,7 +393,7 @@ async def update_fish(app: Ariadne, group: Group, event: GroupMessage):
                             await else_sql("UPDATE woodenfish SET ee = %s, e = 0 WHERE uid = %s",
                                            (result[5], event.sender.id))
                         if np.power(10, result[5]) + result[4] >= result[2] + 2:
-                            await else_sql("UPDATE woodenfish SET level = level+1, e = e-level+2 WHERE uid = @uid",
+                            await else_sql("UPDATE woodenfish SET level = level+1, e = e-level+2 WHERE uid = %s",
                                            (event.sender.id,))
                             await app.send_message(
                                 group,
@@ -432,7 +432,7 @@ async def update_fish(app: Ariadne, group: Group, event: GroupMessage):
                 else:
                     if result[5] >= 10 * result[6]:
                         await else_sql(
-                            "UPDATE woodenfish SET nirvana = nirvana+0.05, level = 0, ee = 0, e = 0, de = 0 WHERE uid = @uid",
+                            "UPDATE woodenfish SET nirvana = nirvana+0.05, level = 0, ee = 0, e = 0, de = 0 WHERE uid = %s",
                             (event.sender.id,))
                         await app.send_message(
                             group,
@@ -451,7 +451,7 @@ async def update_fish(app: Ariadne, group: Group, event: GroupMessage):
                                            (result[5], event.sender.id))
                         if result[5] >= 10 * result[6]:
                             await else_sql(
-                                "UPDATE woodenfish SET nirvana = nirvana+0.05, level = 0, ee = 0, e = 0, de = 0 WHERE uid = @uid",
+                                "UPDATE woodenfish SET nirvana = nirvana+0.05, level = 0, ee = 0, e = 0, de = 0 WHERE uid = %s",
                                 (event.sender.id,))
                             await app.send_message(
                                 group,
