@@ -134,12 +134,14 @@ async def my_wf(app: Ariadne, group: Group, event: GroupMessage):
         if event.sender.id not in forever_ban_cache and event.sender.id not in details_cache:
             if np.log10(data[3]) >= 1:
                 data[4] = np.log10(np.power(10, data[4]) + data[3])
+
                 await else_sql("UPDATE woodenfish SET e = %s, de = 0 WHERE uid = %s",
                                (data[4], event.sender.id))
             if np.log10(data[4]) >= 1:
                 data[5] = np.log10(np.power(10, data[5]) + data[4])
                 await else_sql("UPDATE woodenfish SET ee = %s, e = 0 WHERE uid = %s",
                                (data[5], event.sender.id))
+            logger.debug(data)
             if data[5] >= 1:
                 gongde = "ee%.3f （=10^10^%.3f）" % (data[5], data[5])
             elif data[4] >= 1:
