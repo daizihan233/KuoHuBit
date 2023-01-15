@@ -139,9 +139,9 @@ async def my_wf(app: Ariadne, group: Group, event: GroupMessage):
                 await else_sql("UPDATE woodenfish SET ee = %s, e = 0 WHERE uid = %s",
                                (data[5], event.sender.id))
             if data[5] >= 1:
-                gongde = "ee%3.f （=10^10^%3.f）" % (data[5], data[5])
+                gongde = "ee%.3f （=10^10^%.3f）" % (data[5], data[5])
             elif data[4] >= 1:
-                gongde = "e%3.f （=10^%3.f）" % (data[4], data[4])
+                gongde = "e%.3f （=10^%.3f）" % (data[4], data[4])
             else:
                 gongde = f"{data[3]}"
             await app.send_message(
