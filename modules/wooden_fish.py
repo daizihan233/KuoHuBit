@@ -145,7 +145,7 @@ async def my_wf(app: Ariadne, group: Group, event: GroupMessage):
             elif data[4] >= 1:
                 gongde = "e%.3f （=10^%.3f）" % (data[4], data[4])
             else:
-                gongde = f"{data[3]}"
+                gongde = data[3]
             await app.send_message(
                 group,
                 MessageChain(
@@ -157,7 +157,7 @@ async def my_wf(app: Ariadne, group: Group, event: GroupMessage):
                             f"账号状态：{status}\n"
                             f"木鱼等级：{data[2]}\n"
                             f"涅槃值　：{data[6]}\n"
-                            f"当前速度：{round(pow(data[2], -1) * 10, 2)}s/周期\n"
+                            f"当前速度：{(60 * np.power(0.95, data[2]))}s/周期\n"
                             f"当前功德：{gongde}\n"
                             f"{'【Tips：封禁后如果要解禁请发送“我的木鱼”以刷新状态】' if data[7] else '【敲电子木鱼，见机甲佛祖，取赛博真经】'}")
                     ]
