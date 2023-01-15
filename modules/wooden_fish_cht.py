@@ -192,8 +192,8 @@ async def sign(app: Ariadne, group: Group, event: GroupMessage):
         # --- 从这里开始是进行处理 ---
         try:
             await else_sql(
-                "INSERT INTO woodenfish(uid, time, de) VALUES (%s, unix_timestamp(now()), %s)",
-                (event.sender.id, random.randint(1145, 2000))
+                "INSERT INTO woodenfish(uid, time) VALUES (%s, unix_timestamp(now()))",
+                (event.sender.id,)
             )
             await app.send_message(
                 group,
