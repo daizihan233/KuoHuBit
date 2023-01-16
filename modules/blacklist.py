@@ -42,7 +42,7 @@ async def select_fetchone(sql, arg=None):
     return r
 
 
-async def get_all_admin() -> list:
+def get_all_admin() -> list:
     botfunc.cursor.execute('SELECT uid FROM admin')
     t = []
     for i in list(botfunc.cursor.fetchall()):
@@ -51,7 +51,7 @@ async def get_all_admin() -> list:
     return t
 
 
-async def get_all_sb() -> list:
+def get_all_sb() -> list:
     botfunc.cursor.execute('SELECT uid FROM blacklist')
     t = []
     for i in list(botfunc.cursor.fetchall()):

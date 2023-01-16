@@ -21,8 +21,6 @@ channel.author("HanTools")
 loop = asyncio.get_event_loop()
 
 
-
-
 async def select_fetchone(sql, arg=None):
     conn = await aiomysql.connect(host=botfunc.get_cloud_config('MySQL_Host'),
                                   port=botfunc.get_cloud_config('MySQL_Port'),
@@ -41,7 +39,7 @@ async def select_fetchone(sql, arg=None):
     return r
 
 
-async def get_all_admin() -> list:
+def get_all_admin() -> list:
     botfunc.cursor.execute('SELECT uid FROM admin')
     t = []
     for i in list(botfunc.cursor.fetchall()):
