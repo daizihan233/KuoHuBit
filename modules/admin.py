@@ -6,13 +6,11 @@ import aiomysql
 from graia.amnesia.message import MessageChain
 from graia.ariadne.app import Ariadne
 from graia.ariadne.event.message import GroupMessage
-from graia.ariadne.message.element import At
 from graia.ariadne.message.parser.base import DetectPrefix
-from graia.ariadne.model import Group, Member
-from graia.ariadne.util.saya import listen, decorate
-from graia.broadcast import ExecutionStop
-from graia.broadcast.builtin.decorators import Depend
+from graia.ariadne.model import Group
+from graia.ariadne.util.saya import listen
 from graia.saya import Channel
+from loguru import logger
 
 import botfunc
 
@@ -23,13 +21,6 @@ channel.author("HanTools")
 loop = asyncio.get_event_loop()
 
 
-def check_member():
-    async def check_member_deco(app: Ariadne, group: Group, member: Member):
-        if member.id not in get_all_admin():
-            await app.send_message(group, MessageChain([At(member.id), "对不起，您的权限并不够"]))
-            raise ExecutionStop
-
-    return Depend(check_member_deco)
 
 
 async def select_fetchone(sql, arg=None):
@@ -55,6 +46,7 @@ async def get_all_admin() -> list:
     t = []
     for i in botfunc.cursor.fetchall():
         t.append(i[0])
+    logger.debug(t)
     return t
 
 
@@ -73,8 +65,9 @@ async def else_sql(sql, arg):
 
 
 @listen(GroupMessage)
-@decorate(check_member())
-async def add_admin(app: Ariadne, group: Group, message: MessageChain = DetectPrefix("上管")):
+async def add_admin(app: Ariadne, group: Group, event: GroupMessage, message: MessageChain = DetectPrefix("上管")):
+    if event.sender.id not in get_all_admin():
+        return
     try:
         await else_sql("INSERT INTO admin(uid) VALUES (%s)", (int(str(message)),))
     except Exception as err:
@@ -84,8 +77,9 @@ async def add_admin(app: Ariadne, group: Group, message: MessageChain = DetectPr
 
 
 @listen(GroupMessage)
-@decorate(check_member())
-async def add_admin(app: Ariadne, group: Group, message: MessageChain = DetectPrefix("去管")):
+async def add_admin(app: Ariadne, group: Group, event: GroupMessage, message: MessageChain = DetectPrefix("去管")):
+    if event.sender.id not in get_all_admin():
+        return
     try:
         await else_sql("DELETE FROM admin WHERE uid = %s", (int(str(message)),))
     except Exception as err:

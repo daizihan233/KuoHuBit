@@ -9,10 +9,7 @@ from graia.ariadne.event.message import GroupMessage
 from graia.ariadne.event.mirai import MemberJoinEvent
 from graia.ariadne.message.element import At
 from graia.ariadne.message.parser.base import DetectPrefix
-from graia.ariadne.model import Group, Member
-from graia.ariadne.util.saya import listen, decorate
-from graia.broadcast import ExecutionStop
-from graia.broadcast.builtin.decorators import Depend
+from graia.ariadne.util.saya import listen
 from graia.saya import Channel
 from loguru import logger
 
@@ -25,13 +22,6 @@ channel.author("HanTools")
 loop = asyncio.get_event_loop()
 
 
-def check_member():
-    async def check_member_deco(app: Ariadne, group: Group, member: Member):
-        if member.id not in get_all_admin():
-            await app.send_message(group, MessageChain([At(member.id), "对不起，您的权限并不够"]))
-            raise ExecutionStop
-
-    return Depend(check_member_deco)
 
 
 async def select_fetchone(sql, arg=None):
@@ -84,8 +74,9 @@ async def else_sql(sql, arg):
 
 
 @listen(GroupMessage)
-@decorate(check_member())
 async def nmsl(app: Ariadne, event: GroupMessage, message: MessageChain = DetectPrefix("拉黑")):
+    if event.sender.id not in get_all_admin():
+        return
     msg = "--- 执行结果 ---\n"
     flag = True
     for i in message[At]:
@@ -144,8 +135,9 @@ async def kicksb(app: Ariadne, event: MemberJoinEvent):
 
 
 @listen(GroupMessage)
-@decorate(check_member())
 async def nmms(app: Ariadne, event: GroupMessage, message: MessageChain = DetectPrefix("删黑")):
+    if event.sender.id not in get_all_admin():
+        return
     try:
         await else_sql('DELETE FROM blacklist WHERE uid = %s',
                        (int(str(message)),))
