@@ -22,8 +22,6 @@ channel.author("HanTools")
 loop = asyncio.get_event_loop()
 
 
-
-
 async def select_fetchone(sql, arg=None):
     conn = await aiomysql.connect(host=botfunc.get_cloud_config('MySQL_Host'),
                                   port=botfunc.get_cloud_config('MySQL_Port'),
