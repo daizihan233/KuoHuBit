@@ -3,6 +3,7 @@
 import asyncio
 
 import aiomysql
+import pymysql.err
 from graia.amnesia.message import MessageChain
 from graia.ariadne.app import Ariadne
 from graia.ariadne.event.message import GroupMessage
@@ -98,12 +99,16 @@ async def nmsl(app: Ariadne, event: GroupMessage, message: MessageChain = Detect
             msg += '    踢出：【错误：无权踢出】'
         else:
             msg += '    踢出：成功'
+        msg += '\n'
     if flag:
         try:
             await else_sql('INSERT INTO blacklist(uid, op) VALUES (%s, %s)',
                            (int(str(message)), event.sender.id))
         except TypeError:
             await app.send_message(event.sender.group, "类型错误，无法添加至数据库")
+            return
+        except pymysql.err.IntegrityError:
+            await app.send_message(event.sender.group, "此人已在数据库")
             return
         else:
             try:
