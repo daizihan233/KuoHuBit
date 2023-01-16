@@ -84,7 +84,7 @@ async def nmsl(app: Ariadne, event: GroupMessage, message: MessageChain = Detect
         msg += f'{i}：\n'
         try:
             await else_sql('INSERT INTO blacklist(uid, op) VALUES (%s, %s)',
-                           (i, event.sender.id))
+                           (i.target, event.sender.id))
         except Exception as err:
             logger.warning(f'{i} 未能成功加入数据库：{err}')
             msg += f'    数据库：【错误：{err}】\n'
@@ -103,7 +103,7 @@ async def nmsl(app: Ariadne, event: GroupMessage, message: MessageChain = Detect
     if flag:
         try:
             await else_sql('INSERT INTO blacklist(uid, op) VALUES (%s, %s)',
-                           (int(msg), event.sender.id))
+                           (int(str(message)), event.sender.id))
         except TypeError:
             await app.send_message(event.sender.group, "类型错误，无法添加至数据库")
             return
