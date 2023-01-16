@@ -23,9 +23,9 @@ channel.author("HanTools")
 loop = asyncio.get_event_loop()
 
 
-def check_member(*members):
+def check_member():
     async def check_member_deco(app: Ariadne, group: Group, member: Member):
-        if member.id not in members:
+        if member.id not in get_all_admin():
             await app.send_message(group, MessageChain([At(member.id), "对不起，您的权限并不够"]))
             raise ExecutionStop
 
@@ -73,7 +73,7 @@ async def else_sql(sql, arg):
 
 
 @listen(GroupMessage)
-@decorate(check_member(get_all_admin()))
+@decorate(check_member())
 async def add_admin(app: Ariadne, group: Group, message: MessageChain = DetectPrefix("上管")):
     try:
         await else_sql("INSERT INTO admin(uid) VALUES (%s)", (int(str(message)),))
@@ -84,7 +84,7 @@ async def add_admin(app: Ariadne, group: Group, message: MessageChain = DetectPr
 
 
 @listen(GroupMessage)
-@decorate(check_member(get_all_admin()))
+@decorate(check_member())
 async def add_admin(app: Ariadne, group: Group, message: MessageChain = DetectPrefix("去管")):
     try:
         await else_sql("DELETE FROM admin WHERE uid = %s", (int(str(message)),))

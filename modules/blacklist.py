@@ -25,9 +25,9 @@ channel.author("HanTools")
 loop = asyncio.get_event_loop()
 
 
-def check_member(*members):
+def check_member():
     async def check_member_deco(app: Ariadne, group: Group, member: Member):
-        if member.id not in members:
+        if member.id not in get_all_admin():
             await app.send_message(group, MessageChain([At(member.id), "对不起，您的权限并不够"]))
             raise ExecutionStop
 
@@ -83,7 +83,7 @@ async def else_sql(sql, arg):
 
 
 @listen(GroupMessage)
-@decorate(check_member(get_all_admin()))
+@decorate(check_member())
 async def nmsl(app: Ariadne, event: GroupMessage, message: MessageChain = DetectPrefix("拉黑")):
     msg = "--- 执行结果 ---\n"
     flag = True
@@ -143,7 +143,7 @@ async def kicksb(app: Ariadne, event: MemberJoinEvent):
 
 
 @listen(GroupMessage)
-@decorate(check_member(get_all_admin()))
+@decorate(check_member())
 async def nmms(app: Ariadne, event: GroupMessage, message: MessageChain = DetectPrefix("删黑")):
     try:
         await else_sql('DELETE FROM blacklist WHERE uid = %s',
