@@ -44,10 +44,10 @@ async def select_fetchone(sql, arg=None):
 async def get_all_admin() -> list:
     botfunc.cursor.execute('SELECT uid FROM admin')
     t = []
-    for i in botfunc.cursor.fetchall():
+    for i in list(botfunc.cursor.fetchall()):
         t.append(i[0])
     logger.debug(t)
-    return t
+    return list(t)
 
 
 async def else_sql(sql, arg):
