@@ -57,6 +57,7 @@ async def get_all_admin() -> list:
     t = []
     for i in botfunc.cursor.fetchall():
         t.append(i[0])
+    logger.debug(t)
     return t
 
 
