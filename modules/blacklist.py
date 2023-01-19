@@ -68,7 +68,7 @@ async def get_all_admin() -> list:
     return list(t)
 
 
-def get_all_sb() -> list:
+async def get_all_sb() -> list:
     tmp = await select_fetchall('SELECT uid FROM blacklist')
     t = []
     for i in tmp:
@@ -92,7 +92,8 @@ async def else_sql(sql, arg):
 
 @listen(GroupMessage)
 async def nmsl(app: Ariadne, event: GroupMessage, message: MessageChain = DetectPrefix("拉黑")):
-    if event.sender.id not in get_all_admin():
+    admins = get_all_admin()
+    if event.sender.id not in admins:
         return
     msg = "--- 执行结果 ---\n"
     flag = True
@@ -144,7 +145,9 @@ async def nmsl(app: Ariadne, event: GroupMessage, message: MessageChain = Detect
 
 @listen(MemberJoinEvent)
 async def kicksb(app: Ariadne, event: MemberJoinEvent):
-    if event.member.id in get_all_sb() and event.inviter.id in get_all_admin():
+    sbs = await get_all_sb()
+    admins = await get_all_admin()
+    if event.member.id in sbs and event.inviter.id in admins:
         t = await select_fetchone("SELECT uid, op FROM blacklist WHERE uid = %s", (event.member.id,))
         try:
             await app.kick_member(event.member.group)
@@ -157,7 +160,8 @@ async def kicksb(app: Ariadne, event: MemberJoinEvent):
 
 @listen(GroupMessage)
 async def nmms(app: Ariadne, event: GroupMessage, message: MessageChain = DetectPrefix("删黑")):
-    if event.sender.id not in get_all_admin():
+    admins = await get_all_admin()
+    if event.sender.id not in admins:
         return
     try:
         await else_sql('DELETE FROM blacklist WHERE uid = %s',

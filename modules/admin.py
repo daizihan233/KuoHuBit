@@ -82,7 +82,8 @@ async def else_sql(sql, arg):
 
 @listen(GroupMessage)
 async def add_admin(app: Ariadne, group: Group, event: GroupMessage, message: MessageChain = DetectPrefix("上管")):
-    if event.sender.id not in get_all_admin():
+    admins = await get_all_admin()
+    if event.sender.id not in admins:
         return
     try:
         await else_sql("INSERT INTO admin(uid) VALUES (%s)", (int(str(message)),))
@@ -94,7 +95,8 @@ async def add_admin(app: Ariadne, group: Group, event: GroupMessage, message: Me
 
 @listen(GroupMessage)
 async def add_admin(app: Ariadne, group: Group, event: GroupMessage, message: MessageChain = DetectPrefix("去管")):
-    if event.sender.id not in get_all_admin():
+    admins = await get_all_admin()
+    if event.sender.id not in admins:
         return
     try:
         await else_sql("DELETE FROM admin WHERE uid = %s", (int(str(message)),))
