@@ -39,10 +39,28 @@ async def select_fetchone(sql, arg=None):
     return r
 
 
-def get_all_admin() -> list:
-    botfunc.cursor.execute('SELECT uid FROM admin')
+async def select_fetchall(sql, arg=None):
+    conn = await aiomysql.connect(host=botfunc.get_cloud_config('MySQL_Host'),
+                                  port=botfunc.get_cloud_config('MySQL_Port'),
+                                  user='root',
+                                  password=botfunc.get_cloud_config('MySQL_Pwd'), charset='utf8mb4',
+                                  db=botfunc.get_cloud_config('MySQL_db'), loop=loop)
+
+    cur = await conn.cursor()
+    if arg:
+        await cur.execute(sql, arg)
+    else:
+        await cur.execute(sql)
+    r = await cur.fetchall()
+    await cur.close()
+    conn.close()
+    return r
+
+
+async def get_all_admin() -> list:
+    tmp = await select_fetchall("SELECT uid FROM admin")
     t = []
-    for i in list(botfunc.cursor.fetchall()):
+    for i in tmp:
         t.append(i[0])
     logger.debug(t)
     return list(t)

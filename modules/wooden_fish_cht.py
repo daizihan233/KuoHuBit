@@ -303,7 +303,7 @@ async def update_fish(app: Ariadne, group: Group, event: GroupMessage):
                             "木鱼升級成功辣！（喜）"
                         )
                     else:
-                        result[4] += int(int(int(time.time()) - result[1]) / (60 * np.power(0.95, result[2]))) * (
+                        result[3] += int(int(int(time.time()) - result[1]) / (60 * np.power(0.95, result[2]))) * (
                                 result[4] * result[6] + result[2])
                         if np.log10(result[3]) >= 1:
                             result[4] = np.log10(np.power(10, result[4]) + result[3])
@@ -360,7 +360,7 @@ async def update_fish(app: Ariadne, group: Group, event: GroupMessage):
                             "轉生成功，功德圓滿（喜）"
                         )
                     else:
-                        result[4] += int(int(int(time.time()) - result[1]) / (60 * np.power(0.95, result[2]))) * (
+                        result[3] += int(int(int(time.time()) - result[1]) / (60 * np.power(0.95, result[2]))) * (
                                 result[4] * result[6] + result[2])
                         if np.log10(result[3]) >= 1:
                             result[4] = np.log10(np.power(10, result[4]) + result[3])
