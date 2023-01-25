@@ -2,10 +2,11 @@ import asyncio
 
 import aiomysql
 import jieba
+import loguru
 import opencc
 import yaml
 from graia.ariadne.app import Ariadne
-from graia.ariadne.event.message import GroupMessage, MessageEvent
+from graia.ariadne.event.message import GroupMessage
 from graia.ariadne.message.chain import MessageChain
 from graia.ariadne.message.element import At, Plain
 from graia.ariadne.message.parser.base import MatchContent, DetectPrefix
@@ -24,6 +25,7 @@ channel.author("HanTools")
 opc = opencc.OpenCC('t2s')
 dyn_config = 'dynamic_config.yaml'
 loop = asyncio.get_event_loop()
+logger = loguru.Logger()
 
 
 async def run_sql(sql, arg):
@@ -68,13 +70,14 @@ async def stop_word(app: Ariadne, group: Group, event: GroupMessage):
 
 
 @channel.use(ListenerSchema(listening_events=[GroupMessage]))
-async def echo(app: Ariadne, event: GroupMessage):
+async def f(app: Ariadne, event: GroupMessage):
     if isinstance(event.sender, Member):  # 如果是群聊消息
         wd = jieba.lcut(  # 准确率：分词
             opc.convert(  # 抗混淆：繁简字转换
                 str(event.message_chain).strip(' []【】{}\\!！?？啊哦额呃嗯嘿')  # 抗混淆：去除语气词
             )
         )
+        logger.debug(wd)
         for w in wd:
             if w in cache_var.sensitive_words:
                 await app.recall_message(event)
@@ -83,23 +86,6 @@ async def echo(app: Ariadne, event: GroupMessage):
                 await run_sql('UPDATE wd SET count=count+1 WHERE wd=%s', (w,))
                 break
 
-
-@channel.use(ListenerSchema(listening_events=[MessageEvent]))
-async def echo(app: Ariadne, event: MessageEvent):
-    if isinstance(event.sender, Member):  # 如果是群聊消息
-        if event.sender.group.id in botfunc.get_dyn_config('word'):
-            wd = jieba.lcut(  # 准确率：分词
-                opc.convert(  # 抗混淆：繁简字转换
-                    str(event.message_chain).strip(' []【】{}\\!！?？啊哦额呃嗯嘿')  # 抗混淆：去除语气词
-                )
-            )
-            for w in wd:
-                if w in cache_var.sensitive_words:
-                    await app.recall_message(event)
-                    await app.send_message(event.sender.group, MessageChain(
-                        [At(event.sender.id), "你的消息涉及敏感内容，为保护群聊消息已被撤回"]))
-                    await run_sql('UPDATE wd SET count=count+1 WHERE wd=%s', (w,))
-                    break
 
 
 @listen(GroupMessage)
