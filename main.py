@@ -3,7 +3,6 @@
 #  - 保持开源
 #  - 使用 AGPL-3.0 协议
 #  - 注明使用了 Mirai 并其源代码来自此仓库
-import os
 import pkgutil
 
 import pymysql
@@ -40,8 +39,6 @@ cursor = conn.cursor()
 cursor.execute('SELECT wd, count FROM wd')
 cache_var.sensitive_words = [x[0] for x in cursor.fetchall()]
 conn.close()
-with open('bot.pid', 'w') as fpid:
-    fpid.write(str(os.getgid()))
 with saya.module_context():
     for module_info in pkgutil.iter_modules(["modules"]):
         if module_info.name.startswith("_"):
