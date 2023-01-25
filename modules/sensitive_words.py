@@ -79,9 +79,13 @@ async def f(app: Ariadne, group: Group, event: GroupMessage):
         logger.debug(wd)
         for w in wd:
             if w in cache_var.sensitive_words:
-                await app.recall_message(event)
-                await app.send_message(event.sender.group, MessageChain(
-                    [At(event.sender.id), "你的消息涉及敏感内容，为保护群聊消息已被撤回"]))
+                try:
+                    await app.recall_message(event)
+                except PermissionError:
+                    logger.error('无权操作！')
+                else:
+                    await app.send_message(event.sender.group, MessageChain(
+                        [At(event.sender.id), "你的消息涉及敏感内容，为保护群聊消息已被撤回"]))
                 await run_sql('UPDATE wd SET count=count+1 WHERE wd=%s', (w,))
                 break
 
