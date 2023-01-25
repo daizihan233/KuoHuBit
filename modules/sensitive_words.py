@@ -2,7 +2,6 @@ import asyncio
 
 import aiomysql
 import jieba
-import loguru
 import opencc
 import yaml
 from graia.ariadne.app import Ariadne
@@ -14,6 +13,7 @@ from graia.ariadne.model import Group
 from graia.ariadne.util.saya import listen, decorate
 from graia.saya import Channel
 from graia.saya.builtins.broadcast.schema import ListenerSchema
+from loguru import logger
 
 import botfunc
 import cache_var
@@ -25,7 +25,6 @@ channel.author("HanTools")
 opc = opencc.OpenCC('t2s')
 dyn_config = 'dynamic_config.yaml'
 loop = asyncio.get_event_loop()
-logger = loguru.Logger()
 
 
 async def run_sql(sql, arg):
