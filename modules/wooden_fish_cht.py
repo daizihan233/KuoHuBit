@@ -293,9 +293,16 @@ async def update_fish(app: Ariadne, group: Group, event: GroupMessage):
                         (event.sender.id,)
                     )
                 else:
-                    if np.power(10, result[5]) + result[4] >= result[2] + 2:
+                    if result[4] >= result[2] + 2:
                         await else_sql("UPDATE woodenfish SET level = level+1, e = e-level+2 WHERE uid = %s",
                                        (event.sender.id,))
+                        await app.send_message(
+                            group,
+                            "木鱼升級成功辣！（喜）"
+                        )
+                    elif np.power(10, result[5]) + result[4] >= result[2] + 2:
+                        await else_sql("UPDATE woodenfish SET level = level+1, e = 0, ee = ee-%s WHERE uid = %s",
+                                       (np.log10(result[2] + 2 - result[4]), event.sender.id))
                         await app.send_message(
                             group,
                             "木鱼升級成功辣！（喜）"
