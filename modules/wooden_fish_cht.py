@@ -136,7 +136,7 @@ async def my_wf(app: Ariadne, group: Group, event: GroupMessage):
             if np.log10(data[4]) >= 1:
                 data[5] = np.log10(np.power(10, data[5]) + data[4])
                 data[4] = 0
-            await else_sql("UPDATE woodenfish SET de = 0, e = %s, ee = %s WHERE uid = %s",
+            await else_sql("UPDATE woodenfish SET de = %s, e = %s, ee = %s WHERE uid = %s",
                            (data[3], data[4], data[5], event.sender.id))
             if data[5] >= 1:
                 gongde = "ee%.3f （=10^10^%.3f）" % (data[5], data[5])
@@ -317,7 +317,7 @@ async def update_fish(app: Ariadne, group: Group, event: GroupMessage):
                                 group,
                                 "您他媽功德不夠，升級個毛啊（惱）"
                             )
-                        await else_sql("UPDATE woodenfish SET de = 0, e = %s, ee = %s WHERE uid = %s",
+                        await else_sql("UPDATE woodenfish SET de = %s, e = %s, ee = %s WHERE uid = %s",
                                        (result[3], result[4], result[5], event.sender.id))
         else:  # 查无此人
             await app.send_group_message(
@@ -370,7 +370,7 @@ async def update_fish(app: Ariadne, group: Group, event: GroupMessage):
                                 group,
                                 "您功德不夠，轉生個毛啊（惱）"
                             )
-                        await else_sql("UPDATE woodenfish SET de = 0, e = %s, ee = %s WHERE uid = %s",
+                        await else_sql("UPDATE woodenfish SET de = %s, e = %s, ee = %s WHERE uid = %s",
                                        (result[3], result[4], result[5], event.sender.id))
         else:  # 查无此人
             await app.send_group_message(

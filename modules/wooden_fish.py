@@ -138,7 +138,7 @@ async def my_wf(app: Ariadne, group: Group, event: GroupMessage):
             if np.log10(data[4]) >= 1:
                 data[5] = np.log10(np.power(10, data[5]) + data[4])
                 data[4] = 0
-            await else_sql("UPDATE woodenfish SET de = 0, e = %s, ee = %s WHERE uid = %s",
+            await else_sql("UPDATE woodenfish SET de = %s, e = %s, ee = %s WHERE uid = %s",
                            (data[3], data[4], data[5], event.sender.id))
             logger.debug(data)
             if data[5] >= 1:
@@ -396,7 +396,7 @@ async def update_fish(app: Ariadne, group: Group, event: GroupMessage):
                                 group,
                                 "宁踏马功德不够，升级个毛啊（恼）"
                             )
-                        await else_sql("UPDATE woodenfish SET de = 0, e = %s, ee = %s WHERE uid = %s",
+                        await else_sql("UPDATE woodenfish SET de = %s, e = %s, ee = %s WHERE uid = %s",
                                        (result[3], result[4], result[5], event.sender.id))
         else:  # 查无此人
             await app.send_group_message(
@@ -449,7 +449,7 @@ async def update_fish(app: Ariadne, group: Group, event: GroupMessage):
                                 group,
                                 "宁功德不够，转生个毛啊（恼）"
                             )
-                        await else_sql("UPDATE woodenfish SET de = 0, e = %s, ee = %s WHERE uid = %s",
+                        await else_sql("UPDATE woodenfish SET de = %s, e = %s, ee = %s WHERE uid = %s",
                                        (result[3], result[4], result[5], event.sender.id))
         else:  # 查无此人
             await app.send_group_message(
