@@ -67,8 +67,8 @@ async def stop_word(app: Ariadne, group: Group, event: GroupMessage):
         await app.send_message(group, MessageChain(At(event.sender.id), Plain(f" 报错辣！{err}")))
 
 
-@channel.use(ListenerSchema(listening_events=[MessageEvent]))
-async def echo(app: Ariadne, event: MessageEvent):
+@channel.use(ListenerSchema(listening_events=[GroupMessage]))
+async def echo(app: Ariadne, event: GroupMessage):
     if isinstance(event.sender, Member):  # 如果是群聊消息
         wd = jieba.lcut(  # 准确率：分词
             opc.convert(  # 抗混淆：繁简字转换
