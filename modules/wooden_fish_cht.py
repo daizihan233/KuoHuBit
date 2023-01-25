@@ -294,7 +294,7 @@ async def update_fish(app: Ariadne, group: Group, event: GroupMessage):
                     )
                 else:
                     if result[4] >= result[2] + 2:
-                        await else_sql("UPDATE woodenfish SET level = level+1, e = e-level+2 WHERE uid = %s",
+                        await else_sql("UPDATE woodenfish SET e = e-level+2, level = level+1 WHERE uid = %s",
                                        (event.sender.id,))
                         await app.send_message(
                             group,
