@@ -10,7 +10,7 @@ from graia.ariadne.event.message import GroupMessage
 from graia.ariadne.message.chain import MessageChain
 from graia.ariadne.message.element import At, Plain
 from graia.ariadne.message.parser.base import MatchContent, DetectPrefix
-from graia.ariadne.model import Group, Member
+from graia.ariadne.model import Group
 from graia.ariadne.util.saya import listen, decorate
 from graia.saya import Channel
 from graia.saya.builtins.broadcast.schema import ListenerSchema
@@ -70,8 +70,8 @@ async def stop_word(app: Ariadne, group: Group, event: GroupMessage):
 
 
 @channel.use(ListenerSchema(listening_events=[GroupMessage]))
-async def f(app: Ariadne, event: GroupMessage):
-    if isinstance(event.sender, Member):  # 如果是群聊消息
+async def f(app: Ariadne, group: Group, event: GroupMessage):
+    if group.id in botfunc.get_dyn_config('mute'):
         wd = jieba.lcut(  # 准确率：分词
             opc.convert(  # 抗混淆：繁简字转换
                 str(event.message_chain).strip(' []【】{}\\!！?？啊哦额呃嗯嘿')  # 抗混淆：去除语气词
@@ -85,7 +85,6 @@ async def f(app: Ariadne, event: GroupMessage):
                     [At(event.sender.id), "你的消息涉及敏感内容，为保护群聊消息已被撤回"]))
                 await run_sql('UPDATE wd SET count=count+1 WHERE wd=%s', (w,))
                 break
-
 
 
 @listen(GroupMessage)
