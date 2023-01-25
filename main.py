@@ -1,5 +1,11 @@
+# 此项目遵循 Mirai 使用的 AGPL-3.0 协议仍然保持开源并继续使用 AGPL-3.0
+# 如果您需要在此项目的基础上改动那么我强烈建议：
+#  - 保持开源
+#  - 使用 AGPL-3.0 协议
+#  - 注明使用了 Mirai 并其源代码来自此仓库
 import pkgutil
 
+import pymysql
 from creart import create
 from graia.ariadne.app import Ariadne
 from graia.ariadne.connection.config import (
@@ -11,6 +17,7 @@ from graia.saya import Saya
 from loguru import logger
 
 import botfunc
+import cache_var
 
 saya = create(Saya)
 
@@ -23,6 +30,15 @@ app = Ariadne(
     ),
 )
 
+conn = pymysql.connect(host=botfunc.get_cloud_config('MySQL_Host'), port=botfunc.get_cloud_config('MySQL_Port'),
+                       user='root',
+                       password=botfunc.get_cloud_config('MySQL_Pwd'), charset='utf8mb4',
+                       database=botfunc.get_cloud_config('MySQL_db'))
+cursor = conn.cursor()
+# 载入敏感词列表
+cursor.execute('SELECT wd, count FROM wd')
+cache_var.sensitive_words = [x[0] for x in cursor.fetchall()]
+conn.close()
 
 with saya.module_context():
     for module_info in pkgutil.iter_modules(["modules"]):
