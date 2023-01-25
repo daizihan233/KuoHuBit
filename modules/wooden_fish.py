@@ -386,6 +386,9 @@ async def update_fish(app: Ariadne, group: Group, event: GroupMessage):
                             result[4] = np.log10(np.power(10, result[4]) + result[3])
                         if np.log10(result[4]) >= 1:
                             result[5] = np.log10(np.power(10, result[5]) + result[4])
+
+                        await else_sql("UPDATE woodenfish SET de = %s, e = %s, ee = %s WHERE uid = %s",
+                                       (result[3], result[4], result[5], event.sender.id))
                         if result[4] >= result[2] + 2:
                             await else_sql("UPDATE woodenfish SET level = level+1, e = e-level+2 WHERE uid = %s",
                                            (event.sender.id,))
@@ -405,8 +408,6 @@ async def update_fish(app: Ariadne, group: Group, event: GroupMessage):
                                 group,
                                 "宁踏马功德不够，升级个毛啊（恼）"
                             )
-                        await else_sql("UPDATE woodenfish SET de = %s, e = %s, ee = %s WHERE uid = %s",
-                                       (result[3], result[4], result[5], event.sender.id))
         else:  # 查无此人
             await app.send_group_message(
                 group.id,
