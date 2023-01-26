@@ -98,6 +98,10 @@ async def echo(app: Ariadne, event: GroupMessage, message: MessageChain = Detect
         await app.send_message(event.sender.group, f'寄！{err}')
     else:
         await app.send_message(event.sender.group, f'好辣！')
+    try:
+        cache_var.sensitive_words.append(str(message))
+    except Exception as err:
+        logger.error(err)
 
 
 @listen(GroupMessage)
@@ -108,3 +112,7 @@ async def echo(app: Ariadne, event: GroupMessage, message: MessageChain = Detect
         await app.send_message(event.sender.group, f'寄！{err}')
     else:
         await app.send_message(event.sender.group, f'好辣！')
+    try:
+        cache_var.sensitive_words.remove(str(message))
+    except Exception as err:
+        logger.error(err)
