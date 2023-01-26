@@ -74,7 +74,7 @@ async def f(app: Ariadne, group: Group, event: GroupMessage):
         if group.id in botfunc.get_dyn_config('word'):
             wd = jieba.lcut(  # 准确率：分词
                 opc.convert(  # 抗混淆：繁简字转换
-                    str(event.message_chain).strip(' []【】{}\\!！.。…?？*啊哦额呃嗯嘿/')  # 抗混淆：去除语气词
+                    str(event.message_chain).strip(' []【】{}\\!！.。…?？啊哦额呃嗯嘿/')  # 抗混淆：去除语气词
                 )
             )
             logger.debug(wd)
