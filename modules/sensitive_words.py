@@ -70,50 +70,51 @@ async def stop_word(app: Ariadne, group: Group, event: GroupMessage):
 
 @channel.use(ListenerSchema(listening_events=[GroupMessage]))
 async def f(app: Ariadne, group: Group, event: GroupMessage):
-    if event.sender.permission in [MemberPerm.Administrator, MemberPerm.Owner]:
-        if group.id in botfunc.get_dyn_config('word'):
-            wd = jieba.lcut(  # 准确率：分词
-                opc.convert(  # 抗混淆：繁简字转换
-                    str(event.message_chain).strip(' []【】{}\\!！.。…?？啊哦额呃嗯嘿/')  # 抗混淆：去除语气词
-                )
+    if group.id in botfunc.get_dyn_config('word'):
+        wd = jieba.lcut(  # 准确率：分词
+            opc.convert(  # 抗混淆：繁简字转换
+                str(event.message_chain).strip(' []【】{}\\!！.。…?？啊哦额呃嗯嘿/')  # 抗混淆：去除语气词
             )
-            logger.debug(wd)
-            for w in wd:
-                if w in cache_var.sensitive_words:
-                    try:
-                        await app.recall_message(event)
-                    except PermissionError:
-                        logger.error('无权操作！')
-                    else:
-                        await app.send_message(event.sender.group, MessageChain(
-                            [At(event.sender.id), "你的消息涉及敏感内容，为保护群聊消息已被撤回"]))
-                    await run_sql('UPDATE wd SET count=count+1 WHERE wd=%s', (w,))
-                    break
+        )
+        logger.debug(wd)
+        for w in wd:
+            if w in cache_var.sensitive_words:
+                try:
+                    await app.recall_message(event)
+                except PermissionError:
+                    logger.error('无权操作！')
+                else:
+                    await app.send_message(event.sender.group, MessageChain(
+                        [At(event.sender.id), "你的消息涉及敏感内容，为保护群聊消息已被撤回"]))
+                await run_sql('UPDATE wd SET count=count+1 WHERE wd=%s', (w,))
+                break
 
 
 @listen(GroupMessage)
-async def echo(app: Ariadne, event: GroupMessage, message: MessageChain = DetectPrefix("加敏感词")):
-    try:
-        await run_sql('INSERT INTO wd(wd) VALUES (%s)', (message,))
-    except Exception as err:
-        await app.send_message(event.sender.group, f'寄！{err}')
-    else:
-        await app.send_message(event.sender.group, f'好辣！')
-    try:
-        cache_var.sensitive_words.append(str(message))
-    except Exception as err:
-        logger.error(err)
+async def add(app: Ariadne, event: GroupMessage, message: MessageChain = DetectPrefix("加敏感词")):
+    if event.sender.permission in [MemberPerm.Administrator, MemberPerm.Owner]:
+        try:
+            await run_sql('INSERT INTO wd(wd) VALUES (%s)', (message,))
+        except Exception as err:
+            await app.send_message(event.sender.group, f'寄！{err}')
+        else:
+            await app.send_message(event.sender.group, f'好辣！')
+        try:
+            cache_var.sensitive_words.append(str(message))
+        except Exception as err:
+            logger.error(err)
 
 
 @listen(GroupMessage)
-async def echo(app: Ariadne, event: GroupMessage, message: MessageChain = DetectPrefix("删敏感词")):
-    try:
-        await run_sql('DELETE FROM wd WHERE wd=%s', (message,))
-    except Exception as err:
-        await app.send_message(event.sender.group, f'寄！{err}')
-    else:
-        await app.send_message(event.sender.group, f'好辣！')
-    try:
-        cache_var.sensitive_words.remove(str(message))
-    except Exception as err:
-        logger.error(err)
+async def rm(app: Ariadne, event: GroupMessage, message: MessageChain = DetectPrefix("删敏感词")):
+    if event.sender.permission in [MemberPerm.Administrator, MemberPerm.Owner]:
+        try:
+            await run_sql('DELETE FROM wd WHERE wd=%s', (message,))
+        except Exception as err:
+            await app.send_message(event.sender.group, f'寄！{err}')
+        else:
+            await app.send_message(event.sender.group, f'好辣！')
+        try:
+            cache_var.sensitive_words.remove(str(message))
+        except Exception as err:
+            logger.error(err)
