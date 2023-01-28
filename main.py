@@ -47,7 +47,7 @@ with saya.module_context():
                 continue
             if module[1] == 'NO_USE':
                 continue
-            module = '.'.join(module)
+            module = '.'.join(module)[:-3]
             saya.require(module)
         logger.info(f'{module} 被载入')
 for module, channel in saya.channels.items():
