@@ -49,7 +49,7 @@ with saya.module_context():
                 continue
             module = '.'.join(module)[:-3]
             saya.require(module)
-        logger.info(f'{module} 被载入')
+            logger.info(f'{module} 被载入')
 for module, channel in saya.channels.items():
     logger.info(f"module: {module}")
     logger.info(f"name: {channel.meta['name']}")
