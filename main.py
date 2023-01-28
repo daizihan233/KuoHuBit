@@ -3,7 +3,7 @@
 #  - 保持开源
 #  - 使用 AGPL-3.0 协议
 #  - 注明使用了 Mirai 并其源代码来自此仓库
-import pkgutil
+import os
 
 import pymysql
 from creart import create
@@ -40,14 +40,16 @@ cursor.execute('SELECT wd, count FROM wd')
 cache_var.sensitive_words = [x[0] for x in cursor.fetchall()]
 conn.close()
 with saya.module_context():
-    for module_info in pkgutil.iter_modules(["modules", "modules.currency", "modules.zh_cht", "modules.zh_cn"]):
-        if module_info.name.startswith("_"):
-            logger.warning(f'modules.{module_info.name} 被跳过载入')
-            # 假设模组是以 `_` 开头的，就不去导入
-            # 根据 Python 标准，这类模组算是私有函数
-            continue
-        saya.require(f"modules.{module_info.name}")
-        logger.info(f'modules.{module_info.name} 被载入')
+    for root, dirs, files in os.walk("./modules", topdown=False):
+        for name in files:
+            module = os.path.join(root, name).replace('\\', '.').replace('./', '').split('.')
+            if module[1] == '__pycache__':
+                continue
+            if module[1] == 'NO_USE':
+                continue
+            module = '.'.join(module)
+            saya.require(module)
+        logger.info(f'{module} 被载入')
 for module, channel in saya.channels.items():
     logger.info(f"module: {module}")
     logger.info(f"name: {channel.meta['name']}")
