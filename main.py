@@ -43,7 +43,7 @@ with saya.module_context():
     for root, dirs, files in os.walk("./modules", topdown=False):
         for name in files:
             module = os.path.join(root, name).replace('\\', '.').replace('./', '').replace('/', '.').split('.')
-            if module[1] == '__pycache__':
+            if '__pycache__' in module:
                 continue
             if module[1] == 'NO_USE':
                 continue
