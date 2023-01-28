@@ -18,6 +18,7 @@ from loguru import logger
 
 import botfunc
 import cache_var
+import modules
 
 saya = create(Saya)
 
@@ -40,7 +41,7 @@ cursor.execute('SELECT wd, count FROM wd')
 cache_var.sensitive_words = [x[0] for x in cursor.fetchall()]
 conn.close()
 with saya.module_context():
-    for module_info in pkgutil.walk_packages(["modules"]):
+    for module_info in pkgutil.walk_packages(modules.__path__, modules.__name__ + "."):
         if module_info.name.startswith("_"):
             logger.warning(f'modules.{module_info.name} 被跳过载入')
             # 假设模组是以 `_` 开头的，就不去导入
