@@ -40,7 +40,7 @@ cursor.execute('SELECT wd, count FROM wd')
 cache_var.sensitive_words = [x[0] for x in cursor.fetchall()]
 conn.close()
 with saya.module_context():
-    for module_info in pkgutil.iter_modules(["modules"]):
+    for module_info in pkgutil.walk_packages(["modules"]):
         if module_info.name.startswith("_"):
             logger.warning(f'modules.{module_info.name} 被跳过载入')
             # 假设模组是以 `_` 开头的，就不去导入
