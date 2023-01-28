@@ -25,6 +25,28 @@ channel.author("HanTools")
 opc = opencc.OpenCC('t2s')
 dyn_config = 'dynamic_config.yaml'
 loop = asyncio.get_event_loop()
+"""
+./jieba_words.txt 是什么？
+jieba 确实是一个非常不错的分词工具
+但在处理诸如“你妈”之类的词的时候并不是很好
+“你妈”我们希望被识别为一个词 -> ["你妈"]
+但真实情况事“你妈”被识别成了两个词 -> ["你", "妈"]
+这当然不是我们想要的效果，此文件是为了让 jieba 更好地处理此类词语而创建的
+文件语法为：(词语) [词频] [词性]  | () -> 必选参数，[] -> 可选参数
+比如：
+极速模式 20
+北京清华大学 5
+李小福 2 nr
+创新办 3 i
+easy_install 3 eng
+好用 300
+韩玉赏鉴 3 nz
+八一双鹿 3 nz
+台中
+凱特琳 nz
+Edu Trust认证 2000
+"""
+jieba.load_userdict("./jieba_words.txt")
 
 
 async def run_sql(sql, arg):
