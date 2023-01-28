@@ -93,10 +93,14 @@ async def stop_word(app: Ariadne, group: Group, event: GroupMessage):
 @channel.use(ListenerSchema(listening_events=[GroupMessage]))
 async def f(app: Ariadne, group: Group, event: GroupMessage):
     if group.id in botfunc.get_dyn_config('word'):
+        msg = opc.convert(  # 抗混淆：繁简字转换
+            str(event.message_chain).strip(' []【】{}\\!！.。…?？啊哦额呃嗯嘿/')  # 抗混淆：去除语气词
+        )
+        if str(event.message_chain) in cache_var.sensitive_words:  # 准确率：整句匹配
+            await app.send_message(event.sender.group, MessageChain(
+                [At(event.sender.id), "你的消息涉及敏感内容，为保护群聊消息已被撤回"]))
         wd = jieba.lcut(  # 准确率：分词
-            opc.convert(  # 抗混淆：繁简字转换
-                str(event.message_chain).strip(' []【】{}\\!！.。…?？啊哦额呃嗯嘿/')  # 抗混淆：去除语气词
-            )
+            msg
         )
         logger.debug(wd)
         for w in wd:
@@ -115,16 +119,19 @@ async def f(app: Ariadne, group: Group, event: GroupMessage):
 @listen(GroupMessage)
 async def add(app: Ariadne, event: GroupMessage, message: MessageChain = DetectPrefix("加敏感词")):
     if event.sender.permission in [MemberPerm.Administrator, MemberPerm.Owner]:
-        try:
-            await run_sql('INSERT INTO wd(wd) VALUES (%s)', (message,))
-        except Exception as err:
-            await app.send_message(event.sender.group, f'寄！{err}')
+        if str(message) not in cache_var.sensitive_words:
+            try:
+                await run_sql('INSERT INTO wd(wd) VALUES (%s)', (message,))
+            except Exception as err:
+                await app.send_message(event.sender.group, f'寄！{err}')
+            else:
+                await app.send_message(event.sender.group, f'好辣！')
+            try:
+                cache_var.sensitive_words.append(str(message))
+            except Exception as err:
+                logger.error(err)
         else:
-            await app.send_message(event.sender.group, f'好辣！')
-        try:
-            cache_var.sensitive_words.append(str(message))
-        except Exception as err:
-            logger.error(err)
+            await app.send_message(event.sender.group, f'有没有一种可能，这个词已经加过了')
 
 
 @listen(GroupMessage)
