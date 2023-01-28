@@ -7,7 +7,6 @@ from graia.amnesia.message import MessageChain
 from graia.ariadne.app import Ariadne
 from graia.ariadne.event.message import GroupMessage
 from graia.ariadne.message.parser.base import DetectPrefix
-from graia.ariadne.model import Group
 from graia.ariadne.util.saya import listen
 from graia.saya import Channel
 from loguru import logger
@@ -15,8 +14,8 @@ from loguru import logger
 import botfunc
 
 channel = Channel.current()
-channel.name("管理员")
-channel.description("114514")
+channel.name("黑名单")
+channel.description("屌你老母")
 channel.author("HanTools")
 loop = asyncio.get_event_loop()
 
@@ -66,6 +65,14 @@ async def get_all_admin() -> list:
     return list(t)
 
 
+async def get_all_sb() -> list:
+    tmp = await select_fetchall('SELECT uid FROM blacklist')
+    t = []
+    for i in tmp:
+        t.append(i[0])
+    return t
+
+
 async def else_sql(sql, arg):
     conn = await aiomysql.connect(host=botfunc.get_cloud_config('MySQL_Host'),
                                   port=botfunc.get_cloud_config('MySQL_Port'),
@@ -80,27 +87,15 @@ async def else_sql(sql, arg):
     conn.close()
 
 
+
 @listen(GroupMessage)
-async def add_admin(app: Ariadne, group: Group, event: GroupMessage, message: MessageChain = DetectPrefix("上管")):
+async def nmms(app: Ariadne, event: GroupMessage, message: MessageChain = DetectPrefix("刪黑")):
     admins = await get_all_admin()
     if event.sender.id not in admins:
         return
     try:
-        await else_sql("INSERT INTO admin(uid) VALUES (%s)", (int(str(message)),))
+        await else_sql('DELETE FROM blacklist WHERE uid = %s',
+                       (int(str(message)),))
+        await app.send_message(event.sender.group, "好了！")
     except Exception as err:
-        await app.send_message(group, f"寄！{err}")
-    else:
-        await app.send_message(group, f"OK!")
-
-
-@listen(GroupMessage)
-async def add_admin(app: Ariadne, group: Group, event: GroupMessage, message: MessageChain = DetectPrefix("去管")):
-    admins = await get_all_admin()
-    if event.sender.id not in admins:
-        return
-    try:
-        await else_sql("DELETE FROM admin WHERE uid = %s", (int(str(message)),))
-    except Exception as err:
-        await app.send_message(group, f"寄！{err}")
-    else:
-        await app.send_message(group, f"OK!")
+        await app.send_message(event.sender.group, f"Umm，{err}")

@@ -10,7 +10,6 @@
 [![OSCS Status](https://www.oscs1024.com/platform/badge/MiraiHanBot.svg?size=large)](https://www.murphysec.com/accept?code=d5a14e49b16c03faa60dea3ad8b144b2&type=1&from=2)<br>
 [![Security Status](https://www.murphysec.com/platform3/v3/badge/1611322149306925056.svg)](https://www.murphysec.com/accept?code=0f43d798e91a32b0f4b909eb701a2012&type=1&from=2&t=2)
 
-
 # 其他的机器人
 
 可以学习一下，我也为这些项目做出过贡献<br>

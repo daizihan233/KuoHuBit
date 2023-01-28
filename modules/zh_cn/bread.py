@@ -1,5 +1,7 @@
 #  本项目遵守 AGPL-3.0 协议，项目地址：https://github.com/daizihan233/MiraiHanBot
 
+#  本项目遵守 AGPL-3.0 协议，项目地址：https://github.com/daizihan233/MiraiHanBot
+
 import asyncio
 import math
 import random
@@ -18,13 +20,13 @@ from graia.saya.builtins.broadcast.schema import ListenerSchema
 from loguru import logger
 
 import botfunc
-from modules.bread import get_data_sql
 
 channel = Channel.current()
-channel.name("麵包廠")
+channel.name("面包厂")
 channel.description("好吃")
 channel.author("HanTools")
 loop = asyncio.get_event_loop()
+get_data_sql = '''SELECT id, level, time, bread, experience FROM bread WHERE id = %s'''
 
 
 async def select_fetchone(sql, arg):
@@ -61,7 +63,7 @@ async def else_sql(sql, arg):
         listening_events=[GroupMessage]
     )
 )
-async def get_bread(app: Ariadne, group: Group, event: GroupMessage, message: MessageChain = DetectPrefix("來份麵包")):
+async def get_bread(app: Ariadne, group: Group, event: GroupMessage, message: MessageChain = DetectPrefix("来份面包")):
     data = message.display
     data = data.lstrip(' ')
     data = data.rstrip(' ')
@@ -70,7 +72,7 @@ async def get_bread(app: Ariadne, group: Group, event: GroupMessage, message: Me
     try:
         data = int(data)
     except Exception as err:
-        await app.send_message(group, MessageChain([At(event.sender.id), Plain(f" 報錯啦……{err}")]))
+        await app.send_message(group, MessageChain([At(event.sender.id), Plain(f" 报错啦……{err}")]))
     else:
         result = await select_fetchone(get_data_sql, (group.id,))
 
@@ -87,13 +89,37 @@ async def get_bread(app: Ariadne, group: Group, event: GroupMessage, message: Me
                 [At(event.sender.id), Plain(f" {'🍞' * data if data < 50 else '🍞*' + str(data)}")]))
         else:  # 如果不够
             await app.send_message(group, MessageChain(
-                [At(event.sender.id), Plain(f" 麵包不夠喲~ 現在只有 {res[3]} 塊麵包！")]))
+                [At(event.sender.id), Plain(f" 面包不够哟~ 现在只有 {res[3]} 块面包！")]))
         sql_2 = '''UPDATE bread SET time = %s, bread = %s WHERE id = %s'''
         await else_sql(sql_2, (res[2], res[3], group.id))
 
 
+@channel.use(
+    ListenerSchema(
+        listening_events=[GroupMessage]
+    )
+)
+async def update_bread(group: Group):
+    result = await select_fetchone(get_data_sql, (group.id,))
+
+    if result:
+        res = list(result)
+        res[4] += 1
+        if res[4] >= (2 ** res[1]):
+            res[1] += 1
+            res[4] = 0
+            sql = '''UPDATE bread SET level = %s, experience = %s WHERE id = %s'''
+            await else_sql(sql, (res[1], res[4], group.id))
+        else:
+            sql = '''UPDATE bread SET experience = %s WHERE id = %s'''
+            await else_sql(sql, (res[4], group.id))
+    else:
+        sql = '''INSERT INTO bread(id, level, time, bread, experience) VALUES (%s, 1, %s, 0, 0)'''
+        await else_sql(sql, (group.id, int(time.time())))
+
+
 @listen(GroupMessage)
-@decorate(MatchContent("麵包廠信息"))
+@decorate(MatchContent("面包厂信息"))
 async def setu(app: Ariadne, group: Group):
     result = await select_fetchone(get_data_sql, (group.id,))
 
@@ -105,20 +131,20 @@ async def setu(app: Ariadne, group: Group):
     sql_2 = '''UPDATE bread SET time = %s, bread = %s WHERE id = %s'''
     await else_sql(sql_2, (res[2], res[3], group.id))
     try:
-        await app.send_message(group, MessageChain([Plain(f'本群（{result[0]}）麵包廠信息如下：\n'
-                                                          f'等級：{result[1]} 級\n'
-                                                          f'經驗值：{result[4]} / {2 ** result[1]}\n'
-                                                          f'現有麵包：{res[3]} / {2 ** result[1]}')]))
+        await app.send_message(group, MessageChain([Plain(f'本群（{result[0]}）面包厂信息如下：\n'
+                                                          f'等级：{result[1]} 级\n'
+                                                          f'经验值：{result[4]} / {2 ** result[1]}\n'
+                                                          f'现有面包：{res[3]} / {2 ** result[1]}')]))
     except ValueError:
         logger.warning('【1】为防止 DoS 攻击程序禁止了int -> str的强制类型转换')
         try:
-            await app.send_message(group, MessageChain([Plain(f'本群（{result[0]}）麵包廠信息如下：\n'
-                                                              f'等級：{result[1]} 級\n'
-                                                              f'經驗值：{result[4]} / 很大\n'
-                                                              f'現有麵包：{res[3]} / 很大')]))
+            await app.send_message(group, MessageChain([Plain(f'本群（{result[0]}）面包厂信息如下：\n'
+                                                              f'等级：{result[1]} 级\n'
+                                                              f'经验值：{result[4]} / 很大\n'
+                                                              f'现有面包：{res[3]} / 很大')]))
         except ValueError:
             logger.warning('【2】为防止 DoS 攻击程序禁止了int -> str的强制类型转换')
-            await app.send_message(group, MessageChain([Plain(f'本群（{result[0]}）麵包廠信息\n'
-                                                              f'等級：{result[1]} 級\n'
-                                                              f'經驗值：很大 / 很大\n'
-                                                              f'現有麵包：很大 / 很大')]))
+            await app.send_message(group, MessageChain([Plain(f'本群（{result[0]}）面包厂信息如下：\n'
+                                                              f'等级：{result[1]} 级\n'
+                                                              f'经验值：很大 / 很大\n'
+                                                              f'现有面包：很大 / 很大')]))

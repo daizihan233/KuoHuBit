@@ -17,10 +17,7 @@ channel.author("HanTools")
 @channel.use(ListenerSchema(listening_events=[GroupMessage]))
 async def echo(app: Ariadne, group: Group, message: MessageChain = DetectPrefix("/echo ")):
     if str(message).startswith('/echo'):  # 防止注入
-        await app.send_message(
-            group,
-            "小子想注入是不是？",
-        )
+        pass  # 这里不需要进行提示，防止出现机器人反复提示的问题
     else:
         await app.send_message(
             group,

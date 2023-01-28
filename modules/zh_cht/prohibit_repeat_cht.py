@@ -1,5 +1,7 @@
 #  本项目遵守 AGPL-3.0 协议，项目地址：https://github.com/daizihan233/MiraiHanBot
 
+#  本项目遵守 AGPL-3.0 协议，项目地址：https://github.com/daizihan233/MiraiHanBot
+
 import yaml
 from graia.ariadne.app import Ariadne
 from graia.ariadne.event.message import GroupMessage
@@ -10,7 +12,7 @@ from graia.ariadne.model import Group
 from graia.ariadne.util.saya import listen, decorate
 from graia.saya import Channel
 
-from modules.prohibit_repeat import dyn_config
+from modules.zh_cn.prohibit_repeat import dyn_config
 
 channel = Channel.current()
 channel.name("防刷屏")
