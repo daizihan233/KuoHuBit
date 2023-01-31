@@ -99,8 +99,14 @@ async def f(app: Ariadne, group: Group, event: GroupMessage):
             str(event.message_chain).strip(' []【】{}\\!！.。…?？啊哦额呃嗯嘿/')  # 抗混淆：去除语气词
         )
         if str(event.message_chain) in cache_var.sensitive_words:  # 准确率：整句匹配
-            await app.send_message(event.sender.group, MessageChain(
-                [At(event.sender.id), "你的消息涉及敏感内容，为保护群聊消息已被撤回"]))
+            try:
+                await app.recall_message(event)
+            except PermissionError:
+                logger.error('无权操作！')
+            else:
+                await app.send_message(event.sender.group, MessageChain(
+                    [At(event.sender.id), "你的消息涉及敏感内容，为保护群聊消息已被撤回"]))
+            await run_sql('UPDATE wd SET count=count+1 WHERE wd=%s', (str(event.message_chain),))
             return
         wd = jieba.lcut(  # 准确率：分词
             msg
