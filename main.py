@@ -35,9 +35,55 @@ conn = pymysql.connect(host=botfunc.get_cloud_config('MySQL_Host'), port=botfunc
                        password=botfunc.get_cloud_config('MySQL_Pwd'), charset='utf8mb4',
                        database=botfunc.get_cloud_config('MySQL_db'))
 cursor = conn.cursor()
+cursor.execute("""create table if not exists admin
+(
+    uid bigint unsigned default '0' not null
+        primary key
+);""")
+
+cursor.execute("""create table if not exists blacklist
+(
+    uid bigint unsigned not null
+        primary key,
+    op  bigint unsigned not null
+);""")
+
+cursor.execute("""create table if not exists bread
+(
+    id         int unsigned auto_increment
+        primary key,
+    level      int unsigned default '0' not null,
+    time       int unsigned default '0' not null,
+    bread      int unsigned default '0' not null,
+    experience int unsigned default '0' not null
+);""")
+
+cursor.execute("""create table if not exists wd
+(
+    wd    tinytext     null,
+    count int unsigned null
+);""")
+
+cursor.execute("""create table if not exists woodenfish
+(
+    uid       bigint unsigned          not null comment '赛博（QQ）账号'
+        primary key,
+    time      bigint unsigned          not null comment '上次计算时间',
+    level     int unsigned default '0' not null comment '木鱼等级',
+    de        bigint       default 0   not null comment '功德',
+    e         double       default 0   not null comment 'log10值',
+    ee        double       default 0   not null comment 'log10^10值',
+    nirvana   double       default 1   not null comment '涅槃重生次数',
+    ban       int          default 0   not null comment '封禁状态',
+    dt        bigint       default 0   not null comment '封禁结束时间',
+    end_time  bigint       default 0   not null comment '最近一次调用时间',
+    hit_count int          default 0   not null comment '一周期内的调用次数'
+);""")
+
 # 载入敏感词列表
 cursor.execute('SELECT wd, count FROM wd')
 cache_var.sensitive_words = [x[0] for x in cursor.fetchall()]
+
 conn.close()
 with saya.module_context():
     for root, dirs, files in os.walk("./modules", topdown=False):

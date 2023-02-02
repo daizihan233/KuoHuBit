@@ -1,5 +1,5 @@
-qq: 2265453790  # 运行时登录的 QQ 号
-verifyKey: "INITKEYjOmhWeXk"  # MAH 的 verifyKey
+qq: 123456  # 运行时登录的 QQ 号
+verifyKey: "VerifyKey"  # MAH 的 verifyKey
 recall: 30  # 涩图撤回等待时长（单位：秒）
 # 如果你没有那么多涩图API可以填一样的URL
 setu_api: "https://api.jiecs.top/lolicon?r18=2"  # 涩图 API

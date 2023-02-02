@@ -163,3 +163,4 @@ cython_debug/
 cloud.json
 dynamic_config.yaml
 nohup.out
+./docs/node_modules
