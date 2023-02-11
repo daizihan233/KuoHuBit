@@ -1,10 +1,11 @@
 import asyncio
-import math
 import os
 import re
+from functools import lru_cache
 
 import aiomysql
 import jieba
+import numba as numba
 import numpy
 from graia.amnesia.message import MessageChain
 from graia.ariadne.app import Ariadne
@@ -45,6 +46,7 @@ async def select_fetchall(sql, arg=None):
     return r
 
 
+@lru_cache()
 def divided(a, b):
     a1 = jieba.cut(a)
     b1 = jieba.cut(b)
@@ -58,6 +60,7 @@ def divided(a, b):
 
 
 # 获取所有的分词可能
+@lru_cache()
 def get_all_words(lst_aa, lst_bb):
     all_word = []
     for ix in lst_aa:
@@ -70,6 +73,7 @@ def get_all_words(lst_aa, lst_bb):
 
 
 # 词频向量化
+@lru_cache()
 def get_word_vector(lst_aaa, lst_bbb, all_word):
     la = []
     lb = []
@@ -80,10 +84,11 @@ def get_word_vector(lst_aaa, lst_bbb, all_word):
 
 
 # 计算余弦值，利用了numpy中的线代计算方法
+@numba.jit(nopython=True, cache=True)
 def calculate_cos(la, lb):
     laaa = numpy.array(la)
     lbbb = numpy.array(lb)
-    coss = (numpy.dot(laaa, lbbb.T)) / ((math.sqrt(numpy.dot(laaa, laaa.T))) * (math.sqrt(numpy.dot(lbbb, lbbb.T))))
+    coss = (numpy.dot(laaa, lbbb.T)) / ((numpy.sqrt(numpy.dot(laaa, laaa.T))) * (numpy.sqrt(numpy.dot(lbbb, lbbb.T))))
     return coss
 
 
@@ -120,42 +125,46 @@ async def select_fetchone(sql, arg=None):
 
 
 # 数据脱敏
-def f_hide_mid(str, count=4, fix='*'):
+@lru_cache()
+def f_hide_mid(string, count=4, fix='*'):
     """
        #隐藏/脱敏 中间几位
        str 字符串
        count 隐藏位数
        fix 替换符号
     """
-    if not str: return ''
+    if not string:
+        return ''
     count = int(count)
-    str_len = len(str)
+    str_len = len(string)
     ret_str = ''
     if str_len == 1:
-        return str
+        return string
     elif str_len == 2:
-        ret_str = str[0] + '*'
+        ret_str = string[0] + '*'
     elif count == 1:
         mid_pos = int(str_len / 2)
-        ret_str = str[:mid_pos] + fix + str[mid_pos + 1:]
+        ret_str = string[:mid_pos] + fix + string[mid_pos + 1:]
     else:
         if str_len - 2 > count:
             if count % 2 == 0:
                 if str_len % 2 == 0:
-                    ret_str = str[:int(str_len / 2 - count / 2)] + count * fix + str[int(str_len / 2 + count / 2):]
+                    ret_str = string[:int(str_len / 2 - count / 2)] + count * fix + string[
+                                                                                    int(str_len / 2 + count / 2):]
                 else:
-                    ret_str = str[:int((str_len + 1) / 2 - count / 2)] + count * fix + str[int((
-                                                                                                       str_len + 1) / 2 + count / 2):]
+                    ret_str = string[:int((str_len + 1) / 2 - count / 2)] + count * fix + string[int((
+                                                                                                             str_len + 1) / 2 + count / 2):]
             else:
                 if str_len % 2 == 0:
-                    ret_str = str[:int(str_len / 2 - (count - 1) / 2)] + count * fix + str[int(str_len / 2 + (
+                    ret_str = string[:int(str_len / 2 - (count - 1) / 2)] + count * fix + string[int(str_len / 2 + (
                             count + 1) / 2):]
                 else:
-                    ret_str = str[:int((str_len + 1) / 2 - (count + 1) / 2)] + count * fix + str[
-                                                                                             int((str_len + 1) / 2 + (
-                                                                                                     count - 1) / 2):]
+                    ret_str = string[:int((str_len + 1) / 2 - (count + 1) / 2)] + count * fix + string[
+                                                                                                int((
+                                                                                                            str_len + 1) / 2 + (
+                                                                                                            count - 1) / 2):]
         else:
-            ret_str = str[0] + fix * (str_len - 2) + str[-1]
+            ret_str = string[0] + fix * (str_len - 2) + string[-1]
     return ret_str
 
 

@@ -12,7 +12,7 @@ from graia.ariadne.event.mirai import MemberUnmuteEvent
 from graia.ariadne.message.chain import MessageChain
 from graia.ariadne.message.element import Plain, At
 from graia.ariadne.message.parser.base import MatchContent
-from graia.ariadne.model import Group, Member
+from graia.ariadne.model import Group, Member, MemberPerm
 from graia.ariadne.util.saya import listen, decorate
 from graia.saya import Channel
 from graia.saya.builtins.broadcast.schema import ListenerSchema
@@ -74,16 +74,17 @@ async def start_mute(app: Ariadne, group: Group, event: GroupMessage):
 @listen(GroupMessage)
 @decorate(MatchContent("关闭本群防刷屏"))
 async def stop_mute(app: Ariadne, group: Group, event: GroupMessage):
-    with open(dyn_config, 'r') as cf:
-        cfy = yaml.safe_load(cf)
-    try:
-        cfy['mute'].remove(group.id)
-        cfy['mute'] = list(set(cfy["mute"]))
-        with open(dyn_config, 'w') as cf:
-            yaml.dump(cfy, cf)
-        await app.send_message(group, MessageChain(At(event.sender.id), Plain(" OK辣！")))
-    except Exception as err:
-        await app.send_message(group, MessageChain(At(event.sender.id), Plain(f" 报错辣！{err}")))
+    if event.sender.permission in [MemberPerm.Administrator, MemberPerm.Owner]:
+        with open(dyn_config, 'r') as cf:
+            cfy = yaml.safe_load(cf)
+        try:
+            cfy['mute'].remove(group.id)
+            cfy['mute'] = list(set(cfy["mute"]))
+            with open(dyn_config, 'w') as cf:
+                yaml.dump(cfy, cf)
+            await app.send_message(group, MessageChain(At(event.sender.id), Plain(" OK辣！")))
+        except Exception as err:
+            await app.send_message(group, MessageChain(At(event.sender.id), Plain(f" 报错辣！{err}")))
 
 
 @channel.use(
