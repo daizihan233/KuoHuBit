@@ -159,4 +159,4 @@ async def six_six_six(app: Ariadne, group: Group):
     msg = []
     for i in data:
         msg.append(f"{i[0]} --> {i[1]} 次")
-        await app.send_group_message(group, Plain("\n".join(msg)))
+    await app.send_group_message(group, Plain("\n".join(msg)))
