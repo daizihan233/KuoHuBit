@@ -8,7 +8,7 @@ import numpy
 from graia.amnesia.message import MessageChain
 from graia.ariadne.app import Ariadne
 from graia.ariadne.event.message import GroupMessage
-from graia.ariadne.message.element import Plain, At
+from graia.ariadne.message.element import Plain, At, Image
 from graia.ariadne.message.parser.base import MatchContent
 from graia.ariadne.model import Group
 from graia.ariadne.util.saya import listen, decorate
@@ -147,7 +147,8 @@ async def six_six_six(app: Ariadne, group: Group, event: GroupMessage, message: 
                 await else_sql("""UPDATE six SET count = count + 1 WHERE uid = %s""", (event.sender.id,))
             else:
                 await else_sql("""INSERT INTO six VALUES (%s, 1)""", (event.sender.id,))
-            await app.send_group_message(target=group, message=MessageChain([At(event.sender.id), Plain(" 6")]),
+            await app.send_group_message(target=group,
+                                         message=MessageChain([At(event.sender.id), Image(path='./img/6.jpg')]),
                                          quote=event.source)
 
 
