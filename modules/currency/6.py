@@ -141,14 +141,14 @@ async def six_six_six(app: Ariadne, group: Group, event: GroupMessage, message: 
         cos = round(cos, 2)
         # 判断
         if cos >= 0.75:  # 判断为 6
-            if data is not None:
-                await else_sql("""UPDATE six SET count = count + 1 WHERE uid = %s""", (event.sender.id,))
-            else:
-                await else_sql("""INSERT INTO six VALUES (%s, 1)""", (event.sender.id,))
             await app.send_group_message(target=group,
                                          message=MessageChain([At(event.sender.id),
                                                                Image(path=os.path.abspath(os.curdir) + '/img/6.jpg')]),
                                          quote=event.source)
+            if data is not None:
+                await else_sql("""UPDATE six SET count = count + 1 WHERE uid = %s""", (event.sender.id,))
+            else:
+                await else_sql("""INSERT INTO six VALUES (%s, 1)""", (event.sender.id,))
             break
 
 
