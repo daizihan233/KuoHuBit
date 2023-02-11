@@ -13,7 +13,6 @@ from graia.ariadne.message.parser.base import MatchContent
 from graia.ariadne.model import Group
 from graia.ariadne.util.saya import listen, decorate
 from graia.saya import Channel
-from loguru import logger
 
 import botfunc
 
@@ -122,12 +121,13 @@ async def select_fetchone(sql, arg=None):
 @listen(GroupMessage)
 async def six_six_six(app: Ariadne, group: Group, event: GroupMessage, message: MessageChain):
     data = await select_fetchone("""SELECT uid, count FROM six WHERE uid = %s""", event.sender.id)
+    msg = [x.text for x in message.get(Plain)]
     for s1 in sl1:
         # 文本预处理
         s1_ = s1.strip(" ，,。.!！？?") \
             .replace('(', '（') \
             .replace(')', '）')
-        s2_ = str(message[Plain]).strip(" ，,。.!！？?") \
+        s2_ = ''.join(msg).strip(" ，,。.!！？?") \
             .replace('(', '（') \
             .replace(')', '）')
         regex = re.compile(r"6+")
@@ -152,7 +152,6 @@ async def six_six_six(app: Ariadne, group: Group, event: GroupMessage, message: 
                                          message=MessageChain([At(event.sender.id), Image(path='./img/6.jpg')]),
                                          quote=event.source)
             break
-        logger.debug(f"{s1_} - {s2_} = cos: {cos}")
 
 
 @listen(GroupMessage)
