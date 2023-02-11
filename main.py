@@ -79,7 +79,7 @@ cursor.execute("""create table if not exists woodenfish
     end_time  bigint       default 0   not null comment '最近一次调用时间',
     hit_count int          default 0   not null comment '一周期内的调用次数'
 ) ENGINE = innodb DEFAULT CHARACTER SET = "utf8mb4" COLLATE = "utf8mb4_0900_ai_ci" """)
-cursor.execute("""CREATE TABLE `6` ( 
+cursor.execute("""CREATE TABLE IF NOT EXISTS `6` ( 
 `uid` bigint UNSIGNED NULL COMMENT 'QQ号' ,
 `count` int UNSIGNED NULL DEFAULT 0 COMMENT '6 的次数' 
 ) ENGINE = innodb DEFAULT CHARACTER SET = "utf8mb4" COLLATE = "utf8mb4_0900_ai_ci" """)
