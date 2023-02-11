@@ -13,6 +13,7 @@ from graia.ariadne.message.parser.base import MatchContent
 from graia.ariadne.model import Group
 from graia.ariadne.util.saya import listen, decorate
 from graia.saya import Channel
+from loguru import logger
 
 import botfunc
 
@@ -150,6 +151,8 @@ async def six_six_six(app: Ariadne, group: Group, event: GroupMessage, message: 
             await app.send_group_message(target=group,
                                          message=MessageChain([At(event.sender.id), Image(path='./img/6.jpg')]),
                                          quote=event.source)
+            break
+        logger.debug(f"cos: {cos}")
 
 
 @listen(GroupMessage)
