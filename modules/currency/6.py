@@ -1,4 +1,5 @@
 import asyncio
+import math
 import os
 import re
 from functools import lru_cache
@@ -88,7 +89,7 @@ def get_word_vector(lst_aaa, lst_bbb, all_word):
 def calculate_cos(la, lb):
     laaa = numpy.array(la)
     lbbb = numpy.array(lb)
-    coss = (numpy.dot(laaa, lbbb.T)) / ((numpy.sqrt(numpy.dot(laaa, laaa.T))) * (numpy.sqrt(numpy.dot(lbbb, lbbb.T))))
+    coss = (math.dot(laaa, lbbb.T)) / ((math.sqrt(numpy.dot(laaa, laaa.T))) * (math.sqrt(numpy.dot(lbbb, lbbb.T))))
     return coss
 
 
