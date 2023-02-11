@@ -152,7 +152,7 @@ async def six_six_six(app: Ariadne, group: Group, event: GroupMessage, message: 
                                          message=MessageChain([At(event.sender.id), Image(path='./img/6.jpg')]),
                                          quote=event.source)
             break
-        logger.debug(f"cos: {cos}")
+        logger.debug(f"{s1_} - {s2_} = cos: {cos}")
 
 
 @listen(GroupMessage)
