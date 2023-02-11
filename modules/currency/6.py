@@ -126,7 +126,7 @@ async def six_six_six(app: Ariadne, group: Group, event: GroupMessage, message: 
     for s1 in sl1:
         # 文本预处理
         s1_ = s1.strip(" ，,。.!！？?()（）")
-        s2_ = msg.strip(" ，,。.!！？?()（）")
+        s2_ = ''.join(msg).strip(" ，,。.!！？?()（）")
         regex = re.compile(r"6+")
         regex2 = re.compile(r"9+")
         s1_ = regex.sub('6', s1_)
