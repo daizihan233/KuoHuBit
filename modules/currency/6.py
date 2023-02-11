@@ -1,5 +1,4 @@
 import asyncio
-import math
 import os
 import re
 from functools import lru_cache
@@ -85,12 +84,12 @@ def get_word_vector(lst_aaa, lst_bbb, all_word):
 
 
 # 计算余弦值，利用了numpy中的线代计算方法
-@numba.jit(nopython=True, cache=True)
+@numba.jit(cache=True)
 def calculate_cos(la, lb):
     laaa = numpy.array(la)
     lbbb = numpy.array(lb)
-    coss = (math.dot(laaa, lbbb.T)) / ((math.sqrt(numpy.dot(laaa, laaa.T))) * (math.sqrt(numpy.dot(lbbb, lbbb.T))))
-    return coss
+    coss = (numpy.dot(laaa, lbbb.T)) / ((numpy.sqrt(numpy.dot(laaa, laaa.T))) * (numpy.sqrt(numpy.dot(lbbb, lbbb.T))))
+    return float(coss)
 
 
 async def else_sql(sql, arg):
