@@ -1,5 +1,6 @@
 import asyncio
 import math
+import os
 import re
 
 import aiomysql
@@ -149,7 +150,8 @@ async def six_six_six(app: Ariadne, group: Group, event: GroupMessage, message: 
             else:
                 await else_sql("""INSERT INTO six VALUES (%s, 1)""", (event.sender.id,))
             await app.send_group_message(target=group,
-                                         message=MessageChain([At(event.sender.id), Image(path='./img/6.jpg')]),
+                                         message=MessageChain([At(event.sender.id),
+                                                               Image(path=os.path.abspath(os.curdir) + '/img/6.jpg')]),
                                          quote=event.source)
             break
 
