@@ -186,7 +186,7 @@ async def six_six_six(app: Ariadne, group: Group, event: GroupMessage, message: 
         list_a, list_b = divided(s1_, s2_)
         all_words = get_all_words(tuple(list_a), tuple(list_b))
         laa, lbb = get_word_vector(tuple(list_a), tuple(list_b), tuple(all_words))
-        cos = calculate_cos(laa, lbb)
+        cos = calculate_cos(tuple(laa), tuple(lbb))
         cos = round(cos, 2)
         # 判断
         if cos >= 0.75:  # 判断为 6
