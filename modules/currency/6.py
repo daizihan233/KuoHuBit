@@ -133,7 +133,8 @@ def f_hide_mid(string, count=4, fix='*'):
        count 隐藏位数
        fix 替换符号
     """
-    if not string: return ''
+    if not string:
+        return ''
     count = int(count)
     str_len = len(string)
     ret_str = ''
@@ -160,7 +161,7 @@ def f_hide_mid(string, count=4, fix='*'):
                 else:
                     ret_str = string[:int((str_len + 1) / 2 - (count + 1) / 2)] + count * fix + string[
                                                                                                 int((
-                                                                                                                str_len + 1) / 2 + (
+                                                                                                            str_len + 1) / 2 + (
                                                                                                             count - 1) / 2):]
         else:
             ret_str = string[0] + fix * (str_len - 2) + string[-1]
