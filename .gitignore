@@ -163,9 +163,17 @@ cython_debug/
 cloud.json
 dynamic_config.yaml
 nohup.out
+<<<<<<< HEAD
 
 ./docs/node_modules
 
 ./docs
 config.yaml
 
+=======
+node_modules/
+.cache/
+.temp/
+.vscode/
+.idea/
+>>>>>>> 0ec19b8150020e309b2a7433c96c619b095bb5cf
