@@ -84,7 +84,7 @@ def get_word_vector(lst_aaa, lst_bbb, all_word):
 
 
 # 计算余弦值，利用了numpy中的线代计算方法
-@numba.jit(cache=True)
+@lru_cache()
 def calculate_cos(la, lb):
     laaa = numpy.array(la)
     lbbb = numpy.array(lb)
