@@ -119,6 +119,46 @@ async def select_fetchone(sql, arg=None):
     return r
 
 
+# 数据脱敏
+def f_hide_mid(str, count=4, fix='*'):
+    """
+       #隐藏/脱敏 中间几位
+       str 字符串
+       count 隐藏位数
+       fix 替换符号
+    """
+    if not str: return ''
+    count = int(count)
+    str_len = len(str)
+    ret_str = ''
+    if str_len == 1:
+        return str
+    elif str_len == 2:
+        ret_str = str[0] + '*'
+    elif count == 1:
+        mid_pos = int(str_len / 2)
+        ret_str = str[:mid_pos] + fix + str[mid_pos + 1:]
+    else:
+        if str_len - 2 > count:
+            if count % 2 == 0:
+                if str_len % 2 == 0:
+                    ret_str = str[:int(str_len / 2 - count / 2)] + count * fix + str[int(str_len / 2 + count / 2):]
+                else:
+                    ret_str = str[:int((str_len + 1) / 2 - count / 2)] + count * fix + str[int((
+                                                                                                       str_len + 1) / 2 + count / 2):]
+            else:
+                if str_len % 2 == 0:
+                    ret_str = str[:int(str_len / 2 - (count - 1) / 2)] + count * fix + str[int(str_len / 2 + (
+                            count + 1) / 2):]
+                else:
+                    ret_str = str[:int((str_len + 1) / 2 - (count + 1) / 2)] + count * fix + str[
+                                                                                             int((str_len + 1) / 2 + (
+                                                                                                     count - 1) / 2):]
+        else:
+            ret_str = str[0] + fix * (str_len - 2) + str[-1]
+    return ret_str
+
+
 @listen(GroupMessage)
 async def six_six_six(app: Ariadne, group: Group, event: GroupMessage, message: MessageChain):
     data = await select_fetchone("""SELECT uid, count FROM six WHERE uid = %s""", event.sender.id)
@@ -158,5 +198,5 @@ async def six_six_six(app: Ariadne, group: Group):
     data = await select_fetchall("SELECT uid, count FROM six ORDER BY count DESC LIMIT 10")
     msg = []
     for i in data:
-        msg.append(f"{i[0]} --> {i[1]} 次")
+        msg.append(f"{f_hide_mid(str(i[0]), len(str(i[0])) // 2)} --> {i[1]} 次")
     await app.send_group_message(group, Plain("\n".join(msg)))
