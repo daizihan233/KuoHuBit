@@ -124,3 +124,13 @@ async def setu(app: Ariadne, group: Group):
                                                               f'等級：{result[1]} 級\n'
                                                               f'經驗值：很大 / 很大\n'
                                                               f'現有麵包：很大 / 很大')]))
+
+
+@channel.use(
+    ListenerSchema(
+        listening_events=[GroupMessage],
+        decorators=[DetectPrefix("來份炒飯")]
+    )
+)
+async def get_bread(app: Ariadne, group: Group, event: GroupMessage):
+    await app.send_group_message(group, "啊？", quote=event.source)
