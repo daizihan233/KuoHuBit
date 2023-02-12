@@ -5,7 +5,6 @@ from functools import lru_cache
 
 import aiomysql
 import jieba
-import numba as numba
 import numpy
 from graia.amnesia.message import MessageChain
 from graia.ariadne.app import Ariadne
@@ -47,7 +46,7 @@ async def select_fetchall(sql, arg=None):
 
 
 @lru_cache()
-def divided(a, b):
+async def divided(a, b):
     a1 = jieba.cut(a)
     b1 = jieba.cut(b)
     lst_a = []
@@ -61,7 +60,7 @@ def divided(a, b):
 
 # 获取所有的分词可能
 @lru_cache()
-def get_all_words(lst_aa, lst_bb):
+async def get_all_words(lst_aa, lst_bb):
     all_word = []
     for ix in lst_aa:
         if ix not in all_word:
@@ -74,7 +73,7 @@ def get_all_words(lst_aa, lst_bb):
 
 # 词频向量化
 @lru_cache()
-def get_word_vector(lst_aaa, lst_bbb, all_word):
+async def get_word_vector(lst_aaa, lst_bbb, all_word):
     la = []
     lb = []
     for word in all_word:
@@ -85,7 +84,7 @@ def get_word_vector(lst_aaa, lst_bbb, all_word):
 
 # 计算余弦值，利用了numpy中的线代计算方法
 @lru_cache()
-def calculate_cos(la, lb):
+async def calculate_cos(la, lb):
     laaa = numpy.array(la)
     lbbb = numpy.array(lb)
     coss = (numpy.dot(laaa, lbbb.T)) / ((numpy.sqrt(numpy.dot(laaa, laaa.T))) * (numpy.sqrt(numpy.dot(lbbb, lbbb.T))))
@@ -124,9 +123,7 @@ async def select_fetchone(sql, arg=None):
     return r
 
 
-# 数据脱敏
-@lru_cache()
-def f_hide_mid(string, count=4, fix='*'):
+async def f_hide_mid(string, count=4, fix='*'):
     """
        #隐藏/脱敏 中间几位
        str 字符串
@@ -168,25 +165,48 @@ def f_hide_mid(string, count=4, fix='*'):
     return ret_str
 
 
+async def text_pretreatment(s):
+    regex = re.compile(r"6+")
+    regex2 = re.compile(r"9+")
+    s = s.strip(" ，,。.!！？?()（）")
+    s = regex.sub('6', s)
+    s = regex2.sub('9', s)
+    return s
+
+
+async def index_lst(x, lst):
+    lst = sorted(lst, reverse=True, key=lambda n: n[1])
+    flag = len(lst) - 1
+    for i in range(len(lst)):
+        if x > lst[i][1]:
+            flag = i
+            break
+    msg = []
+    for i in range(flag):
+        msg.append(f"{lst[i][0]} --> {lst[i][1]}")
+    return msg, flag
+
+
+async def selectivity_hide(lst):
+    msg, ind = await index_lst(numpy.average([x[1] for x in lst]), lst)
+    for i in range(ind, min(len(lst), ind + 10)):
+        msg.append(f"{f_hide_mid(str(lst[i][0]), len(str(lst[i][0])) // 2)} --> {lst[i][1]}")
+    return msg
+
+
 @listen(GroupMessage)
 async def six_six_six(app: Ariadne, group: Group, event: GroupMessage, message: MessageChain):
     data = await select_fetchone("""SELECT uid, count FROM six WHERE uid = %s""", event.sender.id)
     msg = [x.text for x in message.get(Plain)]
     for s1 in sl1:
         # 文本预处理
-        s1_ = s1.strip(" ，,。.!！？?()（）")
-        s2_ = ''.join(msg).strip(" ，,。.!！？?()（）")
-        regex = re.compile(r"6+")
-        regex2 = re.compile(r"9+")
-        s1_ = regex.sub('6', s1_)
-        s2_ = regex.sub('6', s2_)
-        s1_ = regex2.sub('9', s1_)
-        s2_ = regex2.sub('9', s2_)
+        s1_ = await text_pretreatment(s1)
+        s2_ = await text_pretreatment("".join(msg))
         # 对比
-        list_a, list_b = divided(s1_, s2_)
-        all_words = get_all_words(tuple(list_a), tuple(list_b))
-        laa, lbb = get_word_vector(tuple(list_a), tuple(list_b), tuple(all_words))
-        cos = calculate_cos(tuple(laa), tuple(lbb))
+        list_a, list_b = await divided(s1_, s2_)
+        all_words = await get_all_words(tuple(list_a), tuple(list_b))
+        laa, lbb = await get_word_vector(tuple(list_a), tuple(list_b), tuple(all_words))
+        cos = await calculate_cos(tuple(laa), tuple(lbb))
         cos = round(cos, 2)
         # 判断
         if cos >= 0.75:  # 判断为 6
@@ -204,8 +224,6 @@ async def six_six_six(app: Ariadne, group: Group, event: GroupMessage, message: 
 @listen(GroupMessage)
 @decorate(MatchContent("6榜"))
 async def six_six_six(app: Ariadne, group: Group):
-    data = await select_fetchall("SELECT uid, count FROM six ORDER BY count DESC LIMIT 10")
-    msg = []
-    for i in data:
-        msg.append(f"{f_hide_mid(str(i[0]), len(str(i[0])) // 2)} --> {i[1]} 次")
+    data = await select_fetchall("SELECT uid, count FROM six ORDER BY count DESC")
+    msg = await selectivity_hide(data)
     await app.send_group_message(group, Plain("\n".join(msg)))
