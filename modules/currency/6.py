@@ -1,7 +1,6 @@
 import asyncio
 import os
 import re
-from functools import lru_cache
 
 import aiomysql
 import jieba
@@ -45,7 +44,6 @@ async def select_fetchall(sql, arg=None):
     return r
 
 
-@lru_cache()
 async def divided(a, b):
     a1 = jieba.cut(a)
     b1 = jieba.cut(b)
@@ -59,7 +57,6 @@ async def divided(a, b):
 
 
 # 获取所有的分词可能
-@lru_cache()
 async def get_all_words(lst_aa, lst_bb):
     all_word = []
     for ix in lst_aa:
@@ -72,7 +69,6 @@ async def get_all_words(lst_aa, lst_bb):
 
 
 # 词频向量化
-@lru_cache()
 async def get_word_vector(lst_aaa, lst_bbb, all_word):
     la = []
     lb = []
@@ -83,7 +79,6 @@ async def get_word_vector(lst_aaa, lst_bbb, all_word):
 
 
 # 计算余弦值，利用了numpy中的线代计算方法
-@lru_cache()
 async def calculate_cos(la, lb):
     laaa = numpy.array(la)
     lbbb = numpy.array(lb)
