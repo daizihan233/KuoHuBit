@@ -1,6 +1,7 @@
 import asyncio
 import os
 import re
+import time
 
 import aiomysql
 import jieba
@@ -192,7 +193,7 @@ async def selectivity_hide(lst):
 
 @listen(GroupMessage)
 async def six_six_six(app: Ariadne, group: Group, event: GroupMessage, message: MessageChain):
-    data = await select_fetchone("""SELECT uid, count FROM six WHERE uid = %s""", event.sender.id)
+    data = await select_fetchone("""SELECT uid, count, ti FROM six WHERE uid = %s""", event.sender.id)
     msg = [x.text for x in message.get(Plain)]
     for s1 in sl1:
         # 文本预处理
@@ -206,14 +207,17 @@ async def six_six_six(app: Ariadne, group: Group, event: GroupMessage, message: 
         cos = round(cos, 2)
         # 判断
         if cos >= 0.75:  # 判断为 6
-            await app.send_group_message(target=group,
-                                         message=MessageChain([At(event.sender.id),
-                                                               Image(path=os.path.abspath(os.curdir) + '/img/6.jpg')]),
-                                         quote=event.source)
             if data is not None:
                 await else_sql("""UPDATE six SET count = count + 1 WHERE uid = %s""", (event.sender.id,))
             else:
-                await else_sql("""INSERT INTO six VALUES (%s, 1)""", (event.sender.id,))
+                await else_sql("""INSERT INTO six VALUES (%s, 0, %s)""", (event.sender.id, int(time.time())))
+            if time.time() - data[2] >= 600:
+                await app.send_group_message(target=group,
+                                             message=MessageChain([At(event.sender.id),
+                                                                   Image(path=os.path.abspath(
+                                                                       os.curdir) + '/img/6.jpg')]),
+                                             quote=event.source)
+                await else_sql("""UPDATE six SET ti = %s WHERE uid = %s""", (int(time.time()), event.sender.id))
             break
 
 
