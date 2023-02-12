@@ -210,7 +210,7 @@ async def six_six_six(app: Ariadne, group: Group, event: GroupMessage, message: 
             if data is not None:
                 await else_sql("""UPDATE six SET count = count + 1 WHERE uid = %s""", (event.sender.id,))
             else:
-                await else_sql("""INSERT INTO six VALUES (%s, 0, %s)""", (event.sender.id, int(time.time())))
+                await else_sql("""INSERT INTO six VALUES (%s, 1, %s)""", (event.sender.id, int(time.time())))
             if time.time() - data[2] >= 600:
                 await app.send_group_message(target=group,
                                              message=MessageChain([At(event.sender.id),
