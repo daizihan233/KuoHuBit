@@ -20,6 +20,7 @@ openai = "^0.25.0"
 aiomysql = "^0.1.1"
 opencc-python-reimplemented = "^0.1.6"
 jieba = "^0.42.1"
+numba = "^0.56.4"
 
 
 [build-system]
