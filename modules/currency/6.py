@@ -185,7 +185,8 @@ async def index_lst(x, lst):
 async def selectivity_hide(lst):
     msg, ind = await index_lst(numpy.average([x[1] for x in lst]), lst)
     for i in range(ind, min(len(lst), ind + 10)):
-        msg.append(f"{f_hide_mid(str(lst[i][0]), len(str(lst[i][0])) // 2)} --> {lst[i][1]}")
+        aw = await f_hide_mid(str(lst[i][0]), len(str(lst[i][0])) // 2)
+        msg.append(f"{aw} --> {lst[i][1]}")
     return msg
 
 
