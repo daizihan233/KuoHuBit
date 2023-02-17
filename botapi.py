@@ -1,10 +1,19 @@
 import asyncio
+import json
 
 import aiomysql
 import uvicorn
 from fastapi import FastAPI, Response
 
-from botfunc import get_cloud_config
+cloud_config_json = json.load(open('cloud.json', 'r', encoding='UTF-8'))
+
+
+def get_cloud_config(name: str):
+    try:
+        return cloud_config_json[name]
+    except KeyError:
+        return None
+
 
 app = FastAPI()
 loop = asyncio.get_event_loop()
