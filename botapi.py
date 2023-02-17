@@ -59,4 +59,4 @@ async def six(response: Response):
 
 
 if __name__ == '__main__':
-    uvicorn.run("main:app", port=8989, host='0.0.0.0', reload=True)
+    uvicorn.run("botapi:app", port=8989, host='0.0.0.0', reload=True)
