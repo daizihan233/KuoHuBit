@@ -4,18 +4,18 @@ import aiomysql
 import uvicorn
 from fastapi import FastAPI, Response
 
-import botfunc
+from botfunc import get_cloud_config
 
 app = FastAPI()
 loop = asyncio.get_event_loop()
 
 
 async def run_sql(sql, arg):
-    conn = await aiomysql.connect(host=botfunc.get_cloud_config('MySQL_Host'),
-                                  port=botfunc.get_cloud_config('MySQL_Port'),
+    conn = await aiomysql.connect(host=get_cloud_config('MySQL_Host'),
+                                  port=get_cloud_config('MySQL_Port'),
                                   user='root',
-                                  password=botfunc.get_cloud_config('MySQL_Pwd'), charset='utf8mb4',
-                                  db=botfunc.get_cloud_config('MySQL_db'), loop=loop)
+                                  password=get_cloud_config('MySQL_Pwd'), charset='utf8mb4',
+                                  db=get_cloud_config('MySQL_db'), loop=loop)
 
     cur = await conn.cursor()
     await cur.execute(sql, arg)
@@ -25,11 +25,11 @@ async def run_sql(sql, arg):
 
 
 async def select_fetchall(sql, arg=None):
-    conn = await aiomysql.connect(host=botfunc.get_cloud_config('MySQL_Host'),
-                                  port=botfunc.get_cloud_config('MySQL_Port'),
+    conn = await aiomysql.connect(host=get_cloud_config('MySQL_Host'),
+                                  port=get_cloud_config('MySQL_Port'),
                                   user='root',
-                                  password=botfunc.get_cloud_config('MySQL_Pwd'), charset='utf8mb4',
-                                  db=botfunc.get_cloud_config('MySQL_db'), loop=loop)
+                                  password=get_cloud_config('MySQL_Pwd'), charset='utf8mb4',
+                                  db=get_cloud_config('MySQL_db'), loop=loop)
 
     cur = await conn.cursor()
     if arg:
