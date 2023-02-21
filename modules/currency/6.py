@@ -5,6 +5,7 @@ import time
 
 import aiomysql
 import jieba
+import loguru
 import numpy
 from graia.amnesia.message import MessageChain
 from graia.ariadne.app import Ariadne
@@ -218,6 +219,10 @@ async def six_six_six(app: Ariadne, group: Group, event: GroupMessage, message: 
                                                                        os.curdir) + '/img/6.jpg')]),
                                              quote=event.source)
                 await else_sql("""UPDATE six SET ti = %s WHERE uid = %s""", (int(time.time()), event.sender.id))
+            try:
+                await app.mute_member(group=group, member=event.sender, time=data[1] + 1)
+            except PermissionError:
+                loguru.logger.warning("6: PermissionError")
             break
 
 
