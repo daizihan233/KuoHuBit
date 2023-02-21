@@ -1,5 +1,4 @@
 import asyncio
-import os
 import re
 import time
 
@@ -10,7 +9,7 @@ import numpy
 from graia.amnesia.message import MessageChain
 from graia.ariadne.app import Ariadne
 from graia.ariadne.event.message import GroupMessage
-from graia.ariadne.message.element import Plain, At, Image
+from graia.ariadne.message.element import Plain, At
 from graia.ariadne.message.parser.base import MatchContent
 from graia.ariadne.model import Group
 from graia.ariadne.util.saya import listen, decorate
@@ -19,12 +18,12 @@ from graia.saya import Channel
 import botfunc
 
 channel = Channel.current()
-channel.name("6榜")
+channel.name("恶俗用于")
 channel.description("666")
 channel.author("HanTools")
 loop = asyncio.get_event_loop()
 
-sl1 = ["6", "9", "6的", "9（6翻了）"]
+sl1 = ["6", "9", "6的", "9（6翻了）", "乐"]
 jieba.load_userdict('./jieba_words.txt')
 
 
@@ -214,9 +213,8 @@ async def six_six_six(app: Ariadne, group: Group, event: GroupMessage, message: 
                 await else_sql("""INSERT INTO six VALUES (%s, 1, %s)""", (event.sender.id, int(time.time())))
             if data is None or time.time() - data[2] >= 600:
                 await app.send_group_message(target=group,
-                                             message=MessageChain([At(event.sender.id),
-                                                                   Image(path=os.path.abspath(
-                                                                       os.curdir) + '/img/6.jpg')]),
+                                             message=MessageChain(
+                                                 [At(event.sender.id), Plain(f"你是不是除了 {message} 不会说别的啊？")]),
                                              quote=event.source)
                 await else_sql("""UPDATE six SET ti = %s WHERE uid = %s""", (int(time.time()), event.sender.id))
             try:
