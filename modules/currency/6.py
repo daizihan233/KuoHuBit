@@ -1,4 +1,5 @@
 import asyncio
+import os
 import re
 import time
 
@@ -8,7 +9,7 @@ import numpy
 from graia.amnesia.message import MessageChain
 from graia.ariadne.app import Ariadne
 from graia.ariadne.event.message import GroupMessage
-from graia.ariadne.message.element import Plain, At
+from graia.ariadne.message.element import Plain, At, Image
 from graia.ariadne.message.parser.base import MatchContent
 from graia.ariadne.model import Group
 from graia.ariadne.util.saya import listen, decorate
@@ -220,7 +221,9 @@ async def six_six_six(app: Ariadne, group: Group, event: GroupMessage, message: 
             if data is None or time.time() - data[2] >= 600:
                 await app.send_group_message(target=group,
                                              message=MessageChain(
-                                                 [At(event.sender.id), Plain(f"你是不是除了 {message} 不会说别的啊？")]),
+                                                 [At(event.sender.id),
+                                                  Image(path=os.path.abspath(
+                                                      os.curdir) + '/img/6.jpg')]),
                                              quote=event.source)
                 await else_sql("""UPDATE six SET ti = %s, ban_ti=unix_timestamp() WHERE uid = %s""",
                                (int(time.time()), event.sender.id))
