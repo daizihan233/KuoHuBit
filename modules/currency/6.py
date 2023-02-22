@@ -4,7 +4,6 @@ import time
 
 import aiomysql
 import jieba
-import loguru
 import numpy
 from graia.amnesia.message import MessageChain
 from graia.ariadne.app import Ariadne
@@ -18,12 +17,12 @@ from graia.saya import Channel
 import botfunc
 
 channel = Channel.current()
-channel.name("恶俗用于")
+channel.name("6榜")
 channel.description("666")
 channel.author("HanTools")
 loop = asyncio.get_event_loop()
 
-sl1 = ["6", "9", "6的", "9（6翻了）", "乐"]
+sl1 = ["6", "9", "6的", "9（6翻了）"]
 jieba.load_userdict('./jieba_words.txt')
 
 
@@ -193,7 +192,9 @@ async def selectivity_hide(lst):
 
 @listen(GroupMessage)
 async def six_six_six(app: Ariadne, group: Group, event: GroupMessage, message: MessageChain):
-    data = await select_fetchone("""SELECT uid, count, ti FROM six WHERE uid = %s""", event.sender.id)
+    data = await select_fetchone("""SELECT uid, count, ti, ban_ti FROM six WHERE uid = %s""", event.sender.id)
+    if int(time.time()) - data[3] < 10:
+        return
     msg = [x.text for x in message.get(Plain)]
     for s1 in sl1:
         # 文本预处理
@@ -216,11 +217,9 @@ async def six_six_six(app: Ariadne, group: Group, event: GroupMessage, message: 
                                              message=MessageChain(
                                                  [At(event.sender.id), Plain(f"你是不是除了 {message} 不会说别的啊？")]),
                                              quote=event.source)
-                await else_sql("""UPDATE six SET ti = %s WHERE uid = %s""", (int(time.time()), event.sender.id))
-            try:
-                await app.mute_member(group=group, member=event.sender, time=data[1] + 1)
-            except PermissionError:
-                loguru.logger.warning("6: PermissionError")
+                await else_sql("""UPDATE six SET ti = %s, ban_ti=unix_timestamp() WHERE uid = %s""",
+                               (int(time.time()), event.sender.id))
+
             break
 
 
