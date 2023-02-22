@@ -199,7 +199,7 @@ async def selectivity_hide(lst):
 @listen(GroupMessage)
 async def six_six_six(app: Ariadne, group: Group, event: GroupMessage, message: MessageChain):
     data = await select_fetchone("""SELECT uid, count, ti, ban_ti FROM six WHERE uid = %s""", event.sender.id)
-    if int(time.time()) - data[3] < 10:
+    if data is not None and int(time.time()) - data[3] < 10:
         return
     msg = [x.text for x in message.get(Plain)]
     for s1 in sl1:
