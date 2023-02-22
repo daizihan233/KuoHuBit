@@ -129,7 +129,6 @@ async def f_hide_mid(string, count=4, fix='*'):
         return ''
     count = int(count)
     str_len = len(string)
-    ret_str = ''
     if str_len == 1:
         return string
     elif str_len == 2:
@@ -182,8 +181,14 @@ async def index_lst(x, lst):
     return msg, flag
 
 
+async def vague(i: int):
+    ret = list(str(i))
+    return int(f'{ret[0]}{"0" * len(ret)}')
+
+
 async def selectivity_hide(lst):
-    msg, ind = await index_lst(numpy.average([x[1] for x in lst]), lst)
+    avg = await vague(numpy.average([x[1] for x in lst]))
+    msg, ind = await index_lst(avg, lst)
     for i in range(ind, min(len(lst), ind + 10)):
         aw = await f_hide_mid(str(lst[i][0]), len(str(lst[i][0])) // 2)
         msg.append(f"{aw} --> {lst[i][1]}")
@@ -211,7 +216,7 @@ async def six_six_six(app: Ariadne, group: Group, event: GroupMessage, message: 
             if data is not None:
                 await else_sql("""UPDATE six SET count = count + 1 WHERE uid = %s""", (event.sender.id,))
             else:
-                await else_sql("""INSERT INTO six VALUES (%s, 1, %s)""", (event.sender.id, int(time.time())))
+                await else_sql("""INSERT INTO six VALUES (%s, 1, %s, 0)""", (event.sender.id, int(time.time())))
             if data is None or time.time() - data[2] >= 600:
                 await app.send_group_message(target=group,
                                              message=MessageChain(
