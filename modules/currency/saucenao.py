@@ -4,11 +4,12 @@ import datetime
 from graia.ariadne.app import Ariadne
 from graia.ariadne.event.message import GroupMessage
 from graia.ariadne.message.chain import MessageChain
-from graia.ariadne.message.element import Image, ForwardNode, Plain, Forward
+from graia.ariadne.message.element import Plain, Image, Forward, ForwardNode
 from graia.ariadne.message.parser.base import DetectPrefix
 from graia.ariadne.model import Group
 from graia.ariadne.util.saya import listen, decorate
 from graia.saya import Channel
+from loguru import logger
 
 import botfunc
 
@@ -52,11 +53,10 @@ async def saucenao(app: Ariadne, group: Group, message: MessageChain, event: Gro
                 ])
             )
         )
-    await app.send_group_message(
-        group,
-        MessageChain(
-            Forward(
-                nodeList=fwd_node_list
-            )
+    logger.debug(fwd_node_list)
+    msg = MessageChain(
+        Forward(
+            nodeList=fwd_node_list
         )
     )
+    await app.send_group_message(group, msg)
