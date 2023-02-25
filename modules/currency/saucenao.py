@@ -59,4 +59,4 @@ async def saucenao(app: Ariadne, group: Group, message: MessageChain, event: Gro
             node_list=fwd_node_list
         )
     )
-    await app.send_group_message(group, msg)
+    await app.send_message(group, msg)
