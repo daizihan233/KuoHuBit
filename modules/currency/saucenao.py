@@ -56,7 +56,7 @@ async def saucenao(app: Ariadne, group: Group, message: MessageChain, event: Gro
     logger.debug(fwd_node_list)
     msg = MessageChain(
         Forward(
-            nodeList=fwd_node_list
+            node_list=fwd_node_list
         )
     )
     await app.send_group_message(group, msg)
