@@ -39,9 +39,9 @@ async def saucenao(app: Ariadne, group: Group, message: MessageChain, event: Gro
             time=datetime.datetime.now(),
             message=MessageChain([
                 Plain(f"数据来源：https://saucenao.com/\n"
-                      f"搜出 r18 或者你打开时被某张图片吓到，我不负责")
+                      f"没有搜到你想要的图片、搜出 r18 内容、你打开时被某张图片吓到等场景，我不负责")
             ]),
-            name="警告"
+            name="宇宙免责声明"
         )
     ]
     if not image_results:
