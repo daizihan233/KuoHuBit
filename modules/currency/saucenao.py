@@ -24,7 +24,7 @@ async def saucenao(app: Ariadne, group: Group, message: MessageChain, event: Gro
     if Image not in message:
         return
     image_results = botfunc.session.get('https://saucenao.com/search.php', params={
-        "api_key": botfunc.get_cloud_config('snao_key')
+        "api_key": botfunc.get_cloud_config('snao_key'),
         "db": 999,  # 搜索所有数据库
         "output_type": 2,  # 以 Json 格式返回
         "testmode": 1,
