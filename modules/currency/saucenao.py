@@ -20,7 +20,7 @@ channel.author("HanTools")
 
 
 @listen(GroupMessage)
-@decorate(DetectPrefix("snao搜图"))
+@decorate(DetectPrefix("搜图"))
 async def saucenao(app: Ariadne, group: Group, message: MessageChain, event: GroupMessage):
     if Image not in message:
         return
@@ -33,7 +33,17 @@ async def saucenao(app: Ariadne, group: Group, message: MessageChain, event: Gro
         "url": message[Image][0].url
     })
     image_results = image_results.json()['results']
-    fwd_node_list = []
+    fwd_node_list = [
+        ForwardNode(
+            target=botfunc.get_config('qq'),  # 机器人QQ号
+            time=datetime.datetime.now(),
+            message=MessageChain([
+                Plain(f"数据来源：https://saucenao.com/\n"
+                      f"搜出 r18，我不负责")
+            ]),
+            name="机器人"
+        )
+    ]
     if not image_results:
         await app.send_group_message(group, MessageChain(Plain("没搜到！qwq")), quote=event.source)
         return
