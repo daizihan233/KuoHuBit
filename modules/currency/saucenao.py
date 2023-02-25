@@ -43,20 +43,21 @@ async def saucenao(app: Ariadne, group: Group, message: MessageChain, event: Gro
         node_url = '\n'.join(node['data']['ext_urls'])
         fwd_node_list.append(
             ForwardNode(
-                target=botfunc.get_config('qq'),
+                target=botfunc.get_config('qq'),  # 机器人QQ号
                 time=datetime.datetime.now(),
                 message=MessageChain([
                     Plain(f"{node['header']['index_name']}\n"
                           f"相似度：{node['header']['similarity']}\n"),
                     Image(url=node['header']['thumbnail']),
                     Plain(f"\n{node_url}")
-                ])
+                ]),
+                name="机器人"
             )
         )
     logger.debug(fwd_node_list)
     msg = MessageChain(
         Forward(
-            node_list=fwd_node_list
+            fwd_node_list
         )
     )
     await app.send_message(group, msg)
