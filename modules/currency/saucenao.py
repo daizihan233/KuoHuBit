@@ -29,7 +29,7 @@ async def saucenao(app: Ariadne, group: Group, message: MessageChain, event: Gro
         "testmode": 1,
         "numres": 16,
         "url": message[Image][0].url
-    }).json()['result']
+    }).json()['results']
     fwd_node_list = []
     if not image_results:
         await app.send_group_message(group, MessageChain(Plain("没搜到！qwq")), quote=event.source)
