@@ -9,7 +9,6 @@ from graia.ariadne.message.parser.base import DetectPrefix
 from graia.ariadne.model import Group
 from graia.ariadne.util.saya import listen, decorate
 from graia.saya import Channel
-from loguru import logger
 
 import botfunc
 
@@ -25,13 +24,13 @@ async def saucenao(app: Ariadne, group: Group, message: MessageChain, event: Gro
     if Image not in message:
         return
     image_results = botfunc.session.get('https://saucenao.com/search.php', params={
+        "api_key": botfunc.get_cloud_config('snao_key')
         "db": 999,  # 搜索所有数据库
         "output_type": 2,  # 以 Json 格式返回
         "testmode": 1,
         "numres": 16,
         "url": message[Image][0].url
     })
-    logger.debug(image_results, image_results.url)
     image_results = image_results.json()['results']
     fwd_node_list = []
     if not image_results:
