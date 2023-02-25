@@ -37,7 +37,7 @@ async def saucenao(app: Ariadne, group: Group, message: MessageChain, event: Gro
         await app.send_group_message(group, MessageChain(Plain("没搜到！qwq")), quote=event.source)
         return
     for node in image_results[:min(len(image_results), 10)]:
-        if not node['data']['ext_urls']:
+        if not node['data'].get("ext_urls", None):
             continue
         node_url = '\n'.join(node['data']['ext_urls'])
         fwd_node_list.append(
