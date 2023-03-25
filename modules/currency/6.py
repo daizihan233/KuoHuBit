@@ -23,7 +23,7 @@ channel.description("666")
 channel.author("HanTools")
 loop = asyncio.get_event_loop()
 
-sl1 = ["6", "9", "6的", "9（6翻了）", "⑥"]
+sl1 = ["6", "9", "6的", "9（6翻了）", "⑥", "₆", "⑹", "⒍", ]
 jieba.load_userdict('./jieba_words.txt')
 
 
