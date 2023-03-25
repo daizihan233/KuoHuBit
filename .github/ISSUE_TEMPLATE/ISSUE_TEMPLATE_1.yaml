@@ -71,7 +71,7 @@ body:
       label: 补充说明（可选）
 
   - type: textarea
-    id: description
+    id: img
     attributes:
       label: 来点色图/Memes
       description: |

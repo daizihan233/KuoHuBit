@@ -42,7 +42,7 @@ body:
     validations:
       required: true
   - type: textarea
-    id: description
+    id: img
     attributes:
       label: 来点色图/Memes
       description: |
