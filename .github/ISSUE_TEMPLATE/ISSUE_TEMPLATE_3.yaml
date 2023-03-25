@@ -31,9 +31,23 @@ body:
           required: true
   - type: input
     id: name
+    validations:
+      required: true
     attributes:
       label: 功能名称
   - type: textarea
     id: description
+    validations:
+      required: true
     attributes:
       label: 描述
+  - type: textarea
+    id: description
+    attributes:
+      label: 来点色图/Memes
+      description: |
+        如果你不提供色图/Memes而你的issue中又有其他不符合标准的地方，那么你的issue可能会被直接删除
+        色图不限类别，尽量偏二次元
+        Memes 也不限类别，够沙雕就行
+      value: |
+        任何色图终将绳之以法，和蔼！
