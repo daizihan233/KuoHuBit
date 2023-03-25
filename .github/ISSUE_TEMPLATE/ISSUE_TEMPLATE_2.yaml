@@ -31,16 +31,16 @@ body:
           required: true
   - type: input
     id: name
-    validations:
-      required: true
     attributes:
       label: 新功能名称
-  - type: textarea
-    id: description
     validations:
       required: true
+  - type: textarea
+    id: description
     attributes:
       label: 新功能描述
+    validations:
+      required: true
   - type: textarea
     id: description
     attributes:
