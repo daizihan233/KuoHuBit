@@ -7,8 +7,6 @@ import os
 
 import pymysql
 from creart import create
-from fastapi import FastAPI
-from graia.amnesia.builtins.uvicorn import UvicornService
 from graia.ariadne.app import Ariadne
 from graia.ariadne.connection.config import (
     HttpClientConfig,
@@ -16,17 +14,12 @@ from graia.ariadne.connection.config import (
     config,
 )
 from graia.saya import Saya
-from graiax.fastapi import FastAPIBehaviour, FastAPIService
 from loguru import logger
 
 import botfunc
 import cache_var
 
 saya = create(Saya)
-fastapi = FastAPI()
-
-saya.install_behaviours(FastAPIBehaviour(fastapi))
-
 app = Ariadne(
     connection=config(
         botfunc.get_config('qq'),
@@ -35,11 +28,6 @@ app = Ariadne(
         WebsocketClientConfig(host=botfunc.get_config('mirai_api_http')),
     ),
 )
-app.launch_manager.add_service(FastAPIService(fastapi))
-uvicorn = UvicornService()
-uvicorn.server.config.host = botfunc.get_config('apihost')
-uvicorn.server.config.host = botfunc.get_config('apiport')
-app.launch_manager.add_service(uvicorn)
 conn = pymysql.connect(host=botfunc.get_cloud_config('MySQL_Host'), port=botfunc.get_cloud_config('MySQL_Port'),
                        user='root',
                        password=botfunc.get_cloud_config('MySQL_Pwd'), charset='utf8mb4',
@@ -68,7 +56,7 @@ cursor.execute("""create table if not exists bread
     experience int unsigned default '0' not null
 ) ENGINE = innodb DEFAULT CHARACTER SET = "utf8mb4" COLLATE = "utf8mb4_0900_ai_ci" """)
 
-cursor.execute("""create table if not exists wd
+cursor.execute("""creategi table if not exists wd
 (
     wd    tinytext     null,
     count int unsigned null

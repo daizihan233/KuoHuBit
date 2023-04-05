@@ -1,7 +1,5 @@
 #  本项目遵守 AGPL-3.0 协议，项目地址：https://github.com/daizihan233/MiraiHanBot
 
-import asyncio
-
 from graia.amnesia.message import MessageChain
 from graia.ariadne.app import Ariadne
 from graia.ariadne.event.message import GroupMessage
@@ -16,7 +14,6 @@ channel = Channel.current()
 channel.name("黑名单")
 channel.description("屌你老母")
 channel.author("HanTools")
-loop = asyncio.get_event_loop()
 
 
 async def get_all_admin() -> list:
