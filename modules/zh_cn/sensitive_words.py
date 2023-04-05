@@ -2,7 +2,6 @@
 
 import asyncio
 
-import aiomysql
 import jieba
 import opencc
 import yaml
@@ -51,20 +50,6 @@ Edu Trust认证 2000
 jieba.load_userdict("./jieba_words.txt")
 
 
-async def run_sql(sql, arg):
-    conn = await aiomysql.connect(host=botfunc.get_cloud_config('MySQL_Host'),
-                                  port=botfunc.get_cloud_config('MySQL_Port'),
-                                  user='root',
-                                  password=botfunc.get_cloud_config('MySQL_Pwd'), charset='utf8mb4',
-                                  db=botfunc.get_cloud_config('MySQL_db'), loop=loop)
-
-    cur = await conn.cursor()
-    await cur.execute(sql, arg)
-    await cur.execute("commit")
-    await cur.close()
-    conn.close()
-
-
 @listen(GroupMessage)
 @decorate(MatchContent("开启本群敏感词检测"))
 async def start_word(app: Ariadne, group: Group, event: GroupMessage):
@@ -106,7 +91,7 @@ async def f(app: Ariadne, group: Group, event: GroupMessage):
             else:
                 await app.send_message(event.sender.group, MessageChain(
                     [At(event.sender.id), "你的消息涉及敏感内容，为保护群聊消息已被撤回"]))
-            await run_sql('UPDATE wd SET count=count+1 WHERE wd=%s', (str(event.message_chain),))
+            await botfunc.run_sql('UPDATE wd SET count=count+1 WHERE wd=%s', (str(event.message_chain),))
             return
         wd = jieba.lcut(  # 准确率：分词
             msg
@@ -121,7 +106,7 @@ async def f(app: Ariadne, group: Group, event: GroupMessage):
                 else:
                     await app.send_message(event.sender.group, MessageChain(
                         [At(event.sender.id), "你的消息涉及敏感内容，为保护群聊消息已被撤回"]))
-                await run_sql('UPDATE wd SET count=count+1 WHERE wd=%s', (w,))
+                await botfunc.run_sql('UPDATE wd SET count=count+1 WHERE wd=%s', (w,))
                 break
 
 
@@ -130,7 +115,7 @@ async def add(app: Ariadne, event: GroupMessage, message: MessageChain = DetectP
     if event.sender.permission in [MemberPerm.Administrator, MemberPerm.Owner]:
         if str(message) not in cache_var.sensitive_words:
             try:
-                await run_sql('INSERT INTO wd(wd) VALUES (%s)', (message,))
+                await botfunc.run_sql('INSERT INTO wd(wd) VALUES (%s)', (message,))
             except Exception as err:
                 await app.send_message(event.sender.group, f'寄！{err}')
             else:
@@ -147,7 +132,7 @@ async def add(app: Ariadne, event: GroupMessage, message: MessageChain = DetectP
 async def rm(app: Ariadne, event: GroupMessage, message: MessageChain = DetectPrefix("删敏感词")):
     if event.sender.permission in [MemberPerm.Administrator, MemberPerm.Owner]:
         try:
-            await run_sql('DELETE FROM wd WHERE wd=%s', (message,))
+            await botfunc.run_sql('DELETE FROM wd WHERE wd=%s', (message,))
         except Exception as err:
             await app.send_message(event.sender.group, f'寄！{err}')
         else:

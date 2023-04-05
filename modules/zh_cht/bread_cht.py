@@ -7,7 +7,6 @@ import math
 import random
 import time
 
-import aiomysql
 from graia.ariadne.app import Ariadne
 from graia.ariadne.event.message import GroupMessage
 from graia.ariadne.message.chain import MessageChain
@@ -29,35 +28,6 @@ channel.author("HanTools")
 loop = asyncio.get_event_loop()
 
 
-async def select_fetchone(sql, arg):
-    conn = await aiomysql.connect(host=botfunc.get_cloud_config('MySQL_Host'),
-                                  port=botfunc.get_cloud_config('MySQL_Port'),
-                                  user='root',
-                                  password=botfunc.get_cloud_config('MySQL_Pwd'), charset='utf8mb4',
-                                  db=botfunc.get_cloud_config('MySQL_db'), loop=loop)
-
-    cur = await conn.cursor()
-    await cur.execute(sql, arg)
-    r = await cur.fetchone()
-    await cur.close()
-    conn.close()
-    return r
-
-
-async def else_sql(sql, arg):
-    conn = await aiomysql.connect(host=botfunc.get_cloud_config('MySQL_Host'),
-                                  port=botfunc.get_cloud_config('MySQL_Port'),
-                                  user='root',
-                                  password=botfunc.get_cloud_config('MySQL_Pwd'), charset='utf8mb4',
-                                  db=botfunc.get_cloud_config('MySQL_db'), loop=loop)
-
-    cur = await conn.cursor()
-    await cur.execute(sql, arg)
-    await cur.execute("commit")
-    await cur.close()
-    conn.close()
-
-
 @channel.use(
     ListenerSchema(
         listening_events=[GroupMessage]
@@ -74,7 +44,7 @@ async def get_bread(app: Ariadne, group: Group, event: GroupMessage, message: Me
     except Exception as err:
         await app.send_message(group, MessageChain([At(event.sender.id), Plain(f" 報錯啦……{err}")]))
     else:
-        result = await select_fetchone(get_data_sql, (group.id,))
+        result = await botfunc.select_fetchone(get_data_sql, (group.id,))
 
         res = list(result)
         res[3] += ((int(time.time()) - res[2]) // 60) * random.randint(0, math.ceil((2 ** res[1] - res[3]) * 0.08))
@@ -91,13 +61,13 @@ async def get_bread(app: Ariadne, group: Group, event: GroupMessage, message: Me
             await app.send_message(group, MessageChain(
                 [At(event.sender.id), Plain(f" 麵包不夠喲~ 現在只有 {res[3]} 塊麵包！")]))
         sql_2 = '''UPDATE bread SET time = %s, bread = %s WHERE id = %s'''
-        await else_sql(sql_2, (res[2], res[3], group.id))
+        await botfunc.run_sql(sql_2, (res[2], res[3], group.id))
 
 
 @listen(GroupMessage)
 @decorate(MatchContent("麵包廠信息"))
 async def setu(app: Ariadne, group: Group):
-    result = await select_fetchone(get_data_sql, (group.id,))
+    result = await botfunc.select_fetchone(get_data_sql, (group.id,))
 
     res = list(result)
     res[3] = ((int(time.time()) - res[2]) // 60) * random.randint(0, math.ceil((2 ** res[1] - res[3]) * 0.08)) + res[3]
@@ -105,7 +75,7 @@ async def setu(app: Ariadne, group: Group):
         res[3] = 2 ** result[1]
     res[2] = int(time.time())
     sql_2 = '''UPDATE bread SET time = %s, bread = %s WHERE id = %s'''
-    await else_sql(sql_2, (res[2], res[3], group.id))
+    await botfunc.run_sql(sql_2, (res[2], res[3], group.id))
     try:
         await app.send_message(group, MessageChain([Plain(f'本群（{result[0]}）麵包廠信息如下：\n'
                                                           f'等級：{result[1]} 級\n'

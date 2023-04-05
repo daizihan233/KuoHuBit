@@ -1,6 +1,5 @@
 import asyncio
 
-import aiomysql
 import jieba
 import opencc
 import yaml
@@ -25,20 +24,6 @@ opc = opencc.OpenCC('t2s')
 dyn_config = 'dynamic_config.yaml'
 loop = asyncio.get_event_loop()
 jieba.load_userdict("./jieba_words.txt")
-
-
-async def run_sql(sql, arg):
-    conn = await aiomysql.connect(host=botfunc.get_cloud_config('MySQL_Host'),
-                                  port=botfunc.get_cloud_config('MySQL_Port'),
-                                  user='root',
-                                  password=botfunc.get_cloud_config('MySQL_Pwd'), charset='utf8mb4',
-                                  db=botfunc.get_cloud_config('MySQL_db'), loop=loop)
-
-    cur = await conn.cursor()
-    await cur.execute(sql, arg)
-    await cur.execute("commit")
-    await cur.close()
-    conn.close()
 
 
 @listen(GroupMessage)
@@ -73,7 +58,7 @@ async def add(app: Ariadne, event: GroupMessage, message: MessageChain = DetectP
     if event.sender.permission in [MemberPerm.Administrator, MemberPerm.Owner]:
         if str(message) not in cache_var.sensitive_words:
             try:
-                await run_sql('INSERT INTO wd(wd) VALUES (%s)', (message,))
+                await botfunc.run_sql('INSERT INTO wd(wd) VALUES (%s)', (message,))
             except Exception as err:
                 await app.send_message(event.sender.group, f'寄！{err}')
             else:
@@ -90,7 +75,7 @@ async def add(app: Ariadne, event: GroupMessage, message: MessageChain = DetectP
 async def rm(app: Ariadne, event: GroupMessage, message: MessageChain = DetectPrefix("刪敏感詞")):
     if event.sender.permission in [MemberPerm.Administrator, MemberPerm.Owner]:
         try:
-            await run_sql('DELETE FROM wd WHERE wd=%s', (message,))
+            await botfunc.run_sql('DELETE FROM wd WHERE wd=%s', (message,))
         except Exception as err:
             await app.send_message(event.sender.group, f'寄！{err}')
         else:
