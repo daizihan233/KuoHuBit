@@ -1,5 +1,3 @@
-import asyncio
-
 import jieba
 import opencc
 import yaml
@@ -22,7 +20,6 @@ channel.description("防止群被炸")
 channel.author("HanTools")
 opc = opencc.OpenCC('t2s')
 dyn_config = 'dynamic_config.yaml'
-loop = asyncio.get_event_loop()
 jieba.load_userdict("./jieba_words.txt")
 
 

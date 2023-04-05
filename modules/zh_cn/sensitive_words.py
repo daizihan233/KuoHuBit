@@ -1,7 +1,5 @@
 #  本项目遵守 AGPL-3.0 协议，项目地址：https://github.com/daizihan233/MiraiHanBot
 
-import asyncio
-
 import jieba
 import opencc
 import yaml
@@ -25,7 +23,6 @@ channel.description("防止群被炸")
 channel.author("HanTools")
 opc = opencc.OpenCC('t2s')
 dyn_config = 'dynamic_config.yaml'
-loop = asyncio.get_event_loop()
 """
 ./jieba_words.txt 是什么？
 jieba 确实是一个非常不错的分词工具
