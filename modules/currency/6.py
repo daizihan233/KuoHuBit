@@ -130,13 +130,8 @@ async def index_lst(x, lst):
     return msg, flag
 
 
-async def vague(i: int):
-    ret = list(str(i))
-    return int(f'{ret[0]}{"0" * (len(ret) - 1)}')
-
-
 async def selectivity_hide(lst):
-    avg = await vague(numpy.average([x[1] for x in lst]))
+    avg = numpy.average([x[1] for x in lst])
     msg, ind = await index_lst(avg, lst)
     msg.insert(0, f"avg: {avg}")
     for i in range(ind, min(len(lst) - 1, ind + 10)):
