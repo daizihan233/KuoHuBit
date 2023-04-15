@@ -131,9 +131,9 @@ async def index_lst(x, lst):
 
 
 async def selectivity_hide(lst):
-    avg = int(numpy.median([x[1] for x in lst]))
+    avg = int(numpy.average([x[1] for x in lst]))
     msg, ind = await index_lst(avg, lst)
-    msg.insert(0, f"中位数：{avg}")
+    msg.insert(0, f"avg: {avg}")
     for i in range(ind, min(len(lst) - 1, ind + 10)):
         aw = await f_hide_mid(str(lst[i][0]), len(str(lst[i][0])) // 2)
         msg.append(f"{aw} --> {lst[i][1]}")
@@ -179,6 +179,6 @@ async def six_six_six(app: Ariadne, group: Group, event: GroupMessage, message: 
 @listen(GroupMessage)
 @decorate(MatchContent("6榜"))
 async def six_six_six(app: Ariadne, group: Group):
-    data = await botfunc.select_fetchall("SELECT uid, count FROM six ORDER BY count DESC")
+    data = await botfunc.select_fetchall("SELECT uid, count FROM six ORDER BY count DESC LIMIT 21")
     msg = await selectivity_hide(data)
     await app.send_group_message(group, Plain("\n".join(msg)))
