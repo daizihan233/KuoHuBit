@@ -142,7 +142,7 @@ async def selectivity_hide(lst):
 @listen(GroupMessage)
 async def six_six_six(app: Ariadne, group: Group, event: GroupMessage, message: MessageChain):
     data = await botfunc.select_fetchone("""SELECT uid, count, ti, ban_ti FROM six WHERE uid = %s""", event.sender.id)
-    if data is not None and int(time.time()) - data[2] < 5:
+    if data is not None and int(time.time()) - data[2] < 10:
         await botfunc.run_sql("""UPDATE six SET ti = %s WHERE uid = %s""", (int(time.time()), event.sender.id))
         return
     msg = [x.text for x in message.get(Plain)]
