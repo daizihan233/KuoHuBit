@@ -121,7 +121,7 @@ async def index_lst(x, lst):
     lst = sorted(lst, reverse=True, key=lambda n: n[1])
     flag = len(lst) - 1
     for i in range(len(lst)):
-        if x < lst[i][1]:
+        if x > lst[i][1]:
             flag = i
             break
     msg = []
@@ -132,7 +132,7 @@ async def index_lst(x, lst):
 
 async def vague(i: int):
     ret = list(str(i))
-    return int(f'{ret[0]}{"0" * len(ret)}')
+    return int(f'{ret[0]}{"0" * (len(ret) - 1)}')
 
 
 async def selectivity_hide(lst):
