@@ -177,7 +177,8 @@ async def six_six_six(app: Ariadne, group: Group, event: GroupMessage, message: 
 
 @listen(GroupMessage)
 @decorate(MatchContent("6榜"))
-async def six_six_six(app: Ariadne, group: Group):
+async def six_six_six(app: Ariadne, group: Group, event: GroupMessage):
     data = await botfunc.select_fetchall("SELECT uid, count FROM six ORDER BY count DESC LIMIT 21")
     msg = await selectivity_hide(data)
-    await app.send_group_message(group, Plain("\n".join(msg)))
+    await app.send_group_message(group, MessageChain([At(event.sender.id), Plain("\n"), Plain("\n".join(msg))]),
+                                 quote=event.quote)
