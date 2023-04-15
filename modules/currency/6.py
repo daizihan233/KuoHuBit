@@ -143,7 +143,7 @@ async def selectivity_hide(lst):
 async def six_six_six(app: Ariadne, group: Group, event: GroupMessage, message: MessageChain):
     data = await botfunc.select_fetchone("""SELECT uid, count, ti, ban_ti FROM six WHERE uid = %s""", event.sender.id)
     if data is not None and int(time.time()) - data[2] < 5:
-        await botfunc.run_sql("""UPDATE six SET ti = unix_timestamp() WHERE uid = %s""", (event.sender.id,))
+        await botfunc.run_sql("""UPDATE six SET ti = %s WHERE uid = %s""", (int(time.time()), event.sender.id))
         return
     msg = [x.text for x in message.get(Plain)]
     for s1 in sl1:
@@ -159,7 +159,7 @@ async def six_six_six(app: Ariadne, group: Group, event: GroupMessage, message: 
         # 判断
         if cos >= 0.75:  # 判断为 6
             if data is not None:
-                await botfunc.run_sql("""UPDATE six SET count = count + 1 WHERE uid = %s""", (event.sender.id,))
+                await botfunc.run_sql("""UPDATE six SET count = %s WHERE uid = %s""", (data[1] + 1, event.sender.id))
             else:
                 await botfunc.run_sql("""INSERT INTO six VALUES (%s, 1, %s, 0)""", (event.sender.id, int(time.time())))
             if data is None or time.time() - data[2] >= 600:
@@ -169,9 +169,6 @@ async def six_six_six(app: Ariadne, group: Group, event: GroupMessage, message: 
                                                   Image(path=os.path.abspath(
                                                       os.curdir) + '/img/6.jpg')]),
                                              quote=event.source)
-                await botfunc.run_sql("""UPDATE six SET ti = unix_timestamp() WHERE uid = %s""",
-                                      (event.sender.id,))
-
             break
 
 
@@ -181,4 +178,4 @@ async def six_six_six(app: Ariadne, group: Group, event: GroupMessage):
     data = await botfunc.select_fetchall("SELECT uid, count FROM six ORDER BY count DESC LIMIT 21")
     msg = await selectivity_hide(data)
     await app.send_group_message(group, MessageChain([At(event.sender.id), Plain("\n"), Plain("\n".join(msg))]),
-                                 quote=event.quote)
+                                 quote=event.source)
