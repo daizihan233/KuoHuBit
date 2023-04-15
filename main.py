@@ -80,8 +80,7 @@ cursor.execute("""create table if not exists woodenfish
 cursor.execute("""CREATE TABLE IF NOT EXISTS `six` ( 
 `uid` bigint UNSIGNED NOT NULL PRIMARY KEY COMMENT 'QQ号' ,
 `count` int UNSIGNED NOT NULL DEFAULT 0 COMMENT '6 的次数',
-`ti` bigint UNSIGNED NOT NULL DEFAULT 0 COMMENT '最后一次消息发送时间',
-`ban_ti` bigint UNSIGNED NOT NULL DEFAULT 0 COMMENT '用于判断是否在刷榜'
+`ti` bigint UNSIGNED NOT NULL DEFAULT 0 COMMENT '最后一次"6"发送时间'
 ) ENGINE = innodb DEFAULT CHARACTER SET = "utf8mb4" COLLATE = "utf8mb4_0900_ai_ci" """)
 
 # 载入敏感词列表

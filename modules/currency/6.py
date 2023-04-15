@@ -20,7 +20,8 @@ channel.name("6榜")
 channel.description("666")
 channel.author("HanTools")
 
-sl1 = ["6", "9", "6的", "9（6翻了）", "⑥", "₆", "⑹", "⒍", "⁶", "六"]
+sl1 = ["6", "9", "6的", "9（6翻了）", "⑥", "₆", "⑹", "⒍", "⁶", "陆", "Six", "Nine", "\u0039\ufe0f\u20e3",
+       "\u0036\ufe0f\u20e3", "♸"]
 jieba.load_userdict('./jieba_words.txt')
 
 
@@ -120,7 +121,7 @@ async def index_lst(x, lst):
     lst = sorted(lst, reverse=True, key=lambda n: n[1])
     flag = len(lst) - 1
     for i in range(len(lst)):
-        if x > lst[i][1]:
+        if x < lst[i][1]:
             flag = i
             break
     msg = []
@@ -137,7 +138,7 @@ async def vague(i: int):
 async def selectivity_hide(lst):
     avg = await vague(numpy.average([x[1] for x in lst]))
     msg, ind = await index_lst(avg, lst)
-    for i in range(ind, min(len(lst), ind + 10)):
+    for i in range(ind, min(len(lst) - 1, ind + 10)):
         aw = await f_hide_mid(str(lst[i][0]), len(str(lst[i][0])) // 2)
         msg.append(f"{aw} --> {lst[i][1]}")
     return msg
@@ -146,7 +147,8 @@ async def selectivity_hide(lst):
 @listen(GroupMessage)
 async def six_six_six(app: Ariadne, group: Group, event: GroupMessage, message: MessageChain):
     data = await botfunc.select_fetchone("""SELECT uid, count, ti, ban_ti FROM six WHERE uid = %s""", event.sender.id)
-    if data is not None and int(time.time()) - data[3] < 10:
+    if data is not None and int(time.time()) - data[2] < 5:
+        await botfunc.run_sql("""UPDATE six SET ti = unix_timestamp() WHERE uid = %s""", (event.sender.id,))
         return
     msg = [x.text for x in message.get(Plain)]
     for s1 in sl1:
@@ -172,8 +174,8 @@ async def six_six_six(app: Ariadne, group: Group, event: GroupMessage, message: 
                                                   Image(path=os.path.abspath(
                                                       os.curdir) + '/img/6.jpg')]),
                                              quote=event.source)
-                await botfunc.run_sql("""UPDATE six SET ti = %s, ban_ti=unix_timestamp() WHERE uid = %s""",
-                                      (int(time.time()), event.sender.id))
+                await botfunc.run_sql("""UPDATE six SET ti = unix_timestamp() WHERE uid = %s""",
+                                      (event.sender.id,))
 
             break
 
