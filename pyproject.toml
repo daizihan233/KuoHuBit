@@ -26,8 +26,7 @@ dependencies = [
     "aiomysql<1.0.0,>=0.1.1",
     "opencc-python-reimplemented<1.0.0,>=0.1.6",
     "jieba<1.0.0,>=0.42.1",
-    "numba<1.0.0,>=0.56.4",
-    "ntplib>=0.4.0"
+    "ntplib>=0.4.0",
 ]
 requires-python = ">=3.10,<4.0"
 license = { text = "AGPL-3.0" }
