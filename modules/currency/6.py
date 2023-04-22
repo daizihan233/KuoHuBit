@@ -179,8 +179,8 @@ async def six_six_six(app: Ariadne, group: Group, event: GroupMessage):
     try:
         msg = await selectivity_hide(data)
     except ValueError:
-        await app.send_group_message(group, MessageChain([At(event.sender.id), Plain("木有数据~")]),
+        await app.send_group_message(group, MessageChain([At(event.sender.id), Plain(" 木有数据~")]),
                                      quote=event.source)
     else:
-        await app.send_group_message(group, MessageChain([At(event.sender.id), Plain("\n"), Plain("\n".join(msg))]),
+        await app.send_group_message(group, MessageChain([At(event.sender.id), Plain(" \n"), Plain("\n".join(msg))]),
                                      quote=event.source)
