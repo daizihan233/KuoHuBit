@@ -141,9 +141,9 @@ async def selectivity_hide(lst):
 
 @listen(GroupMessage)
 async def six_six_six(app: Ariadne, group: Group, event: GroupMessage, message: MessageChain):
-    data = await botfunc.select_fetchone("""SELECT uid, count, ti, ban_ti FROM six WHERE uid = %s""", event.sender.id)
+    data = await botfunc.select_fetchone("""SELECT uid, count, ti FROM six WHERE uid = %s""", event.sender.id)
     if data is not None and int(time.time()) - data[2] < 10:
-        await botfunc.run_sql("""UPDATE six SET ti = %s WHERE uid = %s""", (int(time.time()), event.sender.id))
+        await botfunc.run_sql("""UPDATE six SET ti = unix_timestamp() WHERE uid = %s""", (event.sender.id,))
         return
     msg = [x.text for x in message.get(Plain)]
     for s1 in sl1:
@@ -159,9 +159,9 @@ async def six_six_six(app: Ariadne, group: Group, event: GroupMessage, message: 
         # 判断
         if cos >= 0.75:  # 判断为 6
             if data is not None:
-                await botfunc.run_sql("""UPDATE six SET count = %s WHERE uid = %s""", (data[1] + 1, event.sender.id))
+                await botfunc.run_sql("""UPDATE six SET count = count+1 WHERE uid = %s""", (event.sender.id,))
             else:
-                await botfunc.run_sql("""INSERT INTO six VALUES (%s, 1, %s, 0)""", (event.sender.id, int(time.time())))
+                await botfunc.run_sql("""INSERT INTO six VALUES (%s, 1, unix_timestamp())""", (event.sender.id,))
             if data is None or time.time() - data[2] >= 600:
                 await app.send_group_message(target=group,
                                              message=MessageChain(
