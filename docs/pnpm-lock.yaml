@@ -1,10 +1,16 @@
 lockfileVersion: 5.4
 
 specifiers:
+  '@jridgewell/sourcemap-codec': ^1.4.15
+  '@rollup/plugin-terser': ^0.4.1
   '@vuepress/client': 2.0.0-beta.61
   vue: ^3.2.47
   vuepress: 2.0.0-beta.61
   vuepress-theme-hope: 2.0.0-beta.206
+
+dependencies:
+  '@jridgewell/sourcemap-codec': registry.npmmirror.com/@jridgewell/sourcemap-codec/1.4.15
+  '@rollup/plugin-terser': registry.npmmirror.com/@rollup/plugin-terser/0.4.1
 
 devDependencies:
   '@vuepress/client': registry.npmmirror.com/@vuepress/client/2.0.0-beta.61
@@ -48,12 +54,11 @@ packages:
       '@babel/highlight': registry.npmmirror.com/@babel/highlight/7.18.6
     dev: true
 
-  registry.npmmirror.com/@babel/compat-data/7.21.5:
-    resolution: { integrity: sha512-/DYyDpeCfaVinT40FPGdkkb+lYSKvsVuMjDAG7jPOWWiM1ibOaB9CXJAlc4d1QpP/U2q2P9jbrSlClKSErd55g==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@babel/compat-data/-/compat-data-7.21.4.tgz }
+  registry.npmmirror.com/@babel/compat-data/7.21.7:
+    resolution: { integrity: sha512-KYMqFYTaenzMK4yUtf4EW9wc4N9ef80FsbMtkwool5zpwl4YrT1SdWYSTRcT94KO4hannogdS+LxY7L+arP3gA==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@babel/compat-data/-/compat-data-7.21.7.tgz }
     name: '@babel/compat-data'
-    version: 7.21.5
+    version: 7.21.7
     engines: { node: '>=6.9.0' }
-    deprecated: '[WARNING] Use 7.21.4 instead of 7.21.5, reason: https://github.com/babel/babel/issues/15597'
     dev: true
 
   registry.npmmirror.com/@babel/core/7.21.5:
@@ -120,7 +125,7 @@ packages:
     peerDependencies:
       '@babel/core': ^7.0.0
     dependencies:
-      '@babel/compat-data': registry.npmmirror.com/@babel/compat-data/7.21.5
+      '@babel/compat-data': registry.npmmirror.com/@babel/compat-data/7.21.7
       '@babel/core': registry.npmmirror.com/@babel/core/7.21.5
       '@babel/helper-validator-option': registry.npmmirror.com/@babel/helper-validator-option/7.21.0
       browserslist: registry.npmmirror.com/browserslist/4.21.5
@@ -565,7 +570,7 @@ packages:
     peerDependencies:
       '@babel/core': ^7.0.0-0
     dependencies:
-      '@babel/compat-data': registry.npmmirror.com/@babel/compat-data/7.21.5
+      '@babel/compat-data': registry.npmmirror.com/@babel/compat-data/7.21.7
       '@babel/core': registry.npmmirror.com/@babel/core/7.21.5
       '@babel/helper-compilation-targets': registry.npmmirror.com/@babel/helper-compilation-targets/7.21.5_@babel+core@7.21.5
       '@babel/helper-plugin-utils': registry.npmmirror.com/@babel/helper-plugin-utils/7.21.5
@@ -1312,7 +1317,7 @@ packages:
     peerDependencies:
       '@babel/core': ^7.0.0-0
     dependencies:
-      '@babel/compat-data': registry.npmmirror.com/@babel/compat-data/7.21.5
+      '@babel/compat-data': registry.npmmirror.com/@babel/compat-data/7.21.7
       '@babel/core': registry.npmmirror.com/@babel/core/7.21.5
       '@babel/helper-compilation-targets': registry.npmmirror.com/@babel/helper-compilation-targets/7.21.5_@babel+core@7.21.5
       '@babel/helper-plugin-utils': registry.npmmirror.com/@babel/helper-plugin-utils/7.21.5
@@ -1723,21 +1728,18 @@ packages:
       '@jridgewell/set-array': registry.npmmirror.com/@jridgewell/set-array/1.1.2
       '@jridgewell/sourcemap-codec': registry.npmmirror.com/@jridgewell/sourcemap-codec/1.4.15
       '@jridgewell/trace-mapping': registry.npmmirror.com/@jridgewell/trace-mapping/0.3.18
-    dev: true
 
   registry.npmmirror.com/@jridgewell/resolve-uri/3.1.0:
     resolution: { integrity: sha512-F2msla3tad+Mfht5cJq7LSXcdudKTWCVYUgw6pLFOOHSTtZlj6SWNYAp+AhuqLmWdBO2X5hPrLcu8cVP8fy28w==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@jridgewell/resolve-uri/-/resolve-uri-3.1.0.tgz }
     name: '@jridgewell/resolve-uri'
     version: 3.1.0
     engines: { node: '>=6.0.0' }
-    dev: true
 
   registry.npmmirror.com/@jridgewell/set-array/1.1.2:
     resolution: { integrity: sha512-xnkseuNADM0gt2bs+BvhO0p78Mk762YnZdsuzFV018NoG1Sj1SCQvpSqa7XUaTam5vAGasABV9qXASMKnFMwMw==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@jridgewell/set-array/-/set-array-1.1.2.tgz }
     name: '@jridgewell/set-array'
     version: 1.1.2
     engines: { node: '>=6.0.0' }
-    dev: true
 
   registry.npmmirror.com/@jridgewell/source-map/0.3.3:
     resolution: { integrity: sha512-b+fsZXeLYi9fEULmfBrhxn4IrPlINf8fiNarzTof004v3lFdntdwa9PF7vFJqm3mg7s+ScJMxXaE3Acp1irZcg==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@jridgewell/source-map/-/source-map-0.3.3.tgz }
@@ -1746,19 +1748,16 @@ packages:
     dependencies:
       '@jridgewell/gen-mapping': registry.npmmirror.com/@jridgewell/gen-mapping/0.3.3
       '@jridgewell/trace-mapping': registry.npmmirror.com/@jridgewell/trace-mapping/0.3.18
-    dev: true
 
   registry.npmmirror.com/@jridgewell/sourcemap-codec/1.4.14:
     resolution: { integrity: sha512-XPSJHWmi394fuUuzDnGz1wiKqWfo1yXecHQMRf2l6hztTO+nPru658AyDngaBe7isIxEkRsPR3FZh+s7iVa4Uw==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@jridgewell/sourcemap-codec/-/sourcemap-codec-1.4.14.tgz }
     name: '@jridgewell/sourcemap-codec'
     version: 1.4.14
-    dev: true
 
   registry.npmmirror.com/@jridgewell/sourcemap-codec/1.4.15:
     resolution: { integrity: sha512-eF2rxCRulEKXHTRiDrDy6erMYWqNw4LPdQ8UQA4huuxaQsVeRPFl2oM8oDGxMFhJUWZf9McpLtJasDDZb/Bpeg==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@jridgewell/sourcemap-codec/-/sourcemap-codec-1.4.15.tgz }
     name: '@jridgewell/sourcemap-codec'
     version: 1.4.15
-    dev: true
 
   registry.npmmirror.com/@jridgewell/trace-mapping/0.3.18:
     resolution: { integrity: sha512-w+niJYzMHdd7USdiH2U6869nqhD2nbfZXND5Yp93qIbEmnDNk7PD48o+YchRVpzMU7M6jVCbenTR7PA1FLQ9pA==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@jridgewell/trace-mapping/-/trace-mapping-0.3.18.tgz }
@@ -1767,7 +1766,6 @@ packages:
     dependencies:
       '@jridgewell/resolve-uri': registry.npmmirror.com/@jridgewell/resolve-uri/3.1.0
       '@jridgewell/sourcemap-codec': registry.npmmirror.com/@jridgewell/sourcemap-codec/1.4.14
-    dev: true
 
   registry.npmmirror.com/@khanacademy/simple-markdown/0.8.6:
     resolution: { integrity: sha512-mAUlR9lchzfqunR89pFvNI51jQKsMpJeWYsYWw0DQcUXczn/T/V6510utgvm7X0N3zN87j1SvuKk8cMbl9IAFw==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@khanacademy/simple-markdown/-/simple-markdown-0.8.6.tgz }
@@ -2152,6 +2150,22 @@ packages:
       magic-string: registry.npmmirror.com/magic-string/0.25.9
       rollup: registry.npmmirror.com/rollup/2.79.1
     dev: true
+
+  registry.npmmirror.com/@rollup/plugin-terser/0.4.1:
+    resolution: { integrity: sha512-aKS32sw5a7hy+fEXVy+5T95aDIwjpGHCTv833HXVtyKMDoVS7pBr5K3L9hEQoNqbJFjfANPrNpIXlTQ7is00eA==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@rollup/plugin-terser/-/plugin-terser-0.4.1.tgz }
+    name: '@rollup/plugin-terser'
+    version: 0.4.1
+    engines: { node: '>=14.0.0' }
+    peerDependencies:
+      rollup: ^2.x || ^3.x
+    peerDependenciesMeta:
+      rollup:
+        optional: true
+    dependencies:
+      serialize-javascript: registry.npmmirror.com/serialize-javascript/6.0.1
+      smob: registry.npmmirror.com/smob/0.0.6
+      terser: registry.npmmirror.com/terser/5.17.1
+    dev: false
 
   registry.npmmirror.com/@rollup/pluginutils/3.1.0_rollup@2.79.1:
     resolution: { integrity: sha512-GksZ6pr6TpIjHm8h9lSQ8pi8BE9VeubNT0OMJ3B5uZJ8pz73NPiqOtCog/x2/QzM1ENChPKxMDhiQuRHsqc+lg==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@rollup/pluginutils/-/pluginutils-3.1.0.tgz }
@@ -2860,7 +2874,6 @@ packages:
     version: 8.8.2
     engines: { node: '>=0.4.0' }
     hasBin: true
-    dev: true
 
   registry.npmmirror.com/ajv/8.12.0:
     resolution: { integrity: sha512-sRu1kpcO9yLtYxBKvqfTeh9KzZEwO3STyX1HT+4CaDzC6HpTGYhIhPIzj9XuKU7KYDwnaeh5hcOwjy1QuJzBPA==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/ajv/-/ajv-8.12.0.tgz }
@@ -3022,7 +3035,7 @@ packages:
     peerDependencies:
       '@babel/core': ^7.0.0-0
     dependencies:
-      '@babel/compat-data': registry.npmmirror.com/@babel/compat-data/7.21.5
+      '@babel/compat-data': registry.npmmirror.com/@babel/compat-data/7.21.7
       '@babel/core': registry.npmmirror.com/@babel/core/7.21.5
       '@babel/helper-define-polyfill-provider': registry.npmmirror.com/@babel/helper-define-polyfill-provider/0.3.3_@babel+core@7.21.5
       semver: registry.npmmirror.com/semver/6.3.0
@@ -3174,7 +3187,6 @@ packages:
     resolution: { integrity: sha512-E+XQCRwSbaaiChtv6k6Dwgc+bx+Bs6vuKJHHl5kox/BaKbhiXzqQOwK4cO22yElGp2OCmjwVhT3HmxgyPGnJfQ==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/buffer-from/-/buffer-from-1.1.2.tgz }
     name: buffer-from
     version: 1.1.2
-    dev: true
 
   registry.npmmirror.com/buffer/6.0.3:
     resolution: { integrity: sha512-FTiCpNxtwiZZHEZbcbTIcZjERVICn9yq/pDFkTl95/AxzD1naBctN7YO68riM/gLSDY7sdrMby8hofADYuuqOA==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/buffer/-/buffer-6.0.3.tgz }
@@ -3375,7 +3387,6 @@ packages:
     resolution: { integrity: sha512-GpVkmM8vF2vQUkj2LvZmD35JxeJOLCwJ9cUkugyk2nuhbv3+mJvpLYYt+0+USMxE+oj+ey/lJEnhZw75x/OMcQ==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/commander/-/commander-2.20.3.tgz }
     name: commander
     version: 2.20.3
-    dev: true
 
   registry.npmmirror.com/commander/7.2.0:
     resolution: { integrity: sha512-QrWXB+ZQSVPmIWIhtEO9H+gwHaMGYiF5ChvoJ+K9ZGHG/sVsa6yiesAD1GC/x46sET00Xlwo1u49RVVVzvcSkw==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/commander/-/commander-7.2.0.tgz }
@@ -5791,7 +5802,6 @@ packages:
     version: 2.1.0
     dependencies:
       safe-buffer: registry.npmmirror.com/safe-buffer/5.2.1
-    dev: true
 
   registry.npmmirror.com/rangetouch/2.0.1:
     resolution: { integrity: sha512-sln+pNSc8NGaHoLzwNBssFSf/rSYkqeBXzX1AtJlkJiUaVSJSbRAWJk+4omsXkN+EJalzkZhWQ3th1m0FpR5xA==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/rangetouch/-/rangetouch-2.0.1.tgz }
@@ -6011,7 +6021,6 @@ packages:
     resolution: { integrity: sha512-rp3So07KcdmmKbGvgaNxQSJr7bGVSVk5S9Eq1F+ppbRo70+YeaDxkw5Dd8NPN+GD6bjnYm2VuPuCXmpuYvmCXQ==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/safe-buffer/-/safe-buffer-5.2.1.tgz }
     name: safe-buffer
     version: 5.2.1
-    dev: true
 
   registry.npmmirror.com/safe-regex-test/1.0.0:
     resolution: { integrity: sha512-JBUUzyOgEwXQY1NuPtvcj/qcBDbDmEvWufhlnXZIm75DEHp+afM1r1ujJpJsV/gSM4t59tpDyPi1sd6ZaPFfsA==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/safe-regex-test/-/safe-regex-test-1.0.0.tgz }
@@ -6088,6 +6097,14 @@ packages:
       randombytes: registry.npmmirror.com/randombytes/2.1.0
     dev: true
 
+  registry.npmmirror.com/serialize-javascript/6.0.1:
+    resolution: { integrity: sha512-owoXEFjWRllis8/M1Q+Cw5k8ZH40e3zhp/ovX+Xr/vi1qj6QesbyXXViFbpNvWvPNAD62SutwEXavefrLJWj7w==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/serialize-javascript/-/serialize-javascript-6.0.1.tgz }
+    name: serialize-javascript
+    version: 6.0.1
+    dependencies:
+      randombytes: registry.npmmirror.com/randombytes/2.1.0
+    dev: false
+
   registry.npmmirror.com/set-blocking/2.0.0:
     resolution: { integrity: sha512-KiKBS8AnWGEyLzofFfmvKwpdPzqiy16LvQfK3yv/fVH7Bj13/wl3JSR1J+rfgRE9q7xUJK4qvgS8raSOeLUehw==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/set-blocking/-/set-blocking-2.0.0.tgz }
     name: set-blocking
@@ -6146,6 +6163,12 @@ packages:
     engines: { node: '>=12' }
     dev: true
 
+  registry.npmmirror.com/smob/0.0.6:
+    resolution: { integrity: sha512-V21+XeNni+tTyiST1MHsa84AQhT1aFZipzPpOFAVB8DkHzwJyjjAmt9bgwnuZiZWnIbMo2duE29wybxv/7HWUw==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/smob/-/smob-0.0.6.tgz }
+    name: smob
+    version: 0.0.6
+    dev: false
+
   registry.npmmirror.com/source-map-js/1.0.2:
     resolution: { integrity: sha512-R0XvVJ9WusLiqTCEiGCmICCMplcCkIwwR11mOSD9CR5u+IXYdiseeEuXCVAjS54zqwkLcPNnmU4OeJ6tUrWhDw==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/source-map-js/-/source-map-js-1.0.2.tgz }
     name: source-map-js
@@ -6160,14 +6183,12 @@ packages:
     dependencies:
       buffer-from: registry.npmmirror.com/buffer-from/1.1.2
       source-map: registry.npmmirror.com/source-map/0.6.1
-    dev: true
 
   registry.npmmirror.com/source-map/0.6.1:
     resolution: { integrity: sha512-UjgapumWlbMhkBgzT7Ykc5YXUT46F0iKu8SGXq0bcwP5dz/h0Plj6enJqjz1Zbq2l5WaqYnrVbwWOWMyF3F47g==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/source-map/-/source-map-0.6.1.tgz }
     name: source-map
     version: 0.6.1
     engines: { node: '>=0.10.0' }
-    dev: true
 
   registry.npmmirror.com/source-map/0.8.0-beta.0:
     resolution: { integrity: sha512-2ymg6oRBpebeZi9UUNsgQ89bhx01TcTkmNTGnNO88imTmbSgy4nfujrgVEFKWpMTEGA11EDkTt7mqObTPdigIA==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/source-map/-/source-map-0.8.0-beta.0.tgz }
@@ -6393,7 +6414,6 @@ packages:
       acorn: registry.npmmirror.com/acorn/8.8.2
       commander: registry.npmmirror.com/commander/2.20.3
       source-map-support: registry.npmmirror.com/source-map-support/0.5.21
-    dev: true
 
   registry.npmmirror.com/to-fast-properties/2.0.0:
     resolution: { integrity: sha512-/OaKK0xYrs3DmxRYqL/yDc+FxFUVYhDlXMhRmv3z915w2HF1tnN1omB354j8VUGO/hbRzyD6Y3sA7v7GS/ceog==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/to-fast-properties/-/to-fast-properties-2.0.0.tgz }

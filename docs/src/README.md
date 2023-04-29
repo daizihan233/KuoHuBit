@@ -45,7 +45,7 @@ actions:
 - title: 更多新特性
   icon: more
   details: 更多新鲜东西
-  footer: 使用 <a href="https://vuepress-theme-hope.github.io/v2/" target="_blank">VuePress Theme Hope</a> 主题 | MIT 协议, 版权所有 © 2019-present Mr.Hope | 这套 <a href="https://v2.vuepress.vuejs.org/zh/" target="_blank">VuePress</a> 主题真的很好看，很美观，你也快去试试吧！
+  footer: 使用 VuePress Theme Hope 主题 | MIT 协议, 版权所有 © 2019-present Mr.Hope | 这套 VuePress 主题真的很好看，很美观，你也快去试试吧！
 
 ---
 

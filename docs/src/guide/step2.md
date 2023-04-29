@@ -1,10 +1,6 @@
 ---
 title: 第二步：配置文件
 icon: info
-category:
-
-- 构建指南
-
 ---
 
 本篇教你如何配置

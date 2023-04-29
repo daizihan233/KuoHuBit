@@ -1,10 +1,6 @@
 ---
 title: 摸鱼日历
 icon: info
-category:
-
-- 使用指南
-
 ---
 
 # 摸鱼日历

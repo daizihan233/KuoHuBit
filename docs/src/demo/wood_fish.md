@@ -1,10 +1,6 @@
 ---
 title: 赛博木鱼
 icon: info
-category:
-
-- 使用指南
-
 ---
 
 这个功能纯纯是无聊写的，Bug很多

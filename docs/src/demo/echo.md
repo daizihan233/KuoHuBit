@@ -1,9 +1,6 @@
 ---
 title: 输出
 icon: info
-category:
-
-- 使用指南
 
 ---
 

@@ -2,10 +2,6 @@
 title: 简介
 index: false
 icon: discover
-category:
-
-- 构建指南
-
 ---
 
 ## 目录

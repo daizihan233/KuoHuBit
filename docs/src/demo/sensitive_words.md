@@ -1,10 +1,6 @@
 ---
 title: 敏感词检测
 icon: info
-category:
-
-  - 使用指南
-
 ---
 
 对敏感词检测并撤回消息
