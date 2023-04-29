@@ -14,6 +14,6 @@ icon: discover
 - [输出](echo.md)
 - [摸鱼日历](fish.md)
 - [面包厂](bread.md)
-- [~~赛博木鱼~~](wood_fish.md) （暂停维护）
+- ~~赛博木鱼~~ （功能已删除，考虑重写）
 - [敏感词检测](block_repeat.md)
 - [6榜](six.md)
