@@ -21,7 +21,8 @@ module
  - zh_cht  # 繁体补丁
 ```
 
-如果你不需要繁体请删除 zh_cht 文件夹<br>
+如果你不需要繁体请删除 zh_cht 文件夹
+
 关闭功能请在这些文件中找到对应文件后扔到 NO_USE 文件夹中（zh_cn 与 zh_cht 里的文件都得扔进去）
 
 # 开始使用
@@ -29,11 +30,15 @@ module
 然后你就可以使用
 
 ```shell
-poetry run python main.py
+pdm run python main.py
 ```
 
 来运行机器人了，如需后台运行请使用（仅Linux）
 
 ```shell
-nohup poetry run python main.py &
+nohup pdm run python main.py &
 ```
+
+当然，如果你想使用 screen 或者 tmux 也可以
+
+本文档不赘述这两个工具的使用方法，如需教程请移步搜索引擎

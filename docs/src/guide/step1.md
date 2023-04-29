@@ -19,7 +19,7 @@ category:
 - Mirai
 - MAH (Mirai-API-HTTP)
 - Python
-    - poetry
+  - pdm
 
 ## 关于 Java、Mirai、MAH 的安装
 
@@ -29,17 +29,26 @@ category:
 
 如果你跟我一样 ~~非常懒~~ 那么你可以选择使用 Docker 安装，Redis请不要设置密码（记得堵好端口）<br>
 
-## 关于 Python、Poetry 的安装
+## 关于 Python的安装
 
 ```text
-Python Version >= 3.11
-Poetry Version >= 1.3.1
+Python Version >= 3.10
 ```
+
+安装 pdm：
+
+```shell
+pip install pdm
+```
+
+## 如果你遇到 *pip下载慢* / *安装报错* / *找不到pip* / *Python版本错误*
+
+您不会自己百度一下吗？
 
 # 依赖安装
 
 ```shell
-poetry install
+pdm install
 ```
 
 就好辣！

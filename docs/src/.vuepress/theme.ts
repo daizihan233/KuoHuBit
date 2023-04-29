@@ -1,20 +1,20 @@
 import {hopeTheme} from "vuepress-theme-hope";
-import {zhNavbar} from "./navbar/index.js";
-import {zhSidebar} from "./sidebar/index.js";
+import {zhNavbar} from "./navbar";
+import {zhSidebar} from "./sidebar";
 
 export default hopeTheme({
-    hostname: "https://botdoc.hantools.top",
+    hostname: "https://bot.khbit.cn",
 
     author: {
         name: "HanTools",
-        url: "https://botdoc.hantools.top",
+        url: "https://bot.khbit.cn",
     },
 
     iconAssets: "iconfont",
 
     logo: "/logo.svg",
 
-    repo: "daizihan233/MiraiHanBot",
+    repo: "daizihan233/KuoHuBit",
 
     docsDir: "demo/theme-docs/src",
 

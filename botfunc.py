@@ -87,8 +87,6 @@ def get_dyn_config(name: str):
         return None
 
 
-
-
 async def select_fetchone(sql, arg=None):
     conn = await aiomysql.connect(host=get_cloud_config('MySQL_Host'),
                                   port=get_cloud_config('MySQL_Port'),
