@@ -16,7 +16,7 @@ export default hopeTheme({
 
     repo: "daizihan233/KuoHuBit",
 
-    docsDir: "demo/theme-docs/src",
+    docsDir: "docs/src",
 
     pageInfo: ["Author", "Original", "Date", "Category", "Tag", "ReadingTime"],
     locales: {

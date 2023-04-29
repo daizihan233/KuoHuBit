@@ -15,7 +15,7 @@ actions:
   link: /guide/
 
 - title: 快
-  icon: info
+  icon: lightning
   details: 快速解决机械化的操作，争分夺秒，高性能的解决方案
 
 - title: 静
