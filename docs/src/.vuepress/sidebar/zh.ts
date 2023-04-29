@@ -14,7 +14,12 @@ export const zhSidebar = sidebar({
             text: "构建",
             icon: "note",
             prefix: "guide/",
-            children: "structure",
+            link: "guide/",
+            children: [
+                "step1",
+                "step2",
+                "step3"
+            ],
         }
     ],
 });
