@@ -29,7 +29,7 @@ app = Ariadne(
     ),
 )
 conn = pymysql.connect(host=botfunc.get_cloud_config('MySQL_Host'), port=botfunc.get_cloud_config('MySQL_Port'),
-                       user='root',
+                       user=botfunc.get_cloud_config('MySQL_User'),
                        password=botfunc.get_cloud_config('MySQL_Pwd'), charset='utf8mb4',
                        database=botfunc.get_cloud_config('MySQL_db'))
 cursor = conn.cursor()

@@ -1,5 +1,6 @@
 import asyncio
 import json
+import sys
 
 import aiomysql
 import portalocker
@@ -43,16 +44,20 @@ try:
     cloud_config_json = json.load(open('cloud.json', 'r', encoding='UTF-8'))
 except FileNotFoundError:
     safe_file_write('cloud.json', """{
+  "QCloud_Secret_id": "",
+  "QCloud_Secret_key": "",
   "MySQL_Pwd": "",
   "MySQL_Port": 3306,
   "MySQL_Host": "localhost",
   "MySQL_db": "datebase",
+  "MySQL_User": "root"
   "Redis_Host": "localhost",
-  "Redis_port": 6379
+  "Redis_port": 6379,
+  "snao_key": ""
 }""")
     logger.error(
         'cloud.json 未创建，程序已自动创建，请参考 https://github.com/daizihan233/KuoHuBit/issues/17 填写该文件的内容')
-    exit(1)
+    sys.exit(1)
 try:
     dyn_yaml = yaml.safe_load(open('dynamic_config.yaml', 'r', encoding='UTF-8'))
 except FileNotFoundError:
@@ -90,7 +95,7 @@ def get_dyn_config(name: str):
 async def select_fetchone(sql, arg=None):
     conn = await aiomysql.connect(host=get_cloud_config('MySQL_Host'),
                                   port=get_cloud_config('MySQL_Port'),
-                                  user='root',
+                                  user=get_cloud_config('MySQL_User'),
                                   password=get_cloud_config('MySQL_Pwd'), charset='utf8mb4',
                                   db=get_cloud_config('MySQL_db'), loop=loop)
 
@@ -108,7 +113,7 @@ async def select_fetchone(sql, arg=None):
 async def select_fetchall(sql, arg=None):
     conn = await aiomysql.connect(host=get_cloud_config('MySQL_Host'),
                                   port=get_cloud_config('MySQL_Port'),
-                                  user='root',
+                                  user=get_cloud_config('MySQL_User'),
                                   password=get_cloud_config('MySQL_Pwd'), charset='utf8mb4',
                                   db=get_cloud_config('MySQL_db'), loop=loop)
 
@@ -126,7 +131,7 @@ async def select_fetchall(sql, arg=None):
 async def run_sql(sql, arg):
     conn = await aiomysql.connect(host=get_cloud_config('MySQL_Host'),
                                   port=get_cloud_config('MySQL_Port'),
-                                  user='root',
+                                  user=get_cloud_config('MySQL_User'),
                                   password=get_cloud_config('MySQL_Pwd'), charset='utf8mb4',
                                   db=get_cloud_config('MySQL_db'), loop=loop)
 

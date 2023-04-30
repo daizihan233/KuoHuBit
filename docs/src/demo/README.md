@@ -17,3 +17,5 @@ icon: discover
 - ~~赛博木鱼~~ （功能已删除，考虑重写）
 - [敏感词检测](block_repeat.md)
 - [6榜](six.md)
+- [搜图](saucenao.md)
+
