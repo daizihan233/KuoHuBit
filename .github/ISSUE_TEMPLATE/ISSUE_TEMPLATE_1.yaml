@@ -73,10 +73,11 @@ body:
   - type: textarea
     id: img
     attributes:
-      label: 来点色图/Memes
+      label: 来点色图
       description: |
-        如果你不提供色图/Memes而你的issue中又有其他不符合标准的地方，那么你的issue可能会被直接删除
-        色图不限类别，尽量偏二次元
-        Memes 也不限类别，够沙雕就行
+        如果你不提供色图而你的issue中又有其他不符合标准的地方，那么你的issue可能会被直接删除
+        括弧：什么离谱玩意（
+        不过说实话比起色图我更想看Memes（
+        （当然你不放色图/Memes你的Issue也不会被删除，除非你写得真的太sb了）
       value: |
         任何色图终将绳之以法，和蔼！
