@@ -34,7 +34,7 @@ async def add_admin(app: Ariadne, group: Group, event: GroupMessage, message: Me
     except Exception as err:
         await app.send_message(group, f"寄！{err}")
     else:
-        await app.send_message(group, f"OK!")
+        await app.send_message(group, "OK!")
 
 
 @listen(GroupMessage)
@@ -47,4 +47,4 @@ async def add_admin(app: Ariadne, group: Group, event: GroupMessage, message: Me
     except Exception as err:
         await app.send_message(group, f"寄！{err}")
     else:
-        await app.send_message(group, f"OK!")
+        await app.send_message(group, "OK!")

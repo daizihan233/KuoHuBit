@@ -116,13 +116,13 @@ async def add(app: Ariadne, event: GroupMessage, message: MessageChain = DetectP
             except Exception as err:
                 await app.send_message(event.sender.group, f'寄！{err}')
             else:
-                await app.send_message(event.sender.group, f'好辣！')
+                await app.send_message(event.sender.group, '好辣！')
             try:
                 cache_var.sensitive_words.append(str(message))
             except Exception as err:
                 logger.error(err)
         else:
-            await app.send_message(event.sender.group, f'有没有一种可能，这个词已经加过了')
+            await app.send_message(event.sender.group, '有没有一种可能，这个词已经加过了')
 
 
 @listen(GroupMessage)
@@ -133,7 +133,7 @@ async def rm(app: Ariadne, event: GroupMessage, message: MessageChain = DetectPr
         except Exception as err:
             await app.send_message(event.sender.group, f'寄！{err}')
         else:
-            await app.send_message(event.sender.group, f'好辣！')
+            await app.send_message(event.sender.group, '好辣！')
         try:
             cache_var.sensitive_words.remove(str(message))
         except Exception as err:

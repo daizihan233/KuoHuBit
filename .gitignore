@@ -163,14 +163,11 @@ cython_debug/
 cloud.json
 dynamic_config.yaml
 nohup.out
-<<<<<<< HEAD
 
 ./docs/node_modules
 
 ./docs
 config.yaml
-
-=======
 node_modules/
 .cache/
 .temp/
