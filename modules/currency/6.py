@@ -160,7 +160,7 @@ async def six_six_six(app: Ariadne, group: Group, event: GroupMessage, message: 
         # 判断
         if cos >= 0.75:  # 判断为 6
             if data is not None:
-                await botfunc.run_sql("""UPDATE six SET count = count+1 WHERE uid = %s""", (event.sender.id,))
+                await botfunc.run_sql("""UPDATE six SET count = count+1, ti = unix_timestamp() WHERE uid = %s""", (event.sender.id,))
             else:
                 await botfunc.run_sql("""INSERT INTO six VALUES (%s, 1, unix_timestamp())""", (event.sender.id,))
             if data is None or time.time() - data[2] >= 600:
