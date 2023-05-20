@@ -26,9 +26,28 @@ icon: info
 
 # modules/currency/6.py, line 23
 
+这是一个列表，里面存储了相关的词汇，你可以修改这个列表
+
+请注意：对于汉字和大写数字，还有连续的数字，在预处理中已经做了转换
+
 ```python
-sl1 = ["6", "9", "6的", "9（6翻了）", "⑥", "₆", "⑹", "⒍", "⁶", "陆", "Six", "Nine", "\u0039\ufe0f\u20e3",
-       "\u0036\ufe0f\u20e3", "♸"]
+async def text_pretreatment(s):
+    s = s.replace('六', '6').replace('九', '9').replace('陆', '6').replace('玖', '9')
+        .replace('(', '（').replace(')', '）')
+    replace_words = [
+        (r"6+", "6"),
+        (r"9+", "9"),
+        (r"（+", "（"),
+        (r"）+", "）")
+    ]
+    stop_words = " ，,。.!！？?…^"
+    for stop in stop_words:
+        s = s.replace(stop, '')
+    for regex in replace_words:
+        s = re.compile(regex[0]).sub(regex[1], s)
+    return s
 ```
 
-你可以自行向此列表添加词汇，但是请注意，因为算法的原因，过多的添加会导致出现很多误判
+# img/6/
+
+里面是与 6榜 相关的图片，你可以自行添加/删除

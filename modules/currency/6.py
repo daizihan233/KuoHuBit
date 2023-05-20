@@ -21,8 +21,9 @@ channel.name("6榜")
 channel.description("666")
 channel.author("HanTools")
 
-sl1 = ["6", "9", "6的", "9（6翻了）", "⑥", "₆", "⑹", "⒍", "⁶", "陆", "Six", "Nine", "\u0039\ufe0f\u20e3",
-       "\u0036\ufe0f\u20e3", "♸"]
+sl1 = ["6", "9", "6的", "9（6翻了）", "⑥", "₆", "⑹", "⒍", "⁶", "Six", "Nine", "\u0039\ufe0f\u20e3",
+       "\u0036\ufe0f\u20e3", "♸"]  # 模糊匹配
+sl2 = []  # 精确匹配
 jieba.load_userdict('./jieba_words.txt')
 
 
@@ -110,12 +111,19 @@ async def f_hide_mid(string, count=4, fix='*'):
 
 
 async def text_pretreatment(s):
-    s = s.replace('六', '6').replace('九', '9').replace('陆', '6').replace('玖', '9')
-    regex = re.compile(r"6+")
-    regex2 = re.compile(r"9+")
-    s = s.strip(" ，,。.!！？?()（）")
-    s = regex.sub('6', s)
-    s = regex2.sub('9', s)
+    s = s.replace('六', '6').replace('九', '9').replace('陆', '6').replace('玖', '9') \
+        .replace('(', '（').replace(')', '）')
+    replace_words = [
+        (r"6+", "6"),
+        (r"9+", "9"),
+        (r"（+", "（"),
+        (r"）+", "）")
+    ]
+    stop_words = " ，,。.!！？?…^"
+    for stop in stop_words:
+        s = s.replace(stop, '')
+    for regex in replace_words:
+        s = re.compile(regex[0]).sub(regex[1], s)
     return s
 
 
@@ -148,10 +156,25 @@ async def six_six_six(app: Ariadne, group: Group, event: GroupMessage, message: 
         await botfunc.run_sql("""UPDATE six SET ti = unix_timestamp() WHERE uid = %s""", (event.sender.id,))
         return
     msg = [x.text for x in message.get(Plain)]
+    s2_ = await text_pretreatment("".join(msg))
+    if s2_ in sl2:
+        if data is not None:
+            await botfunc.run_sql("""UPDATE six SET count = count+1, ti = unix_timestamp() WHERE uid = %s""",
+                                  (event.sender.id,))
+        else:
+            await botfunc.run_sql("""INSERT INTO six VALUES (%s, 1, unix_timestamp())""", (event.sender.id,))
+        if data is None or time.time() - data[2] >= 600:
+            img = os.listdir(os.path.abspath(os.curdir) + '/img/6/')
+            await app.send_group_message(target=group,
+                                         message=MessageChain(
+                                             [At(event.sender.id),
+                                              Image(path=os.path.abspath(os.curdir) + '/img/6/' + random.choice(
+                                                  img))]),
+                                         quote=event.source)
+        return
     for s1 in sl1:
         # 文本预处理
         s1_ = await text_pretreatment(s1)
-        s2_ = await text_pretreatment("".join(msg))
         # 对比
         list_a, list_b = await divided(s1_, s2_)
         all_words = await get_all_words(tuple(list_a), tuple(list_b))
