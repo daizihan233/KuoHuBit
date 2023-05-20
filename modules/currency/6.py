@@ -110,6 +110,7 @@ async def f_hide_mid(string, count=4, fix='*'):
 
 
 async def text_pretreatment(s):
+    s = s.replace('六', '6').replace('九', '9').replace('陆', '6').replace('玖', '9')
     regex = re.compile(r"6+")
     regex2 = re.compile(r"9+")
     s = s.strip(" ，,。.!！？?()（）")
