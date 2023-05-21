@@ -19,26 +19,9 @@ channel.description("屌你老母")
 channel.author("HanTools")
 
 
-async def get_all_admin() -> list:
-    tmp = await botfunc.select_fetchall("SELECT uid FROM admin")
-    t = []
-    for i in tmp:
-        t.append(i[0])
-    logger.debug(t)
-    return list(t)
-
-
-async def get_all_sb() -> list:
-    tmp = await botfunc.select_fetchall('SELECT uid FROM blacklist')
-    t = []
-    for i in tmp:
-        t.append(i[0])
-    return t
-
-
 @listen(GroupMessage)
 async def nmsl(app: Ariadne, event: GroupMessage, message: MessageChain = DetectPrefix("拉黑")):
-    admins = get_all_admin()
+    admins = botfunc.get_all_admin()
     if event.sender.id not in admins:
         return
     msg = "--- 执行结果 ---\n"
@@ -91,8 +74,8 @@ async def nmsl(app: Ariadne, event: GroupMessage, message: MessageChain = Detect
 
 @listen(MemberJoinEvent)
 async def kicksb(app: Ariadne, event: MemberJoinEvent):
-    sbs = await get_all_sb()
-    admins = await get_all_admin()
+    sbs = await botfunc.get_all_sb()
+    admins = await botfunc.get_all_admin()
     if event.member.id in sbs and event.inviter.id in admins:
         t = await botfunc.select_fetchone("SELECT uid, op FROM blacklist WHERE uid = %s", (event.member.id,))
         try:
@@ -106,7 +89,7 @@ async def kicksb(app: Ariadne, event: MemberJoinEvent):
 
 @listen(GroupMessage)
 async def nmms(app: Ariadne, event: GroupMessage, message: MessageChain = DetectPrefix("删黑")):
-    admins = await get_all_admin()
+    admins = await botfunc.get_all_admin()
     if event.sender.id not in admins:
         return
     try:

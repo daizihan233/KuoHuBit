@@ -1,3 +1,5 @@
+#  本项目遵守 AGPL-3.0 协议，项目地址：https://github.com/daizihan233/MiraiHanBot
+
 import os
 import random
 import re
@@ -15,6 +17,7 @@ from graia.ariadne.util.saya import listen, decorate
 from graia.saya import Channel
 
 import botfunc
+import cache_var
 
 channel = Channel.current()
 channel.name("6榜")
@@ -184,10 +187,11 @@ async def six_six_six(app: Ariadne, group: Group, event: GroupMessage, message: 
         # 判断
         if cos >= 0.75:  # 判断为 6
             if data is not None:
-                await botfunc.run_sql("""UPDATE six SET count = count+1, ti = unix_timestamp() WHERE uid = %s""", (event.sender.id,))
+                await botfunc.run_sql("""UPDATE six SET count = count+1, ti = unix_timestamp() WHERE uid = %s""",
+                                      (event.sender.id,))
             else:
                 await botfunc.run_sql("""INSERT INTO six VALUES (%s, 1, unix_timestamp())""", (event.sender.id,))
-            if data is None or time.time() - data[2] >= 600:
+            if group.id not in cache_var.no_6 and (data is None or time.time() - data[2] >= 600):
                 img = os.listdir(os.path.abspath(os.curdir) + '/img/6/')
                 await app.send_group_message(target=group,
                                              message=MessageChain(
@@ -200,7 +204,7 @@ async def six_six_six(app: Ariadne, group: Group, event: GroupMessage, message: 
 
 @listen(GroupMessage)
 @decorate(MatchContent("6榜"))
-async def six_six_six(app: Ariadne, group: Group, event: GroupMessage):
+async def six_top(app: Ariadne, group: Group, event: GroupMessage):
     data = await botfunc.select_fetchall("SELECT uid, count FROM six ORDER BY count DESC LIMIT 21")
     try:
         msg = await selectivity_hide(data)
@@ -210,3 +214,45 @@ async def six_six_six(app: Ariadne, group: Group, event: GroupMessage):
     else:
         await app.send_group_message(group, MessageChain([At(event.sender.id), Plain(" \n"), Plain("\n".join(msg))]),
                                      quote=event.source)
+
+
+@listen(GroupMessage)
+@decorate(MatchContent("6，闭嘴"))
+async def no_six(app: Ariadne, group: Group, event: GroupMessage):
+    admins = await botfunc.get_all_admin()
+    if event.sender.id not in admins:
+        return
+    if group.id not in cache_var.no_6:
+        cache_var.no_6.append(group.id)
+        await botfunc.run_sql("""INSERT INTO no_six VALUES (%s)""", (group.id,))
+        await app.send_group_message(
+            group,
+            MessageChain(
+                [
+                    At(event.sender.id),
+                    Plain(" 好啊，很好啊")
+                ]
+            ),
+            quote=event.source
+        )
+
+
+@listen(GroupMessage)
+@decorate(MatchContent("6，张嘴"))
+async def yes_six(app: Ariadne, group: Group, event: GroupMessage):
+    admins = await botfunc.get_all_admin()
+    if event.sender.id not in admins:
+        return
+    if group.id in cache_var.no_6:
+        cache_var.no_6.remove(group.id)
+        await botfunc.run_sql("""DELETE FROM no_six WHERE gid = %s""", (group.id,))
+        await app.send_group_message(
+            group,
+            MessageChain(
+                [
+                    At(event.sender.id),
+                    Plain(" 好啊，很好啊")
+                ]
+            ),
+            quote=event.source
+        )

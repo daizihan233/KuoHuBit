@@ -29,12 +29,8 @@ module
 pdm run python main.py
 ```
 
-来运行机器人了，如需后台运行请使用（仅Linux）
+来运行机器人了
 
-```shell
-nohup pdm run python main.py &
-```
-
-当然，如果你想使用 screen 或者 tmux 也可以
+如果你想在后台使用，请自行搜索 screen 或 tmux 的使用方法
 
 本文档不赘述这两个工具的使用方法，如需教程请移步搜索引擎

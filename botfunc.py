@@ -142,6 +142,23 @@ async def run_sql(sql, arg):
     conn.close()
 
 
+async def get_all_admin() -> list:
+    tmp = await select_fetchall("SELECT uid FROM admin")
+    t = []
+    for i in tmp:
+        t.append(i[0])
+    logger.debug(t)
+    return list(t)
+
+
+async def get_all_sb() -> list:
+    tmp = await select_fetchall('SELECT uid FROM blacklist')
+    t = []
+    for i in tmp:
+        t.append(i[0])
+    return t
+
+
 backend = requests_cache.RedisCache(host=get_cloud_config('Redis_Host'), port=get_cloud_config('Redis_port'))
 session = requests_cache.CachedSession("global_session", backend=backend, expire_after=360)
 

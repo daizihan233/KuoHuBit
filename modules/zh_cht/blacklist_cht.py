@@ -6,7 +6,6 @@ from graia.ariadne.event.message import GroupMessage
 from graia.ariadne.message.parser.base import DetectPrefix
 from graia.ariadne.util.saya import listen
 from graia.saya import Channel
-from loguru import logger
 
 import botfunc
 
@@ -16,26 +15,9 @@ channel.description("屌你老母")
 channel.author("HanTools")
 
 
-async def get_all_admin() -> list:
-    tmp = await botfunc.select_fetchall("SELECT uid FROM admin")
-    t = []
-    for i in tmp:
-        t.append(i[0])
-    logger.debug(t)
-    return list(t)
-
-
-async def get_all_sb() -> list:
-    tmp = await botfunc.select_fetchall('SELECT uid FROM blacklist')
-    t = []
-    for i in tmp:
-        t.append(i[0])
-    return t
-
-
 @listen(GroupMessage)
 async def nmms(app: Ariadne, event: GroupMessage, message: MessageChain = DetectPrefix("刪黑")):
-    admins = await get_all_admin()
+    admins = await botfunc.get_all_admin()
     if event.sender.id not in admins:
         return
     try:

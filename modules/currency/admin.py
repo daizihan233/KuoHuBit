@@ -5,7 +5,6 @@ from graia.ariadne.message.parser.base import DetectPrefix
 from graia.ariadne.model import Group
 from graia.ariadne.util.saya import listen
 from graia.saya import Channel
-from loguru import logger
 
 import botfunc
 
@@ -15,18 +14,9 @@ channel.description("114514")
 channel.author("HanTools")
 
 
-async def get_all_admin() -> list:
-    tmp = await botfunc.select_fetchall("SELECT uid FROM admin")
-    t = []
-    for i in tmp:
-        t.append(i[0])
-    logger.debug(t)
-    return list(t)
-
-
 @listen(GroupMessage)
 async def add_admin(app: Ariadne, group: Group, event: GroupMessage, message: MessageChain = DetectPrefix("上管")):
-    admins = await get_all_admin()
+    admins = await botfunc.get_all_admin()
     if event.sender.id not in admins:
         return
     try:
@@ -38,8 +28,8 @@ async def add_admin(app: Ariadne, group: Group, event: GroupMessage, message: Me
 
 
 @listen(GroupMessage)
-async def add_admin(app: Ariadne, group: Group, event: GroupMessage, message: MessageChain = DetectPrefix("去管")):
-    admins = await get_all_admin()
+async def del_admin(app: Ariadne, group: Group, event: GroupMessage, message: MessageChain = DetectPrefix("去管")):
+    admins = await botfunc.get_all_admin()
     if event.sender.id not in admins:
         return
     try:
