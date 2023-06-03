@@ -17,23 +17,23 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        python -m pip install graia-ariadne[standard]<1.0.0>=0.10.2
-        python -m pip install pyyaml<7.0>=6.0
-        python -m pip install requests-cache<1.0.0>=0.9.7
-        python -m pip install redis<5.0.0>=4.4.0
-        python -m pip install pymysql<2.0.0>=1.0.2
-        python -m pip install cryptography<39.0.0>=38.0.4
-        python -m pip install requests<3.0.0>=2.28.1
-        python -m pip install aiohttp[speedups]<4.0.0>=3.8.3
-        python -m pip install openai<1.0.0>=0.25.0
-        python -m pip install aiomysql<1.0.0>=0.1.1
-        python -m pip install opencc-python-reimplemented<1.0.0>=0.1.6
-        python -m pip install jieba<1.0.0>=0.42.1
-        python -m pip install ntplib>=0.4.0
-        python -m pip install portalocker>=2.7.0
-        python -m pip install numpy>=1.24.2
-        python -m pip install uvicorn>=0.21.1
-        python -m pip install fastapi>=0.95.1
+        python -m pip install graia-ariadne[standard]
+        python -m pip install pyyaml
+        python -m pip install requests-cache
+        python -m pip install redis
+        python -m pip install pymysql
+        python -m pip install cryptography
+        python -m pip install requests
+        python -m pip install aiohttp[speedups]
+        python -m pip install openai
+        python -m pip install aiomysql
+        python -m pip install opencc-python-reimplemented
+        python -m pip install jieba
+        python -m pip install ntplib
+        python -m pip install portalocker
+        python -m pip install numpy
+        python -m pip install uvicorn
+        python -m pip install fastapi
         python -m pip install pylint
     - name: Analysing the code with pylint
       run: |
