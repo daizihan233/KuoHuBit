@@ -29,5 +29,7 @@
     - [Abjust/2kbot-py](https://github.com/Abjust/2kbot-py)
 - [ObsidianCatalina](https://github.com/ObsidianCatalina/)
     - [ObsidianCatalina/ObsidianBot](https://github.com/ObsidianCatalina/ObsidianBot)
-- [emerald-am9](https://gitee.com/emerald-am9/)
-    - [emerald-am9/lightbit](https://gitee.com/emerald-am9/lightbit)
+- daizihan233 （本项目作者）
+    - daizihan233/KuoHuBit （本项目）
+        - [emerald-am9](https://gitee.com/emerald-am9/)
+            - [emerald-am9/lightbit](https://gitee.com/emerald-am9/lightbit)
