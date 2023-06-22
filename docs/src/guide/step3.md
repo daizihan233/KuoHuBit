@@ -12,7 +12,6 @@ icon: info
 ```text
 module
  - NO_USE  # 关闭的功能
- - currency  # 简繁体不分的功能
  - zh_cn  # 中文
  - zh_cht  # 繁体补丁
 ```
