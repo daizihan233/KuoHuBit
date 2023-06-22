@@ -1,8 +1,8 @@
 import datetime
 
+from graia.amnesia.message import MessageChain
 from graia.ariadne.app import Ariadne
 from graia.ariadne.event.mirai import MemberLeaveEventQuit, MemberJoinEvent, MemberLeaveEventKick
-from graia.ariadne.message import MessageChain
 from graia.ariadne.message.element import Plain, At
 from graia.ariadne.model import Group, Member
 from graia.ariadne.util.saya import listen
