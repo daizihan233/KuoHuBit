@@ -31,5 +31,4 @@
     - [ObsidianCatalina/ObsidianBot](https://github.com/ObsidianCatalina/ObsidianBot)
 - daizihan233 （本项目作者）
     - daizihan233/KuoHuBit （本项目）
-        - [emerald-am9](https://gitee.com/emerald-am9/)
-            - [emerald-am9/lightbit](https://gitee.com/emerald-am9/lightbit)
+        - [emerald-am9/lightbit](https://gitee.com/emerald-am9/lightbit)
