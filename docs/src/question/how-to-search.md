@@ -62,7 +62,7 @@ icon: info
 - [F搜](https://fsoufsou.com/)
 - [Bing（必应）](https://www.bing.com/)
 
-我强推 DuckDuckGo，一个是 **不收集隐私信息** ，其次 **界面简介**，也可以 **快速寻找信息**，~~所以容我多bb几句~~
+我强推 DuckDuckGo，一个是 **不收集隐私信息** ，其次 **界面简洁**，也可以 **快速寻找信息**，~~所以容我多bb几句~~
 
 如果你决定使用 DuckDuckGo 我推荐你配置成下面这样：
 
