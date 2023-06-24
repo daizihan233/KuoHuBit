@@ -1,1 +1,8 @@
 blank_issues_enabled: true
+contact_links:
+  - name: 江河湖海
+    url: https://github.com/daizihan233/KuoHuBit/discussions/
+    about: 可以来这里水贴（bushi），或者提问一些问题，当然这些问题可以没有任何意义，比如说闲聊
+  - name: 说明文档
+    url: https://bot.khbit.cn/
+    about: 妈妈再也不用担心我的学习！

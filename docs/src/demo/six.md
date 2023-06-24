@@ -1,6 +1,5 @@
 ---
-title: 简介
-index: false
+title: 6榜
 icon: discover
 ---
 

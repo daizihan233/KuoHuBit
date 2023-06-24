@@ -17,6 +17,9 @@ channel.author("HanTools")
 @listen(GroupMessage)
 async def add_admin(app: Ariadne, group: Group, event: GroupMessage, message: MessageChain = DetectPrefix("上管")):
     admins = await botfunc.get_all_admin()
+    sb = await botfunc.get_all_sb()
+    if event.sender.id in sb:
+        return
     if event.sender.id not in admins:
         return
     try:

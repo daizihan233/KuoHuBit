@@ -13,6 +13,9 @@ actions:
 
   - text: 构建文档🏢
     link: /guide/
+    
+  - text: 疑难杂症😕
+    link: /question/
 
 features:
   - title: 快

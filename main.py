@@ -37,14 +37,14 @@ cursor.execute("""create table if not exists admin
 (
     uid bigint unsigned default '0' not null
         primary key
-) ENGINE = innodb DEFAULT CHARACTER SET = "utf8mb4" COLLATE = "utf8mb4_0900_ai_ci" """)
+) ENGINE = innodb DEFAULT CHARACTER SET = "utf8mb4" COLLATE = "utf8mb4_general_ci" """)
 
 cursor.execute("""create table if not exists blacklist
 (
     uid bigint unsigned not null
         primary key,
     op  bigint unsigned not null
-) ENGINE = innodb DEFAULT CHARACTER SET = "utf8mb4" COLLATE = "utf8mb4_0900_ai_ci" """)
+) ENGINE = innodb DEFAULT CHARACTER SET = "utf8mb4" COLLATE = "utf8mb4_general_ci" """)
 
 cursor.execute("""create table if not exists bread
 (
@@ -54,13 +54,13 @@ cursor.execute("""create table if not exists bread
     time       int unsigned default '0' not null,
     bread      int unsigned default '0' not null,
     experience int unsigned default '0' not null
-) ENGINE = innodb DEFAULT CHARACTER SET = "utf8mb4" COLLATE = "utf8mb4_0900_ai_ci" """)
+) ENGINE = innodb DEFAULT CHARACTER SET = "utf8mb4" COLLATE = "utf8mb4_general_ci" """)
 
 cursor.execute("""create table if not exists wd
 (
     wd    tinytext     null,
     count int unsigned null
-) ENGINE = innodb DEFAULT CHARACTER SET = "utf8mb4" COLLATE = "utf8mb4_0900_ai_ci" """)
+) ENGINE = innodb DEFAULT CHARACTER SET = "utf8mb4" COLLATE = "utf8mb4_general_ci" """)
 
 cursor.execute("""create table if not exists woodenfish
 (
@@ -76,25 +76,32 @@ cursor.execute("""create table if not exists woodenfish
     dt        bigint       default 0   not null comment '封禁结束时间',
     end_time  bigint       default 0   not null comment '最近一次调用时间',
     hit_count int          default 0   not null comment '一周期内的调用次数'
-) ENGINE = innodb DEFAULT CHARACTER SET = "utf8mb4" COLLATE = "utf8mb4_0900_ai_ci" """)
+) ENGINE = innodb DEFAULT CHARACTER SET = "utf8mb4" COLLATE = "utf8mb4_general_ci" """)
 cursor.execute("""CREATE TABLE IF NOT EXISTS `six` ( 
 `uid` bigint UNSIGNED NOT NULL PRIMARY KEY COMMENT 'QQ号' ,
 `count` int UNSIGNED NOT NULL DEFAULT 0 COMMENT '6 的次数',
 `ti` bigint UNSIGNED NOT NULL DEFAULT 0 COMMENT '最后一次"6"发送时间'
-) ENGINE = innodb DEFAULT CHARACTER SET = "utf8mb4" COLLATE = "utf8mb4_0900_ai_ci" """)
+) ENGINE = innodb DEFAULT CHARACTER SET = "utf8mb4" COLLATE = "utf8mb4_general_ci" """)
 cursor.execute("""CREATE TABLE IF NOT EXISTS `no_six` ( 
 `gid` bigint UNSIGNED NOT NULL PRIMARY KEY COMMENT '群号'
-) ENGINE = innodb DEFAULT CHARACTER SET = "utf8mb4" COLLATE = "utf8mb4_0900_ai_ci" """)
+) ENGINE = innodb DEFAULT CHARACTER SET = "utf8mb4" COLLATE = "utf8mb4_general_ci" """)
+cursor.execute("""CREATE TABLE IF NOT EXISTS `inm` ( 
+`gid` bigint UNSIGNED NOT NULL PRIMARY KEY COMMENT '群号'
+) ENGINE = innodb DEFAULT CHARACTER SET = "utf8mb4" COLLATE = "utf8mb4_general_ci" """)
 
-# 载入敏感词列表
 cursor.execute('SELECT wd, count FROM wd')
 cache_var.sensitive_words = [x[0] for x in cursor.fetchall()]
+
 cursor.execute('SELECT gid FROM no_six')
 cache_var.no_6 = [x[0] for x in cursor.fetchall()]
+
 cursor.execute('SELECT uid FROM admin')
 if not cursor.fetchall():
     admin_uid = int(input("未找到任何一个op！请输入你（op）的QQ号："))
     cursor.execute("INSERT INTO admin VALUES (%s)", (admin_uid,))
+
+cursor.execute('SELECT gid FROM inm')
+cache_var.inm = [x[0] for x in cursor.fetchall()]
 
 conn.close()
 with saya.module_context():

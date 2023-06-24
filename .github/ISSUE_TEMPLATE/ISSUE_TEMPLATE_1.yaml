@@ -1,5 +1,5 @@
-name: Bug反馈
-description: 在使用机器人的过程中遇到了错误
+name: 有虫子在机器人身上爬（悲）
+description: 选这个帮助 KHB 解决他身上的问题
 title: '[Bug?]: '
 labels: [ "Bug?" ]
 assignees: [ "daizihan233" ]

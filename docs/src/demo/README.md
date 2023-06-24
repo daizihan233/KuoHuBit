@@ -18,4 +18,5 @@ icon: discover
 - [敏感词检测](block_repeat.md)
 - [6榜](six.md)
 - [搜图](saucenao.md)
-
+- [homo](inm.md)
+- [机器人管理](op.md)

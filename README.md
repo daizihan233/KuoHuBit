@@ -31,7 +31,10 @@
 - [ObsidianCatalina](https://github.com/ObsidianCatalina/)
     - [~~ObsidianCatalina/ObsidianBot~~](https://github.com/ObsidianCatalina/ObsidianBot)
     - [ObsidianCatalina/OpenMariya](https://github.com/ObsidianCatalina/OpenMariya)
+        - [ltzXiaoYanMo/YanBot-OpenMariya_Edition](https://github.com/ltzXiaoYanMo/YanBot-OpenMariya_Edition)
 - daizihan233 （本项目作者）
     - daizihan233/KuoHuBit （本项目）
+        - [~~ltzXiaoYanMo/YanBot-KHB_Edition_Older~~](https://github.com/ltzXiaoYanMo/YanBot-KHB_Edition_Older)
+        - [ltzXiaoYanMo/YanBot_KHB_Edition](https://github.com/ltzXiaoYanMo/YanBot_KHB_Edition)
         - [emerald-am9/lightbit](https://gitee.com/emerald-am9/lightbit)
     - [daizihan233/KuoHuShit](https://github.com/daizihan233/KuoHuShit)
