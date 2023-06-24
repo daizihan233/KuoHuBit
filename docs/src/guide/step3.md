@@ -30,6 +30,8 @@ pdm run python main.py
 
 来运行机器人了
 
-如果你想在后台使用，请自行搜索 screen 或 tmux 的使用方法
+如果你想在后台使用，请自行搜索 `screen` 或 `tmux` 的使用方法
+
+直接在搜索引擎内搜索 `Linux screen` 或 `Linux tmux` 即可（推荐使用 tmux）
 
 本文档不赘述这两个工具的使用方法，如需教程请移步搜索引擎
