@@ -6,13 +6,13 @@ export const zhSidebar = sidebar({
         "",
         {
             icon: "discover",
-            text: "使用",
+            text: "使用指南",
             prefix: "demo/",
             link: "demo/",
             children: "structure",
         },
         {
-            text: "构建",
+            text: "部署文档",
             icon: "note",
             prefix: "guide/",
             link: "guide/",
@@ -21,6 +21,13 @@ export const zhSidebar = sidebar({
                 "step2",
                 "step3"
             ],
+        },
+        {
+            text: "疑难杂症",
+            icon: "warn",
+            prefix: "question/",
+            link: "question/",
+            children: "structure",
         }
     ],
 });

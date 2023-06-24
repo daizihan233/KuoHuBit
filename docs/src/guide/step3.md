@@ -1,5 +1,5 @@
 ---
-title: 第三步：大功告成
+title: 第 3 步：大功告成
 icon: info
 ---
 

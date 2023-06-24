@@ -1,6 +1,6 @@
 ---
 title: 6榜
-icon: discover
+icon: info
 ---
 
 

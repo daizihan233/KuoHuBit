@@ -1,5 +1,5 @@
 ---
-title: 第二步：配置文件
+title: 第 2 步：配置文件
 icon: info
 ---
 

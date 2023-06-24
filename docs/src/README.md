@@ -11,7 +11,7 @@ actions:
     link: /demo/
     type: primary
 
-  - text: 构建文档🏢
+  - text: 部署文档🏢
     link: /guide/
     
   - text: 疑难杂症😕
