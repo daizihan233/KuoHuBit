@@ -34,6 +34,8 @@ async def homo(app: Ariadne, group: Group, source: Source, event: GroupMessage):
     admins = await botfunc.get_all_admin()
     if event.sender.id not in admins:
         return
+    if group.id in cache_var.inm:
+        return
     cache_var.inm.append(group.id)
     await botfunc.run_sql("INSERT INTO inm VALUES (%s)", (group.id,))
     await app.send_message(
@@ -48,6 +50,8 @@ async def homo(app: Ariadne, group: Group, source: Source, event: GroupMessage):
 async def homo(app: Ariadne, group: Group, source: Source, event: GroupMessage):
     admins = await botfunc.get_all_admin()
     if event.sender.id not in admins:
+        return
+    if group.id not in cache_var.inm:
         return
     cache_var.inm.remove(group.id)
     await botfunc.run_sql("DELETE FROM inm WHERE gid=%s", (group.id,))
