@@ -66,7 +66,7 @@ icon: info
 
 如果你决定使用 DuckDuckGo 我推荐你配置成下面这样：
 
-![img.png](img.png)
+![DuckDuckGo 配置](/duckduckgo-allocation.png)
 
 [DuckDuckGo 隐私政策](https://duckduckgo.com/privacy)
 
