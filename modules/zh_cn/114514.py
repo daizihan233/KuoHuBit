@@ -1,5 +1,6 @@
 import random
 
+import loguru
 from graia.ariadne.app import Ariadne
 from graia.ariadne.event.message import GroupMessage
 from graia.ariadne.message import Source
@@ -22,10 +23,14 @@ channel.author("HanTools")
 @channel.use(SchedulerSchema(timers.crontabify("45 11 * * * 14")))
 async def inm(app: Ariadne):
     for group in cache_var.inm:
-        await app.send_group_message(
-            target=group,
-            message=f"哼哼哼，{'啊' * random.randint(5, 20)}"
-        )
+        try:
+            await app.send_group_message(
+                target=group,
+                message=f"哼哼哼，{'啊' * random.randint(5, 20)}"
+            )
+        except ValueError:
+            loguru.logger.warning(
+                f'{group} 不存在！请检查机器人是否被踢出，请尝试让机器人重新加群或手动删除数据库数据并重启机器人！')
 
 
 @listen(GroupMessage)
