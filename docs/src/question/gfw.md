@@ -4,7 +4,7 @@ index: true
 icon: info
 ---
 
-GFW 全程 **G**reat**F**ire**W**all of China
+GFW 全称 **G**reat**F**ire**W**all of China
 
 中文名叫 **防火长城**
 
