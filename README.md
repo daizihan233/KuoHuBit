@@ -1,5 +1,5 @@
 # KuoHuBit
-[![State-of-the-art Shitcode](https://img.shields.io/static/v1?label=State-of-the-art&message=Shitcode&color=7B5804)](https://github.com/trekhleb/state-of-the-art-shitcode) <-- 本项目是一个纯正的 shitcode
+[![State-of-the-art Shitcode](http://img.shields.io/static/v1?label=State-of-the-art&message=Shitcode&color=7B5804)](https://github.com/trekhleb/state-of-the-art-shitcode) <-- 本项目是一个纯正的 shitcode
 
 ![image](https://github.com/daizihan233/KuoHuBit/assets/72146468/16ed4df2-5c66-47d0-ba69-c11ca4991294)
 
@@ -21,7 +21,7 @@
 ~~如果代码像坨屎山一样那绝对跟我没关系~~
 
 - [Abjust](https://github.com/Abjust/)
-    - [Abjust/2kbot](https://github.com/Abjust/2kbot)
+    - [~~Abjust/2kbit-cs~~](https://github.com/Abjust/2kbit-cs)
         - [~~123Windows31/2kbot~~](https://github.com/123Windows31/2kbot)
         - [~~Emerald-AM9/Mica-App-Bot-~~](https://github.com/Emerald-AM9/Mica-App-Bot-)
             - [~~emerald-am9/mica-app-extension~~](https://gitee.com/emerald-am9/mica-app-extension/)
