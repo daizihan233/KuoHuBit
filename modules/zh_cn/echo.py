@@ -30,3 +30,4 @@ async def echo(app: Ariadne, group: Group, source: Source, message: MessageChain
 async def echo(app: Ariadne, group: Group, event: GroupRecallEvent):
     if botfunc.r.hexists("echo", event.message_id):
         await app.recall_message(botfunc.r.hget("echo", event.message_id), group)
+        botfunc.r.hdel("echo", event.message_id)
