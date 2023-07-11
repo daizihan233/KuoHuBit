@@ -28,4 +28,5 @@ GFW 全称 **G**reat**F**ire**W**all of China
 
 如果你要购买梯子，请找个 **先进的** 机场，Socks / SS / SSR 等古老协议已经被证明 **可以被主动探测**
 
-请在购买时确定这个机场支持 **先进的** 协议，比如 VLESS / VMess / Trojan 等
+请在购买时确定这个机场支持 **先进的** 协议，比如 VLESS / VMess / Trojan 等协议，并确保他们对这些协议使用了 TLS / XTLS /
+Reality 任意一种加密方式
