@@ -22,8 +22,8 @@ channel.name("6榜")
 channel.description("666")
 channel.author("HanTools")
 
-sl1 = ["6", "9", "6的", "9（6翻了）", "⑥", "₆", "⑹", "⒍", "⁶", "Six", "Nine", "\u0039\ufe0f\u20e3",
-       "\u0036\ufe0f\u20e3", "♸", "𝟼"]  # 模糊匹配
+sl1 = ["6", "9", "6的", "9（6翻了）", "⑥", "₆", "⑹", "⒍", "⁶", "six", "nine", "\u0039\ufe0f\u20e3",
+       "\u0036\ufe0f\u20e3", "♸", "𝟼", "𝟞", "liù"]  # 模糊匹配
 sl2 = []  # 精确匹配
 jieba.load_userdict('./jieba_words.txt')
 
@@ -113,14 +113,14 @@ async def f_hide_mid(string, count=4, fix='*'):
 
 async def text_pretreatment(s):
     s = s.replace('六', '6').replace('九', '9').replace('陆', '6').replace('玖', '9') \
-        .replace('(', '（').replace(')', '）')
+        .replace('(', '（').replace(')', '）').lower()
     replace_words = [
         (r"6+", "6"),
         (r"9+", "9"),
         (r"（+", "（"),
         (r"）+", "）")
     ]
-    stop_words = " ，,。.!！？?…^"
+    stop_words = " ，,。.!！？?…^\n"
     for stop in stop_words:
         s = s.replace(stop, '')
     for regex in replace_words:

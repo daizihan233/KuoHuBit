@@ -50,7 +50,7 @@ except FileNotFoundError:
   "MySQL_Port": 3306,
   "MySQL_Host": "localhost",
   "MySQL_db": "database",
-  "MySQL_User": "root"
+  "MySQL_User": "root",
   "Redis_Host": "localhost",
   "Redis_port": 6379,
   "snao_key": ""
