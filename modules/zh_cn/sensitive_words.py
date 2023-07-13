@@ -107,7 +107,8 @@ async def f(app: Ariadne, group: Group, event: GroupMessage):
 
 @listen(GroupMessage)
 async def add(app: Ariadne, event: GroupMessage, message: MessageChain = DetectPrefix("加敏感词")):
-    if event.sender.permission in [MemberPerm.Administrator, MemberPerm.Owner]:
+    admin = botfunc.get_all_admin()
+    if event.sender.permission in [MemberPerm.Administrator, MemberPerm.Owner] or event.sender.id in admin:
         if str(message) not in cache_var.sensitive_words:
             try:
                 await botfunc.run_sql('INSERT INTO wd(wd) VALUES (%s)', (message,))
@@ -125,7 +126,8 @@ async def add(app: Ariadne, event: GroupMessage, message: MessageChain = DetectP
 
 @listen(GroupMessage)
 async def rm(app: Ariadne, event: GroupMessage, message: MessageChain = DetectPrefix("删敏感词")):
-    if event.sender.permission in [MemberPerm.Administrator, MemberPerm.Owner]:
+    admin = botfunc.get_all_admin()
+    if event.sender.permission in [MemberPerm.Administrator, MemberPerm.Owner] or event.sender.id in admin:
         try:
             await botfunc.run_sql('DELETE FROM wd WHERE wd=%s', (message,))
         except Exception as err:
