@@ -111,7 +111,7 @@ async def add(app: Ariadne, event: GroupMessage, message: MessageChain = DetectP
     if event.sender.permission in [MemberPerm.Administrator, MemberPerm.Owner] or event.sender.id in admin:
         if str(message) not in cache_var.sensitive_words:
             try:
-                await botfunc.run_sql('INSERT INTO wd(wd) VALUES (%s)', (message,))
+                await botfunc.run_sql('INSERT INTO wd(wd, count) VALUES (%s, 0)', (message,))
             except Exception as err:
                 await app.send_message(event.sender.group, f'寄！{err}')
             else:
