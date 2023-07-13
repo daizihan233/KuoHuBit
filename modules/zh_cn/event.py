@@ -15,13 +15,22 @@ channel.author("HanTools")
 
 
 @listen(MemberLeaveEventQuit)
-@listen(MemberLeaveEventKick)
 async def leave(app: Ariadne, group: Group, member: Member):
     await app.send_message(
         target=group,
         message=f'✈️成员发生变更：\n'
                 f'QQ号为： {member.id} 的小伙伴退出了本群，对他/她的离开表示惋惜，期待他/她能够与我们再次相遇~'
     )
+
+
+@listen(MemberLeaveEventKick)
+async def leave(app: Ariadne, group: Group, member: Member, event: MemberLeaveEventKick):
+    if event.operator is not None:
+        await app.send_message(
+            target=group,
+            message=f'✈️成员发生变更：\n'
+                    f'QQ号为： {member.id} 的小伙伴被 {At(event.operator.id)} 踢出了本群，对他/她的离开表示惋惜，期待他/她能够与我们再次相遇~'
+        )
 
 
 @listen(MemberJoinEvent)
