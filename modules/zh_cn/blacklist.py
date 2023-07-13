@@ -5,11 +5,12 @@ from graia.ariadne.event.message import GroupMessage
 from graia.ariadne.event.mirai import MemberJoinEvent
 from graia.ariadne.message.element import At
 from graia.ariadne.message.parser.base import DetectPrefix
-from graia.ariadne.util.saya import listen
+from graia.ariadne.util.saya import listen, decorate
 from graia.saya import Channel
 from loguru import logger
 
 import botfunc
+import depen
 
 channel = Channel.current()
 channel.name("黑名单")
@@ -18,10 +19,8 @@ channel.author("HanTools")
 
 
 @listen(GroupMessage)
+@decorate(depen.check_authority_bot_op())
 async def nmsl(app: Ariadne, event: GroupMessage, message: MessageChain = DetectPrefix("拉黑")):
-    admins = await botfunc.get_all_admin()
-    if event.sender.id not in admins:
-        return
     msg = "--- 执行结果 ---\n"
     flag = True
     for i in message[At]:
@@ -71,10 +70,10 @@ async def nmsl(app: Ariadne, event: GroupMessage, message: MessageChain = Detect
 
 
 @listen(MemberJoinEvent)
+@decorate(depen.check_authority_black(False))
 async def kicksb(app: Ariadne, event: MemberJoinEvent):
-    sbs = await botfunc.get_all_sb()
     admins = await botfunc.get_all_admin()
-    if event.member.id in sbs and event.inviter.id not in admins:
+    if event.inviter.id not in admins:
         t = await botfunc.select_fetchone("SELECT uid, op FROM blacklist WHERE uid = %s", (event.member.id,))
         try:
             await app.kick_member(event.member.group)
@@ -86,10 +85,8 @@ async def kicksb(app: Ariadne, event: MemberJoinEvent):
 
 
 @listen(GroupMessage)
+@decorate(depen.check_authority_bot_op())
 async def nmms(app: Ariadne, event: GroupMessage, message: MessageChain = DetectPrefix("删黑")):
-    admins = await botfunc.get_all_admin()
-    if event.sender.id not in admins:
-        return
     try:
         await botfunc.run_sql('DELETE FROM blacklist WHERE uid = %s',
                               (int(str(message)),))

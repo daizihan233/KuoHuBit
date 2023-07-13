@@ -8,13 +8,14 @@ from graia.ariadne.event.mirai import MemberUnmuteEvent
 from graia.ariadne.message.chain import MessageChain
 from graia.ariadne.message.element import Plain, At
 from graia.ariadne.message.parser.base import MatchContent
-from graia.ariadne.model import Group, Member, MemberPerm
+from graia.ariadne.model import Group, Member
 from graia.ariadne.util.saya import listen, decorate
 from graia.saya import Channel
 from graia.saya.builtins.broadcast.schema import ListenerSchema
 from loguru import logger
 
 import botfunc
+import depen
 from botfunc import r
 
 channel = Channel.current()
@@ -57,33 +58,31 @@ async def repeat_record(app: Ariadne, group: Group, member: Member, message: Mes
 
 @listen(GroupMessage)
 @decorate(MatchContent("开启本群防刷屏"))
+@decorate(depen.check_authority_op())
 async def start_mute(app: Ariadne, group: Group, event: GroupMessage):
-    admin = await botfunc.get_all_admin()
-    if event.sender.permission in [MemberPerm.Administrator, MemberPerm.Owner] or event.sender.id in admin:
-        with open(dyn_config, 'r') as cf:
-            cfy = yaml.safe_load(cf)
-        cfy['mute'].append(group.id)
-        cfy['mute'] = list(set(cfy["mute"]))
-        with open(dyn_config, 'w') as cf:
-            yaml.dump(cfy, cf)
-        await app.send_message(group, MessageChain(At(event.sender.id), Plain(" OK辣！")))
+    with open(dyn_config, 'r') as cf:
+        cfy = yaml.safe_load(cf)
+    cfy['mute'].append(group.id)
+    cfy['mute'] = list(set(cfy["mute"]))
+    with open(dyn_config, 'w') as cf:
+        yaml.dump(cfy, cf)
+    await app.send_message(group, MessageChain(At(event.sender.id), Plain(" OK辣！")))
 
 
 @listen(GroupMessage)
 @decorate(MatchContent("关闭本群防刷屏"))
+@decorate(depen.check_authority_op())
 async def stop_mute(app: Ariadne, group: Group, event: GroupMessage):
-    admin = await botfunc.get_all_admin()
-    if event.sender.permission in [MemberPerm.Administrator, MemberPerm.Owner] or event.sender.id in admin:
-        with open(dyn_config, 'r') as cf:
-            cfy = yaml.safe_load(cf)
-        try:
-            cfy['mute'].remove(group.id)
-            cfy['mute'] = list(set(cfy["mute"]))
-            with open(dyn_config, 'w') as cf:
-                yaml.dump(cfy, cf)
-            await app.send_message(group, MessageChain(At(event.sender.id), Plain(" OK辣！")))
-        except Exception as err:
-            await app.send_message(group, MessageChain(At(event.sender.id), Plain(f" 报错辣！{err}")))
+    with open(dyn_config, 'r') as cf:
+        cfy = yaml.safe_load(cf)
+    try:
+        cfy['mute'].remove(group.id)
+        cfy['mute'] = list(set(cfy["mute"]))
+        with open(dyn_config, 'w') as cf:
+            yaml.dump(cfy, cf)
+        await app.send_message(group, MessageChain(At(event.sender.id), Plain(" OK辣！")))
+    except Exception as err:
+        await app.send_message(group, MessageChain(At(event.sender.id), Plain(f" 报错辣！{err}")))
 
 
 @channel.use(
