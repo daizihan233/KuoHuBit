@@ -78,7 +78,7 @@ async def f(app: Ariadne, group: Group, event: GroupMessage):
         msg = opc.convert(  # 抗混淆：繁简字转换
             str(event.message_chain).strip(' []【】{}\\!！.。…?？啊哦额呃嗯嘿/')  # 抗混淆：去除语气词
         )
-        if str(event.message_chain) in cache_var.sensitive_words:  # 准确率：整句匹配
+        if str(event.message_chain) in cache_var.sensitive_words:  # 性能：整句匹配
             try:
                 await app.recall_message(event)
             except PermissionError:
