@@ -6,14 +6,14 @@ from graia.ariadne.event.message import GroupMessage
 from graia.ariadne.message.chain import MessageChain
 from graia.ariadne.message.element import At, Plain
 from graia.ariadne.message.parser.base import MatchContent, DetectPrefix
-from graia.ariadne.model import Group
+from graia.ariadne.model import Group, MemberPerm
 from graia.ariadne.util.saya import listen, decorate
 from graia.saya import Channel
+from graia.saya.builtins.broadcast.schema import ListenerSchema
 from loguru import logger
 
 import botfunc
 import cache_var
-import depen
 
 channel = Channel.current()
 channel.name("敏感词检测")
@@ -47,34 +47,36 @@ jieba.load_userdict("./jieba_words.txt")
 
 @listen(GroupMessage)
 @decorate(MatchContent("开启本群敏感词检测"))
-@decorate(depen.check_authority_op())
 async def start_word(app: Ariadne, group: Group, event: GroupMessage):
-    with open(dyn_config, 'r') as cf:
-        cfy = yaml.safe_load(cf)
-    cfy['word'].append(group.id)
-    cfy['word'] = list(set(cfy["word"]))
-    with open(dyn_config, 'w') as cf:
-        yaml.dump(cfy, cf)
-    await app.send_message(group, MessageChain(At(event.sender.id), Plain(" OK辣！")))
-
-
-@listen(GroupMessage)
-@decorate(MatchContent("关闭本群敏感词检测"))
-@decorate(depen.check_authority_op())
-async def stop_word(app: Ariadne, group: Group, event: GroupMessage):
-    with open(dyn_config, 'r') as cf:
-        cfy = yaml.safe_load(cf)
-    try:
-        cfy['word'].remove(group.id)
+    admin = await botfunc.get_all_admin()
+    if event.sender.permission in [MemberPerm.Administrator, MemberPerm.Owner] or event.sender.id in admin:
+        with open(dyn_config, 'r') as cf:
+            cfy = yaml.safe_load(cf)
+        cfy['word'].append(group.id)
         cfy['word'] = list(set(cfy["word"]))
         with open(dyn_config, 'w') as cf:
             yaml.dump(cfy, cf)
         await app.send_message(group, MessageChain(At(event.sender.id), Plain(" OK辣！")))
-    except Exception as err:
-        await app.send_message(group, MessageChain(At(event.sender.id), Plain(f" 报错辣！{err}")))
 
 
 @listen(GroupMessage)
+@decorate(MatchContent("关闭本群敏感词检测"))
+async def stop_word(app: Ariadne, group: Group, event: GroupMessage):
+    admin = await botfunc.get_all_admin()
+    if event.sender.permission in [MemberPerm.Administrator, MemberPerm.Owner] or event.sender.id in admin:
+        with open(dyn_config, 'r') as cf:
+            cfy = yaml.safe_load(cf)
+        try:
+            cfy['word'].remove(group.id)
+            cfy['word'] = list(set(cfy["word"]))
+            with open(dyn_config, 'w') as cf:
+                yaml.dump(cfy, cf)
+            await app.send_message(group, MessageChain(At(event.sender.id), Plain(" OK辣！")))
+        except Exception as err:
+            await app.send_message(group, MessageChain(At(event.sender.id), Plain(f" 报错辣！{err}")))
+
+
+@channel.use(ListenerSchema(listening_events=[GroupMessage]))
 async def f(app: Ariadne, group: Group, event: GroupMessage):
     if group.id in botfunc.get_dyn_config('word'):
         msg = opc.convert(  # 抗混淆：繁简字转换
@@ -108,35 +110,35 @@ async def f(app: Ariadne, group: Group, event: GroupMessage):
 
 
 @listen(GroupMessage)
-@decorate(DetectPrefix("加敏感词"))
-@decorate(depen.check_authority_op())
 async def add(app: Ariadne, event: GroupMessage, message: MessageChain = DetectPrefix("加敏感词")):
-    if str(message) not in cache_var.sensitive_words:
+    admin = await botfunc.get_all_admin()
+    if event.sender.permission in [MemberPerm.Administrator, MemberPerm.Owner] or event.sender.id in admin:
+        if str(message) not in cache_var.sensitive_words:
+            try:
+                await botfunc.run_sql('INSERT INTO wd(wd, count) VALUES (%s, 0)', (str(message),))
+            except Exception as err:
+                await app.send_message(event.sender.group, f'寄！{err}')
+            else:
+                await app.send_message(event.sender.group, '好辣！')
+            try:
+                cache_var.sensitive_words.append(str(message))
+            except Exception as err:
+                logger.error(err)
+        else:
+            await app.send_message(event.sender.group, '有没有一种可能，这个词已经加过了')
+
+
+@listen(GroupMessage)
+async def rm(app: Ariadne, event: GroupMessage, message: MessageChain = DetectPrefix("删敏感词")):
+    admin = await botfunc.get_all_admin()
+    if event.sender.permission in [MemberPerm.Administrator, MemberPerm.Owner] or event.sender.id in admin:
         try:
-            await botfunc.run_sql('INSERT INTO wd(wd, count) VALUES (%s, 0)', (str(message),))
+            await botfunc.run_sql('DELETE FROM wd WHERE wd=%s', (message,))
         except Exception as err:
             await app.send_message(event.sender.group, f'寄！{err}')
         else:
             await app.send_message(event.sender.group, '好辣！')
         try:
-            cache_var.sensitive_words.append(str(message))
+            cache_var.sensitive_words.remove(str(message))
         except Exception as err:
             logger.error(err)
-    else:
-        await app.send_message(event.sender.group, '有没有一种可能，这个词已经加过了')
-
-
-@listen(GroupMessage)
-@decorate(DetectPrefix("删敏感词"))
-@decorate(depen.check_authority_op())
-async def rm(app: Ariadne, event: GroupMessage, message: MessageChain = DetectPrefix("删敏感词")):
-    try:
-        await botfunc.run_sql('DELETE FROM wd WHERE wd=%s', (message,))
-    except Exception as err:
-        await app.send_message(event.sender.group, f'寄！{err}')
-    else:
-        await app.send_message(event.sender.group, '好辣！')
-    try:
-        cache_var.sensitive_words.remove(str(message))
-    except Exception as err:
-        logger.error(err)

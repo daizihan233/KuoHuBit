@@ -36,8 +36,7 @@ async def leave(app: Ariadne, group: Group, member: Member):
                 Plain(
                     f' 加入本群，入群时间为'
                     f'[{now.year}年{now.month}月{now.day}日 {now.hour}:{now.minute}:{now.second}]'
-                    f'我是本群机器人（）,快来与群友们来互动吧~'
-                )
+                    f'我是本群机器人（）,快来与群友们来互动吧~')
             ]
         )
     )

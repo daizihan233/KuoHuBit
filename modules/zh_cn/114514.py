@@ -13,7 +13,6 @@ from graia.scheduler.saya import SchedulerSchema
 
 import botfunc
 import cache_var
-import depen
 
 channel = Channel.current()
 channel.name("inm")
@@ -36,8 +35,10 @@ async def inm(app: Ariadne):
 
 @listen(GroupMessage)
 @decorate(MatchContent("臭死力"))
-@decorate(depen.check_authority_bot_op())
-async def homo(app: Ariadne, group: Group, source: Source):
+async def homo(app: Ariadne, group: Group, source: Source, event: GroupMessage):
+    admins = await botfunc.get_all_admin()
+    if event.sender.id not in admins:
+        return
     if group.id in cache_var.inm:
         return
     cache_var.inm.append(group.id)
@@ -51,8 +52,10 @@ async def homo(app: Ariadne, group: Group, source: Source):
 
 @listen(GroupMessage)
 @decorate(MatchContent("香死力"))
-@decorate(depen.check_authority_bot_op())
-async def homo(app: Ariadne, group: Group, source: Source):
+async def homo(app: Ariadne, group: Group, source: Source, event: GroupMessage):
+    admins = await botfunc.get_all_admin()
+    if event.sender.id not in admins:
+        return
     if group.id not in cache_var.inm:
         return
     cache_var.inm.remove(group.id)
