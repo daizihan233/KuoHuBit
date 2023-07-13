@@ -15,8 +15,9 @@ icon: discover
 - [摸鱼日历](fish.md)
 - [面包厂](bread.md)
 - ~~赛博木鱼~~ （功能已删除，考虑重写）
-- [敏感词检测](block_repeat.md)
+- [防刷屏](block_repeat.md)
 - [6榜](six.md)
 - [搜图](saucenao.md)
 - [homo](inm.md)
 - [机器人管理](op.md)
+- [敏感词检测](sensitive_words.md)

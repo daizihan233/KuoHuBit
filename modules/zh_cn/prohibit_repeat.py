@@ -58,19 +58,22 @@ async def repeat_record(app: Ariadne, group: Group, member: Member, message: Mes
 @listen(GroupMessage)
 @decorate(MatchContent("开启本群防刷屏"))
 async def start_mute(app: Ariadne, group: Group, event: GroupMessage):
-    with open(dyn_config, 'r') as cf:
-        cfy = yaml.safe_load(cf)
-    cfy['mute'].append(group.id)
-    cfy['mute'] = list(set(cfy["mute"]))
-    with open(dyn_config, 'w') as cf:
-        yaml.dump(cfy, cf)
-    await app.send_message(group, MessageChain(At(event.sender.id), Plain(" OK辣！")))
+    admin = await botfunc.get_all_admin()
+    if event.sender.permission in [MemberPerm.Administrator, MemberPerm.Owner] or event.sender.id in admin:
+        with open(dyn_config, 'r') as cf:
+            cfy = yaml.safe_load(cf)
+        cfy['mute'].append(group.id)
+        cfy['mute'] = list(set(cfy["mute"]))
+        with open(dyn_config, 'w') as cf:
+            yaml.dump(cfy, cf)
+        await app.send_message(group, MessageChain(At(event.sender.id), Plain(" OK辣！")))
 
 
 @listen(GroupMessage)
 @decorate(MatchContent("关闭本群防刷屏"))
 async def stop_mute(app: Ariadne, group: Group, event: GroupMessage):
-    if event.sender.permission in [MemberPerm.Administrator, MemberPerm.Owner]:
+    admin = await botfunc.get_all_admin()
+    if event.sender.permission in [MemberPerm.Administrator, MemberPerm.Owner] or event.sender.id in admin:
         with open(dyn_config, 'r') as cf:
             cfy = yaml.safe_load(cf)
         try:

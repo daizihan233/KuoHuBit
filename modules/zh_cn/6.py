@@ -10,7 +10,7 @@ from graia.ariadne.app import Ariadne
 from graia.ariadne.event.message import GroupMessage
 from graia.ariadne.message.element import Plain, At, Image
 from graia.ariadne.message.parser.base import MatchContent
-from graia.ariadne.model import Group
+from graia.ariadne.model import Group, MemberPerm
 from graia.ariadne.util.saya import listen, decorate
 from graia.saya import Channel
 
@@ -215,7 +215,7 @@ async def six_top(app: Ariadne, group: Group, event: GroupMessage):
 @decorate(MatchContent("6，闭嘴"))
 async def no_six(app: Ariadne, group: Group, event: GroupMessage):
     admins = await botfunc.get_all_admin()
-    if event.sender.id not in admins:
+    if event.sender.id not in admins and event.sender.permission not in [MemberPerm.Administrator, MemberPerm.Owner]:
         return
     if group.id not in cache_var.no_6:
         cache_var.no_6.append(group.id)
