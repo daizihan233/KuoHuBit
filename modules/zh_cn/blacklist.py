@@ -19,6 +19,7 @@ channel.author("HanTools")
 
 
 @listen(GroupMessage)
+@decorate(DetectPrefix("拉黑"))
 @decorate(depen.check_authority_bot_op())
 async def nmsl(app: Ariadne, event: GroupMessage, message: MessageChain = DetectPrefix("拉黑")):
     msg = "--- 执行结果 ---\n"

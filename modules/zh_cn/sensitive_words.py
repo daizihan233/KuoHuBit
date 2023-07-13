@@ -127,6 +127,7 @@ async def add(app: Ariadne, event: GroupMessage, message: MessageChain = DetectP
 
 
 @listen(GroupMessage)
+@decorate(DetectPrefix("删敏感词"))
 @decorate(depen.check_authority_op())
 async def rm(app: Ariadne, event: GroupMessage, message: MessageChain = DetectPrefix("删敏感词")):
     try:
