@@ -108,6 +108,7 @@ async def f(app: Ariadne, group: Group, event: GroupMessage):
 
 
 @listen(GroupMessage)
+@decorate(DetectPrefix("加敏感词"))
 @decorate(depen.check_authority_op())
 async def add(app: Ariadne, event: GroupMessage, message: MessageChain = DetectPrefix("加敏感词")):
     if str(message) not in cache_var.sensitive_words:

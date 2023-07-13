@@ -1,3 +1,8 @@
+"""
+KHB 常用的逻辑判断
+
+注意：一定要以无头修饰器的方式去使用，包括消息链匹配器，且一定要放在消息链匹配器的下面
+"""
 from graia.amnesia.message import MessageChain
 from graia.ariadne import Ariadne
 from graia.ariadne.message.element import At, Plain

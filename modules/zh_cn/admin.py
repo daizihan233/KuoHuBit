@@ -16,6 +16,7 @@ channel.author("HanTools")
 
 
 @listen(GroupMessage)
+@decorate(DetectPrefix("上管"))
 @decorate(depen.check_authority_not_black())
 @decorate(depen.check_authority_op())
 async def add_admin(app: Ariadne, group: Group, message: MessageChain = DetectPrefix("上管")):
@@ -28,6 +29,7 @@ async def add_admin(app: Ariadne, group: Group, message: MessageChain = DetectPr
 
 
 @listen(GroupMessage)
+@decorate(DetectPrefix("去管"))
 @decorate(depen.check_authority_bot_op())
 async def del_admin(app: Ariadne, group: Group, message: MessageChain = DetectPrefix("去管")):
     try:

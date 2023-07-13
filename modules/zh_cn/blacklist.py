@@ -85,6 +85,7 @@ async def kicksb(app: Ariadne, event: MemberJoinEvent):
 
 
 @listen(GroupMessage)
+@decorate(DetectPrefix("删黑"))
 @decorate(depen.check_authority_bot_op())
 async def nmms(app: Ariadne, event: GroupMessage, message: MessageChain = DetectPrefix("删黑")):
     try:

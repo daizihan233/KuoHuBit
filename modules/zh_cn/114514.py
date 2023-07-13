@@ -37,7 +37,7 @@ async def inm(app: Ariadne):
 @listen(GroupMessage)
 @decorate(MatchContent("臭死力"))
 @decorate(depen.check_authority_bot_op())
-async def homo(app: Ariadne, group: Group, source: Source, event: GroupMessage):
+async def homo(app: Ariadne, group: Group, source: Source):
     if group.id in cache_var.inm:
         return
     cache_var.inm.append(group.id)
@@ -52,7 +52,7 @@ async def homo(app: Ariadne, group: Group, source: Source, event: GroupMessage):
 @listen(GroupMessage)
 @decorate(MatchContent("香死力"))
 @decorate(depen.check_authority_bot_op())
-async def homo(app: Ariadne, group: Group, source: Source, event: GroupMessage):
+async def homo(app: Ariadne, group: Group, source: Source):
     if group.id not in cache_var.inm:
         return
     cache_var.inm.remove(group.id)
