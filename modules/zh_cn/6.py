@@ -129,7 +129,7 @@ async def index_lst(x, lst):
     lst = sorted(lst, reverse=True, key=lambda n: n[1])
     flag = len(lst) - 1
     for i in range(len(lst)):
-        if x > lst[i][1]:
+        if x >= lst[i][1]:
             flag = i
             break
     msg = []
