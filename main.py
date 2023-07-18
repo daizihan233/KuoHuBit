@@ -118,7 +118,7 @@ if not cache_var.sensitive_words:
         cursor.execute("INSERT INTO wd VALUES (%s, 0)", (w,))
         try:
             conn.commit()
-        except pymysql.DataError:
+        except pymysql.err.DataError:
             conn.rollback()
 cursor.execute('SELECT wd, count FROM wd')
 cache_var.sensitive_words = [x[0] for x in cursor.fetchall()]
