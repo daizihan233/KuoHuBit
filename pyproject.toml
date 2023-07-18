@@ -31,9 +31,9 @@ dependencies = [
     "numpy>=1.24.2",
     "uvicorn>=0.21.1",
     "fastapi>=0.95.1",
+    "rich>=13.4.2",
 ]
 requires-python = ">=3.10,<4.0"
 license = { text = "AGPL-3.0" }
 readme = "README.md"
 
-[project.urls]
