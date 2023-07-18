@@ -89,6 +89,8 @@ cursor.execute("""CREATE TABLE IF NOT EXISTS `inm` (
 `gid` bigint UNSIGNED NOT NULL PRIMARY KEY COMMENT '群号'
 ) ENGINE = innodb DEFAULT CHARACTER SET = "utf8mb4" COLLATE = "utf8mb4_general_ci" """)
 
+conn.commit()
+
 cursor.execute('SELECT wd, count FROM wd')
 cache_var.sensitive_words = [x[0] for x in cursor.fetchall()]
 
@@ -99,6 +101,8 @@ cursor.execute('SELECT uid FROM admin')
 if not cursor.fetchall():
     admin_uid = int(input("未找到任何一个op！请输入你（op）的QQ号："))
     cursor.execute("INSERT INTO admin VALUES (%s)", (admin_uid,))
+
+conn.commit()
 
 cursor.execute('SELECT gid FROM inm')
 cache_var.inm = [x[0] for x in cursor.fetchall()]
