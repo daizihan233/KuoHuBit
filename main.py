@@ -111,6 +111,7 @@ if not cache_var.sensitive_words:
         "https://cdn.jsdelivr.net/gh/fwwdn/sensitive-stop-words@master/%E6%B6%89%E6%9E%AA%E6%B6%89%E7%88%86%E8%BF%9D%E6%B3%95%E4%BF%A1%E6%81%AF%E5%85%B3%E9%94%AE%E8%AF%8D.txt").text.split(
         ',\n')
     for w in track(d, description="Loading"):
+        print(d)
         cursor.execute("INSERT INTO wd VALUES (%s, 0)", (w,))
     conn.commit()
 cursor.execute('SELECT wd, count FROM wd')
