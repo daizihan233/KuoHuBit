@@ -115,6 +115,7 @@ if not cache_var.sensitive_words:
         ).text.split(',\n')
     )
     for w in track(d, description="Loading"):
+        print(d)
         cursor.execute("INSERT INTO wd VALUES (%s, 0)", (w,))
     conn.commit()
 cursor.execute('SELECT wd, count FROM wd')
