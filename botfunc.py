@@ -163,12 +163,12 @@ if get_cloud_config("Redis_Pwd") is not None:
     backend = requests_cache.RedisCache(
         host=get_cloud_config('Redis_Host'),
         port=get_cloud_config('Redis_port'),
-        auth=get_cloud_config('Redis_Pwd')
+        password=get_cloud_config('Redis_Pwd')
     )
     p = redis.ConnectionPool(
         host=get_cloud_config('Redis_Host'),
         port=get_cloud_config('Redis_port'),
-        auth=get_cloud_config('Redis_Pwd')
+        password=get_cloud_config('Redis_Pwd')
     )
 else:
     backend = requests_cache.RedisCache(
