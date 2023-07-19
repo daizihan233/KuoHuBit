@@ -159,8 +159,25 @@ async def get_all_sb() -> list:
     return t
 
 
-backend = requests_cache.RedisCache(host=get_cloud_config('Redis_Host'), port=get_cloud_config('Redis_port'))
+if get_cloud_config("Redis_Pwd") is not None:
+    backend = requests_cache.RedisCache(
+        host=get_cloud_config('Redis_Host'),
+        port=get_cloud_config('Redis_port'),
+        auth=get_cloud_config('Redis_Pwd')
+    )
+    p = redis.ConnectionPool(
+        host=get_cloud_config('Redis_Host'),
+        port=get_cloud_config('Redis_port'),
+        auth=get_cloud_config('Redis_Pwd')
+    )
+else:
+    backend = requests_cache.RedisCache(
+        host=get_cloud_config('Redis_Host'),
+        port=get_cloud_config('Redis_port')
+    )
+    p = redis.ConnectionPool(
+        host=get_cloud_config('Redis_Host'),
+        port=get_cloud_config('Redis_port')
+    )
 session = requests_cache.CachedSession("global_session", backend=backend, expire_after=360)
-
-p = redis.ConnectionPool(host=get_cloud_config('Redis_Host'), port=get_cloud_config('Redis_port'))
 r = redis.Redis(connection_pool=p, decode_responses=True)
