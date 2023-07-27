@@ -80,17 +80,16 @@ async def f_hide_mid(string, count=4, fix='*'):
                     ret_str = string[:int(str_len / 2 - count / 2)] + count * fix + string[
                                                                                     int(str_len / 2 + count / 2):]
                 else:
-                    ret_str = string[:int((str_len + 1) / 2 - count / 2)] + count * fix + string[int((
-                                                                                                             str_len + 1) / 2 + count / 2):]
+                    ret_str = string[:int((str_len + 1) / 2 - count / 2)] + count * fix + string[int((str_len + 1)
+                                                                                                     / 2 + count / 2):]
             else:
                 if str_len % 2 == 0:
                     ret_str = string[:int(str_len / 2 - (count - 1) / 2)] + count * fix + string[int(str_len / 2 + (
                             count + 1) / 2):]
                 else:
                     ret_str = string[:int((str_len + 1) / 2 - (count + 1) / 2)] + count * fix + string[
-                                                                                                int((
-                                                                                                            str_len + 1) / 2 + (
-                                                                                                            count - 1) / 2):]
+                                                                                                int((str_len + 1) / 2 +
+                                                                                                    (count - 1) / 2):]
         else:
             ret_str = string[0] + fix * (str_len - 2) + string[-1]
     return ret_str

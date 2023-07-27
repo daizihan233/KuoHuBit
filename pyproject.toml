@@ -24,7 +24,6 @@ dependencies = [
     "aiomysql<1.0.0,>=0.1.1",
     "opencc-python-reimplemented<1.0.0,>=0.1.6",
     "jieba<1.0.0,>=0.42.1",
-    "ntplib>=0.4.0",
     "portalocker>=2.7.0",
     "numpy>=1.24.2",
     "uvicorn>=0.21.1",
