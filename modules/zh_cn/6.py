@@ -28,28 +28,13 @@ sl2 = []  # 精确匹配
 jieba.load_userdict('./jieba_words.txt')
 
 
-async def divided(a, b):
-    a1 = jieba.cut(a)
-    b1 = jieba.cut(b)
-    lst_a = []
-    lst_b = []
-    for i in a1:
-        lst_a.append(i)
-    for j in b1:
-        lst_b.append(j)
-    return lst_a, lst_b
+async def divided(a: str, b: str):
+    return jieba.lcut(a), jieba.lcut(b)
 
 
 # 获取所有的分词可能
-async def get_all_words(lst_aa, lst_bb):
-    all_word = []
-    for ix in lst_aa:
-        if ix not in all_word:
-            all_word.append(ix)
-    for j in lst_bb:
-        if j not in all_word:
-            all_word.append(j)
-    return all_word
+async def get_all_words(lst_aa: list, lst_bb: list):
+    return list(set(lst_aa + lst_bb))
 
 
 # 词频向量化
@@ -175,7 +160,7 @@ async def six_six_six(app: Ariadne, group: Group, event: GroupMessage, message: 
         s1_ = await text_pretreatment(s1)
         # 对比
         list_a, list_b = await divided(s1_, s2_)
-        all_words = await get_all_words(tuple(list_a), tuple(list_b))
+        all_words = await get_all_words(list_a, list_b)
         laa, lbb = await get_word_vector(tuple(list_a), tuple(list_b), tuple(all_words))
         cos = await calculate_cos(tuple(laa), tuple(lbb))
         cos = round(cos, 2)
