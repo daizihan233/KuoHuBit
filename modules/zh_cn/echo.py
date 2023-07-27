@@ -18,12 +18,16 @@ channel.author("HanTools")
 
 @channel.use(ListenerSchema(listening_events=[GroupMessage]))
 async def echo(app: Ariadne, group: Group, source: Source, message: MessageChain = DetectPrefix("/echo ")):
-    if not str(message).startswith('/echo'):
-        m: ActiveGroupMessage = await app.send_group_message(
-            group,
-            message,
-        )
-        botfunc.r.hset('echo', source.id, m.source.id)
+    for w in (
+            "echo", "6", "9"
+    ):
+        if message.display.startswith(w):
+            return
+    m: ActiveGroupMessage = await app.send_group_message(
+        group,
+        message,
+    )
+    botfunc.r.hset('echo', source.id, m.source.id)
 
 
 @channel.use(ListenerSchema(listening_events=[GroupRecallEvent]))
