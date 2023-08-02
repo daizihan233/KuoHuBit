@@ -220,7 +220,7 @@ async def no_six(app: Ariadne, group: Group, event: GroupMessage):
 @decorate(MatchContent("6，张嘴"))
 async def yes_six(app: Ariadne, group: Group, event: GroupMessage):
     admins = await botfunc.get_all_admin()
-    if event.sender.id not in admins:
+    if event.sender.id not in admins and event.sender.permission not in [MemberPerm.Administrator, MemberPerm.Owner]:
         return
     if group.id in cache_var.no_6:
         cache_var.no_6.remove(group.id)

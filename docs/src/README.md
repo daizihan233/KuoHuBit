@@ -53,4 +53,4 @@ features:
 
 ---
 
-这是 KuoHuBit 的文档主页，主要是介绍特性，更好玩的在文档里！
+这是 KuoHuBit 的文档主页，开发者是个傻逼，文档用的 vuepress-theme-hope
