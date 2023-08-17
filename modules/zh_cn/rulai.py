@@ -54,19 +54,19 @@ rutext = """中国人认为宇宙万法的那个源头
 index = 0
 
 
-@listen(TempMessage)
-async def rulai(app: Ariadne, sender: Member):
+async def send_ru(app: Ariadne, sender: Member or Friend):
     global index
     await app.send_message(sender, rutext[index])
     index += 1
     if index > len(rutext) - 1:
         index = 0
+
+
+@listen(TempMessage)
+async def rulai(app: Ariadne, sender: Member):
+    await send_ru(app, sender)
 
 
 @listen(FriendMessage)
 async def rulai(app: Ariadne, sender: Friend):
-    global index
-    await app.send_message(sender, rutext[index])
-    index += 1
-    if index > len(rutext) - 1:
-        index = 0
+    await send_ru(app, sender)
