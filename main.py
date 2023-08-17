@@ -30,11 +30,19 @@ app = Ariadne(
         WebsocketClientConfig(host=botfunc.get_config('mirai_api_http')),
     ),
 )
-conn = pymysql.connect(host=botfunc.get_cloud_config('MySQL_Host'), port=botfunc.get_cloud_config('MySQL_Port'),
-                       user=botfunc.get_cloud_config('MySQL_User'),
-                       password=botfunc.get_cloud_config('MySQL_Pwd'), charset='utf8mb4',
-                       database=botfunc.get_cloud_config('MySQL_db'))
-cursor = conn.cursor()
+try:
+    conn = pymysql.connect(host=botfunc.get_cloud_config('MySQL_Host'), port=botfunc.get_cloud_config('MySQL_Port'),
+                           user=botfunc.get_cloud_config('MySQL_User'),
+                           password=botfunc.get_cloud_config('MySQL_Pwd'), charset='utf8mb4',
+                           database=botfunc.get_cloud_config('MySQL_db'))
+    cursor = conn.cursor()
+except pymysql.err.InternalError:
+    conn = pymysql.connect(host=botfunc.get_cloud_config('MySQL_Host'), port=botfunc.get_cloud_config('MySQL_Port'),
+                           user=botfunc.get_cloud_config('MySQL_User'),
+                           password=botfunc.get_cloud_config('MySQL_Pwd'), charset='utf8mb4')
+    cursor = conn.cursor()
+    cursor.execute("""create database if not exists %s""", (botfunc.get_cloud_config('MySQL_db'),))
+
 cursor.execute("""create table if not exists admin
 (
     uid bigint unsigned default '0' not null
