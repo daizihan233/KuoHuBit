@@ -1,6 +1,6 @@
 from graia.ariadne.app import Ariadne
 from graia.ariadne.event.message import FriendMessage, TempMessage
-from graia.ariadne.model import Member
+from graia.ariadne.model import Member, Friend
 from graia.ariadne.util.saya import listen
 from graia.saya import Channel
 
@@ -54,11 +54,19 @@ rutext = """中国人认为宇宙万法的那个源头
 index = 0
 
 
-@listen(FriendMessage)
-@listen(TempMessage)
-async def rulai(app: Ariadne, sender: Member):
+async def send_ru(app: Ariadne, sender: Member or Friend):
     global index
     await app.send_message(sender, rutext[index])
     index += 1
     if index > len(rutext) - 1:
         index = 0
+
+
+@listen(TempMessage)
+async def rulai(app: Ariadne, sender: Member):
+    await send_ru(app, sender)
+
+
+@listen(FriendMessage)
+async def rulai(app: Ariadne, sender: Friend):
+    await send_ru(app, sender)
