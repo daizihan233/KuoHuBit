@@ -9,3 +9,7 @@ NewFriendRequestEvent: true  # 是否自动通过好友添加：true -> 自动�
 BotInvitedJoinGroupRequestEvent: true  # 是否自动通过加群邀请：同上
 mirai_api_http: "http://localhost:8088"  # 连接到 MAH 的地址
 count_ban: 4  # 木鱼调用频率限制
+# 注意：腾讯云内容安全 API 收费为 0.0025/条
+text_review: false  # 是否使用腾讯云内容安全 API 对文本内容进行审核：true -> 是 | false -> 否，使用本地敏感词库
+# 请参考此文章就近设置地域：https://cloud.tencent.com/document/api/1124/51864#.E5.9C.B0.E5.9F.9F.E5.88.97.E8.A1.A8
+Region: ap-hongkong  # 使用香港地区 API

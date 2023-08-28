@@ -105,7 +105,7 @@ cursor.execute('SELECT wd, count FROM wd')
 cache_var.sensitive_words = [x[0] for x in cursor.fetchall()]
 if not cache_var.sensitive_words:
     print("未找到敏感词库！即将从GitHub仓库拉取……（请保证能正常访问jsDelivr）")
-    input("> 是否继续？（回车 | 继续 / ^C | 退出）")
+    input("> 是否继续？（回车 继续 / ^C 退出）")
     # 色情类
     d = requests.get(
         "https://cdn.jsdelivr.net/gh/fwwdn/sensitive-stop-words@master/%E8%89%B2%E6%83%85%E7%B1%BB.txt").text.split(

@@ -3,11 +3,11 @@ from graia.ariadne.event.message import GroupMessage
 from graia.ariadne.message.chain import MessageChain
 from graia.ariadne.message.element import At, Plain
 from graia.ariadne.message.parser.base import DetectPrefix
-from graia.ariadne.model import Group, Member
-from graia.ariadne.util.saya import listen
+from graia.ariadne.model import Group
 from graia.saya import Channel
+from graia.saya.builtins.broadcast import ListenerSchema
 
-import botfunc
+import depen
 
 channel = Channel.current()
 channel.name("管理")
@@ -15,11 +15,16 @@ channel.description("某种意义上，是种提权？")
 channel.author("HanTools")
 
 
-@listen(GroupMessage)
-async def fish(app: Ariadne, group: Group, member: Member, message: MessageChain = DetectPrefix("禁言 ")):
-    admins = await botfunc.get_all_admin()
-    if member.id not in admins:
-        return
+@channel.use(
+    ListenerSchema(
+        listening_events=[GroupMessage],
+        decorators=[
+            DetectPrefix("禁言 "),
+            depen.check_authority_op()
+        ]
+    )
+)
+async def fish(app: Ariadne, group: Group, message: MessageChain = DetectPrefix("禁言 ")):
     msg = message.include(At, Plain)
     time = None
     result = ''
@@ -45,11 +50,16 @@ async def fish(app: Ariadne, group: Group, member: Member, message: MessageChain
     await app.send_group_message(group, result)
 
 
-@listen(GroupMessage)
-async def fish(app: Ariadne, group: Group, member: Member, message: MessageChain = DetectPrefix("踢出 ")):
-    admins = await botfunc.get_all_admin()
-    if member.id not in admins:
-        return
+@channel.use(
+    ListenerSchema(
+        listening_events=[GroupMessage],
+        decorators=[
+            DetectPrefix("踢出 "),
+            depen.check_authority_op()
+        ]
+    )
+)
+async def fish(app: Ariadne, group: Group, message: MessageChain = DetectPrefix("踢出 ")):
     msg = message.include(At)
     m: At
     result = ''

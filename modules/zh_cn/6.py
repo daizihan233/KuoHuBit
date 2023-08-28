@@ -10,12 +10,13 @@ from graia.ariadne.app import Ariadne
 from graia.ariadne.event.message import GroupMessage
 from graia.ariadne.message.element import Plain, At, Image
 from graia.ariadne.message.parser.base import MatchContent
-from graia.ariadne.model import Group, MemberPerm
-from graia.ariadne.util.saya import listen, decorate
+from graia.ariadne.model import Group
 from graia.saya import Channel
+from graia.saya.builtins.broadcast import ListenerSchema
 
 import botfunc
 import cache_var
+import depen
 
 channel = Channel.current()
 channel.name("6榜")
@@ -131,7 +132,12 @@ async def selectivity_hide(lst):
     return msg
 
 
-@listen(GroupMessage)
+@channel.use(
+    ListenerSchema(
+        listening_events=[GroupMessage],
+        decorators=[depen.match_text()]
+    )
+)
 async def six_six_six(app: Ariadne, group: Group, event: GroupMessage, message: MessageChain):
     data = await botfunc.select_fetchone("""SELECT uid, count, ti FROM six WHERE uid = %s""", event.sender.id)
     if data is not None and int(time.time()) - data[2] < 10:
@@ -181,8 +187,14 @@ async def six_six_six(app: Ariadne, group: Group, event: GroupMessage, message: 
             break
 
 
-@listen(GroupMessage)
-@decorate(MatchContent("6榜"))
+@channel.use(
+    ListenerSchema(
+        listening_events=[GroupMessage],
+        decorators=[
+            MatchContent("6榜")
+        ]
+    )
+)
 async def six_top(app: Ariadne, group: Group, event: GroupMessage):
     data = await botfunc.select_fetchall("SELECT uid, count FROM six ORDER BY count DESC LIMIT 21")
     try:
@@ -195,12 +207,16 @@ async def six_top(app: Ariadne, group: Group, event: GroupMessage):
                                      quote=event.source)
 
 
-@listen(GroupMessage)
-@decorate(MatchContent("6，闭嘴"))
+@channel.use(
+    ListenerSchema(
+        listening_events=[GroupMessage],
+        decorators=[
+            MatchContent("6，闭嘴"),
+            depen.check_authority_op()
+        ]
+    )
+)
 async def no_six(app: Ariadne, group: Group, event: GroupMessage):
-    admins = await botfunc.get_all_admin()
-    if event.sender.id not in admins and event.sender.permission not in [MemberPerm.Administrator, MemberPerm.Owner]:
-        return
     if group.id not in cache_var.no_6:
         cache_var.no_6.append(group.id)
         await botfunc.run_sql("""INSERT INTO no_six VALUES (%s)""", (group.id,))
@@ -216,12 +232,16 @@ async def no_six(app: Ariadne, group: Group, event: GroupMessage):
         )
 
 
-@listen(GroupMessage)
-@decorate(MatchContent("6，张嘴"))
+@channel.use(
+    ListenerSchema(
+        listening_events=[GroupMessage],
+        decorators=[
+            MatchContent("6，张嘴"),
+            depen.check_authority_op()
+        ]
+    )
+)
 async def yes_six(app: Ariadne, group: Group, event: GroupMessage):
-    admins = await botfunc.get_all_admin()
-    if event.sender.id not in admins and event.sender.permission not in [MemberPerm.Administrator, MemberPerm.Owner]:
-        return
     if group.id in cache_var.no_6:
         cache_var.no_6.remove(group.id)
         await botfunc.run_sql("""DELETE FROM no_six WHERE gid = %s""", (group.id,))

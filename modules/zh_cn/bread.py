@@ -8,7 +8,6 @@ from graia.ariadne.message.chain import MessageChain
 from graia.ariadne.message.element import At, Plain
 from graia.ariadne.message.parser.base import DetectPrefix, MatchContent
 from graia.ariadne.model import Group
-from graia.ariadne.util.saya import listen, decorate
 from graia.saya import Channel
 from graia.saya.builtins.broadcast.schema import ListenerSchema
 from loguru import logger
@@ -82,8 +81,14 @@ async def update_bread(group: Group):
         await botfunc.run_sql(sql, (group.id, int(time.time())))
 
 
-@listen(GroupMessage)
-@decorate(MatchContent("面包厂信息"))
+@channel.use(
+    ListenerSchema(
+        listening_events=[GroupMessage],
+        decorators=[
+            MatchContent("面包厂信息")
+        ]
+    )
+)
 async def setu(app: Ariadne, group: Group):
     result = await botfunc.select_fetchone(get_data_sql, (group.id,))
 
@@ -117,7 +122,7 @@ async def setu(app: Ariadne, group: Group):
 @channel.use(
     ListenerSchema(
         listening_events=[GroupMessage],
-        decorators=[DetectPrefix("来份炒饭")]
+        decorators=[MatchContent("来份炒饭")]
     )
 )
 async def get_bread(app: Ariadne, group: Group, event: GroupMessage):
