@@ -60,7 +60,7 @@ async def using_tencent_cloud(content: str, user_id):
             botfunc.get_cloud_config("QCloud_Secret_id"),
             botfunc.get_cloud_config("QCloud_Secret_key")
         )
-        client = tms_client.TmsClient(cred, botfunc.get_config("Region"))
+        client = tms_client.TmsClient(cred, "ap-guangzhou")
         req = models.TextModerationRequest()
         params = {
             "Content": base64.b64encode(content.encode()).decode(),

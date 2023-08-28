@@ -34,7 +34,7 @@ async def using_tencent_cloud(content: str, user_id) -> dict:
             botfunc.get_cloud_config("QCloud_Secret_id"),
             botfunc.get_cloud_config("QCloud_Secret_key")
         )
-        client = ims_client.ImsClient(cred, botfunc.get_config("Region"))
+        client = ims_client.ImsClient(cred, "ap-guangzhou")
         req = models.ImageModerationRequest()
         params = {
             "FileContent": content,  # base64
