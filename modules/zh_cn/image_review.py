@@ -40,7 +40,7 @@ async def using_tencent_cloud(content: str, user_id: str) -> dict:
             "FileContent": content,  # base64
             "User": {
                 "UserId": user_id,
-                "AccountType": 2
+                "AccountType": "2"
             }
         }
         req.from_json_string(json.dumps(params))

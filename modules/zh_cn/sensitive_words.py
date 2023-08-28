@@ -66,7 +66,7 @@ async def using_tencent_cloud(content: str, user_id: str):
             "Content": base64.b64encode(content.encode()).decode(),
             "User": {
                 "UserId": user_id,
-                "AccountType": 2
+                "AccountType": "2"
             }
         }
         req.from_json_string(json.dumps(params))
