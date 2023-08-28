@@ -81,7 +81,7 @@ async def nmsl(app: Ariadne, event: GroupMessage, message: MessageChain = Detect
     ListenerSchema(
         listening_events=[MemberJoinEvent],
         decorators=[
-            depen.check_authority_black()
+            depen.check_authority_black(False)
         ]
     )
 )
