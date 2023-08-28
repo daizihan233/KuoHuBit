@@ -6,7 +6,7 @@ groups = ["default"]
 cross_platform = true
 static_urls = false
 lock_version = "4.3"
-content_hash = "sha256:203ebcf445b9cc0b379c34528d4e69568d2e75a3f8c6f3b713d0e8ef6f4daf57"
+content_hash = "sha256:2ce57e1026ffa1a1e7e965452d3e849ba3b975daef83de927c367cd26f128504"
 
 [[package]]
 name = "aiodns"
@@ -989,15 +989,6 @@ files = [
 ]
 
 [[package]]
-name = "ntplib"
-version = "0.4.0"
-summary = "Python NTP library"
-files = [
-    {file = "ntplib-0.4.0-py2.py3-none-any.whl", hash = "sha256:8d27375329ed7ff38755f7b6d4658b28edc147cadf40338a63a0da8133469d60"},
-    {file = "ntplib-0.4.0.tar.gz", hash = "sha256:899d8fb5f8c2555213aea95efca02934c7343df6ace9d7628a5176b176906267"},
-]
-
-[[package]]
 name = "numpy"
 version = "1.25.1"
 requires_python = ">=3.9"
@@ -1399,6 +1390,42 @@ summary = "a uniform status implementation for graia project"
 files = [
     {file = "statv-0.3.2-py3-none-any.whl", hash = "sha256:32e430b21ab6a62695c67ab6cae3dba6e01e9c3fdbc9344e3236ad7a1f51d0c7"},
     {file = "statv-0.3.2.tar.gz", hash = "sha256:fb4df2a37bf7a792e36a6e657c74cbdef9e2cdb8de3a0762b28b35c9e13f0fdd"},
+]
+
+[[package]]
+name = "tencentcloud-sdk-python-common"
+version = "3.0.967"
+summary = "Tencent Cloud Common SDK for Python"
+dependencies = [
+    "requests>=2.16.0",
+]
+files = [
+    {file = "tencentcloud-sdk-python-common-3.0.967.tar.gz", hash = "sha256:fed08cbe0ec64b3553e165a92448f2dc917624d3d309675e0a45fcd42d032faa"},
+    {file = "tencentcloud_sdk_python_common-3.0.967-py2.py3-none-any.whl", hash = "sha256:3e635da308b74003e44d4a268f0886f86ab96449e78d70d5353bdc5bf200b3d6"},
+]
+
+[[package]]
+name = "tencentcloud-sdk-python-ims"
+version = "3.0.967"
+summary = "Tencent Cloud Ims SDK for Python"
+dependencies = [
+    "tencentcloud-sdk-python-common==3.0.967",
+]
+files = [
+    {file = "tencentcloud-sdk-python-ims-3.0.967.tar.gz", hash = "sha256:8e5f47858d3c8f7c010ae87a54479da1ffe98a54a301447008020251807144ef"},
+    {file = "tencentcloud_sdk_python_ims-3.0.967-py2.py3-none-any.whl", hash = "sha256:cc21141de4fb0ca24b7c15a0bd090e0db531b7ccf62a291d5b650d6cc50d2dd3"},
+]
+
+[[package]]
+name = "tencentcloud-sdk-python-tms"
+version = "3.0.967"
+summary = "Tencent Cloud Tms SDK for Python"
+dependencies = [
+    "tencentcloud-sdk-python-common==3.0.967",
+]
+files = [
+    {file = "tencentcloud-sdk-python-tms-3.0.967.tar.gz", hash = "sha256:8fbdb4d38fdf552b541b3615641bde6c6152e8e7b065f1d862072171144adaef"},
+    {file = "tencentcloud_sdk_python_tms-3.0.967-py2.py3-none-any.whl", hash = "sha256:ad6123b0761661b20414e767a5bb53b462c0c4ecce843ade21bde1d82be0517a"},
 ]
 
 [[package]]
