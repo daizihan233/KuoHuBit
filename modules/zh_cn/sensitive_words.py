@@ -52,7 +52,7 @@ Edu Trust认证 2000
 jieba.load_userdict("./jieba_words.txt")
 
 
-async def using_tencent_cloud(content: str, user_id):
+async def using_tencent_cloud(content: str, user_id: str):
     if botfunc.r.hexists("sw", hashlib.sha384(content.encode()).hexdigest()):
         return botfunc.r.hget("sw", hashlib.sha384(content.encode()).hexdigest())
     try:
@@ -161,7 +161,7 @@ async def f(app: Ariadne, group: Group, event: GroupMessage):
                     await botfunc.run_sql('UPDATE wd SET count=count+1 WHERE wd=%s', (w,))
                     break
         else:
-            result = await using_tencent_cloud(str(event.message_chain), event.sender.id)
+            result = await using_tencent_cloud(str(event.message_chain), str(event.sender.id))
             if result == "Block":
                 try:
                     await app.recall_message(event)
