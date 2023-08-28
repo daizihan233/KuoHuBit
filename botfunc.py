@@ -81,7 +81,7 @@ def get_cloud_config(name: str):
         return cloud_config_json[name]
     except KeyError:
         logger.error(f'{name} 在配置文件中找不到')
-        return None
+        return ""
 
 
 def get_dyn_config(name: str):
@@ -89,7 +89,7 @@ def get_dyn_config(name: str):
         return dyn_yaml[name]
     except KeyError:
         logger.error(f'{name} 在配置文件中找不到')
-        return None
+        return []
 
 
 async def select_fetchone(sql, arg=None):
