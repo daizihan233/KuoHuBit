@@ -84,7 +84,7 @@ async def start_word(app: Ariadne, group: Group, event: GroupMessage):
     with open(dyn_config, 'r') as cf:
         cfy = yaml.safe_load(cf)
     cfy['img'].append(group.id)
-    cfy['img'] = list(set(cfy["word"]))
+    cfy['img'] = list(set(cfy["img"]))
     with open(dyn_config, 'w') as cf:
         yaml.dump(cfy, cf)
     await app.send_message(group, MessageChain([At(event.sender.id), Plain(" OK辣！")]))
