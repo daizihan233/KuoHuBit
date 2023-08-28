@@ -117,18 +117,19 @@ async def stop_word(app: Ariadne, group: Group, event: GroupMessage):
     )
 )
 async def image_review(app: Ariadne, message: MessageChain, event: GroupMessage):
-    for i in message[Image]:
-        result = await using_tencent_cloud(i.base64, event.sender.id)
-        if result['Suggestion'] == "Block":
-            await app.recall_message(event.source, event.sender.group)
-            await app.send_message(
-                event.sender.group,
-                MessageChain([At(event.sender.id), Plain(
-                    " 你疑似有点太极端了\n"
-                    f"识别标签：{result['SubLabel']}\n"
-                    f"数据编码：{result['DataId']}\n"
-                    f"\n"
-                    f"**当你认为这是误判请提供【数据编码】给机器人账号所有者**\n"
-                    f"【数据来源：腾讯云图片内容安全】"
-                )])
-            )
+    if event.sender.id in botfunc.get_dyn_config("img"):
+        for i in message[Image]:
+            result = await using_tencent_cloud(i.base64, event.sender.id)
+            if result['Suggestion'] == "Block":
+                await app.recall_message(event.source, event.sender.group)
+                await app.send_message(
+                    event.sender.group,
+                    MessageChain([At(event.sender.id), Plain(
+                        " 你疑似有点太极端了\n"
+                        f"识别标签：{result['SubLabel']}\n"
+                        f"数据编码：{result['DataId']}\n"
+                        f"\n"
+                        f"**当你认为这是误判请提供【数据编码】给机器人账号所有者**\n"
+                        f"【数据来源：腾讯云图片内容安全】"
+                    )])
+                )
