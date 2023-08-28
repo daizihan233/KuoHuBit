@@ -119,10 +119,10 @@ async def stop_word(app: Ariadne, group: Group, event: GroupMessage):
     )
 )
 async def image_review(app: Ariadne, message: MessageChain, event: GroupMessage):
-    logger.debug(botfunc.get_dyn_config("img"))
     if event.sender.id in botfunc.get_dyn_config("img"):
         for i in message[Image]:
             result = await using_tencent_cloud(base64.b64encode(i.get_bytes()).decode(), event.sender.id)
+            logger.debug(result)
             if result['Suggestion'] == "Block":
                 await app.recall_message(event.source, event.sender.group)
                 await app.send_message(
