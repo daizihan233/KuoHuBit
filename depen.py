@@ -1,7 +1,5 @@
 """
-KHB 常用的逻辑判断
-
-注意：一定要以无头修饰器的方式去使用，包括消息链匹配器，且一定要放在消息链匹配器的下面
+KHB 常用的触发逻辑判断
 """
 from graia.amnesia.message import MessageChain
 from graia.ariadne import Ariadne
@@ -143,11 +141,11 @@ def match_image():
     :return: Depend
     """
 
-    async def check_authority(message: MessageChain):
+    async def check_message(message: MessageChain):
         if Image not in message:
             raise ExecutionStop
 
-    return Depend(check_authority)
+    return Depend(check_message)
 
 
 def match_text():
@@ -156,8 +154,8 @@ def match_text():
     :return: Depend
     """
 
-    async def check_authority(message: MessageChain):
+    async def check_message(message: MessageChain):
         if Plain not in message:
             raise ExecutionStop
 
-    return Depend(check_authority)
+    return Depend(check_message)
