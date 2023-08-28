@@ -45,7 +45,6 @@ async def using_tencent_cloud(content: str, user_id: str) -> dict:
         }
         req.from_json_string(json.dumps(params))
         resp = client.ImageModeration(req)
-        logger.info(resp.to_json_string())
         botfunc.r.hset(
             'imgsafe', hashlib.sha384(content.encode()).hexdigest(),
             json.dumps(
