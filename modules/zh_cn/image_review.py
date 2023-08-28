@@ -56,6 +56,7 @@ async def using_tencent_cloud(content: str, user_id) -> dict:
                 }
             )
         )
+        logger.debug(f"新图片入库！{resp.Suggestion} | {resp.SubLabel} | {resp.DataId}")
         return {
             "Suggestion": resp.Suggestion,
             "SubLabel": resp.SubLabel,
