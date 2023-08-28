@@ -26,7 +26,7 @@ channel.author("HanTools")
 dyn_config = 'dynamic_config.yaml'
 
 
-async def using_tencent_cloud(content: str, user_id) -> dict:
+async def using_tencent_cloud(content: str, user_id: str) -> dict:
     if botfunc.r.hexists("imgsafe", hashlib.sha384(content.encode()).hexdigest()):
         return json.loads(botfunc.r.hget("imgsafe", hashlib.sha384(content.encode()).hexdigest()))
     try:
@@ -122,7 +122,7 @@ async def image_review(app: Ariadne, message: MessageChain, event: GroupMessage)
     if event.sender.group.id in botfunc.get_dyn_config("img"):
         for i in message[Image]:
             data = await i.get_bytes()
-            result = await using_tencent_cloud(base64.b64encode(data).decode(), event.sender.id)
+            result = await using_tencent_cloud(base64.b64encode(data).decode(), str(event.sender.id))
             logger.debug(result)
             if result['Suggestion'] == "Block":
                 await app.recall_message(event.source, event.sender.group)
