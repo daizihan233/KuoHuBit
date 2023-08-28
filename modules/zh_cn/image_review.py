@@ -75,7 +75,7 @@ async def using_tencent_cloud(content: str, user_id: str) -> dict:
         listening_events=[GroupMessage],
         decorators=[
             MatchContent("图片审核，启动！"),
-            depen.check_authority_op()
+            depen.check_authority_bot_op()
         ]
     )
 )
