@@ -79,7 +79,7 @@ async def using_tencent_cloud(content: str, user_id: str) -> dict:
         ]
     )
 )
-async def start_word(app: Ariadne, group: Group, event: GroupMessage):
+async def start_review(app: Ariadne, group: Group, event: GroupMessage):
     with open(dyn_config, 'r') as cf:
         cfy = yaml.safe_load(cf)
     cfy['img'].append(group.id)
@@ -98,7 +98,7 @@ async def start_word(app: Ariadne, group: Group, event: GroupMessage):
         ]
     )
 )
-async def stop_word(app: Ariadne, group: Group, event: GroupMessage):
+async def stop_review(app: Ariadne, group: Group, event: GroupMessage):
     with open(dyn_config, 'r') as cf:
         cfy = yaml.safe_load(cf)
     try:
