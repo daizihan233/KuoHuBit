@@ -23,7 +23,7 @@ channel.author("HanTools")
         listening_events=[GroupMessage],
         decorators=[
             DetectPrefix("拉黑"),
-            depen.check_authority_op(),
+            depen.check_authority_bot_op(),
             depen.check_authority_not_black()
         ]
     )
@@ -103,7 +103,7 @@ async def kicksb(app: Ariadne, event: MemberJoinEvent):
         listening_events=[GroupMessage],
         decorators=[
             DetectPrefix("删黑"),
-            depen.check_authority_op(),
+            depen.check_authority_bot_op(),
             depen.check_authority_not_black()
         ]
     )
