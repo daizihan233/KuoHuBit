@@ -51,15 +51,15 @@ async def using_tencent_cloud(content: str, user_id: str) -> dict:
                 {
                     "Suggestion": resp.Suggestion,
                     "SubLabel": resp.SubLabel,
-                    "DataId": resp.DataId
+                    "DataId": resp.RequestId
                 }
             )
         )
-        logger.debug(f"新图片入库！{resp.Suggestion} | {resp.SubLabel} | {resp.DataId}")
+        logger.debug(f"新图片入库！{resp.Suggestion} | {resp.SubLabel} | {resp.RequestId}")
         return {
             "Suggestion": resp.Suggestion,
             "SubLabel": resp.SubLabel,
-            "DataId": resp.DataId
+            "DataId": resp.RequestId
         }
     except TencentCloudSDKException as err:
         logger.error(err)
