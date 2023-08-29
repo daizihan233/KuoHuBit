@@ -135,9 +135,10 @@ async def f(app: Ariadne, group: Group, event: GroupMessage):
     if group.id in botfunc.get_dyn_config('word'):
         if not botfunc.get_config("text_review"):
             msg = opc.convert(  # 抗混淆：繁简字转换
-                str(event.message_chain).strip(' []【】{}\\!！.。…?？啊哦额呃嗯嘿/')  # 抗混淆：去除语气词
+                (''.join(map(lambda x: x.text, event.message_chain[Plain]))).strip(' []【】{}\\!！.。…?？啊哦额呃嗯嘿/')
+                # 抗混淆：去除语气词
             )
-            if str(event.message_chain) in cache_var.sensitive_words:  # 性能：整句匹配
+            if (''.join(map(lambda x: x.text, event.message_chain[Plain]))) in cache_var.sensitive_words:  # 性能：整句匹配
                 try:
                     await app.recall_message(event)
                 except PermissionError:
@@ -154,7 +155,8 @@ async def f(app: Ariadne, group: Group, event: GroupMessage):
             for w in wd:
                 if w in cache_var.sensitive_words:
                     if botfunc.get_config("violation_text_review"):
-                        result = await using_tencent_cloud(str(event.message_chain), str(event.sender.id))
+                        result = await using_tencent_cloud((''.join(map(lambda x: x.text, event.message_chain[Plain]))),
+                                                           str(event.sender.id))
                         if result == "Block":
                             try:
                                 await app.recall_message(event)
@@ -178,7 +180,8 @@ async def f(app: Ariadne, group: Group, event: GroupMessage):
                     await botfunc.run_sql('UPDATE wd SET count=count+1 WHERE wd=%s', (w,))
                     break
         else:
-            result = await using_tencent_cloud(str(event.message_chain), str(event.sender.id))
+            result = await using_tencent_cloud((''.join(map(lambda x: x.text, event.message_chain[Plain]))),
+                                               str(event.sender.id))
             if result == "Block":
                 try:
                     await app.recall_message(event)
