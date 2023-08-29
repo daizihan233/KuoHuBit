@@ -37,6 +37,7 @@ async def using_tencent_cloud(content: str, user_id: str) -> dict:
         client = ims_client.ImsClient(cred, "ap-guangzhou")
         req = models.ImageModerationRequest()
         params = {
+            "BizType": botfunc.get_cloud_config("img_biztype"),
             "FileContent": content,  # base64
             "User": {
                 "UserId": user_id,

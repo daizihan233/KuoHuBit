@@ -63,6 +63,7 @@ async def using_tencent_cloud(content: str, user_id: str) -> str:
         client = tms_client.TmsClient(cred, "ap-guangzhou")
         req = models.TextModerationRequest()
         params = {
+            "BizType": botfunc.get_cloud_config("text_biztype"),
             "Content": base64.b64encode(content.encode()).decode(),
             "User": {
                 "UserId": user_id,
