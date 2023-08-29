@@ -61,12 +61,9 @@ except FileNotFoundError:
 try:
     dyn_yaml = yaml.safe_load(open('dynamic_config.yaml', 'r', encoding='UTF-8'))
 except FileNotFoundError:
-    safe_file_write('dynamic_config.yaml', """mute:
-- null
-word:
-- null
-img:
-- null""")
+    safe_file_write('dynamic_config.yaml', """mute: []
+word: []
+img: []""")
     logger.warning('dynamic_config.yaml 已被程序自动创建')
 
 
