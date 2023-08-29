@@ -1,5 +1,6 @@
 import asyncio
 import json
+import pathlib
 import sys
 
 import aiomysql
@@ -58,9 +59,7 @@ except FileNotFoundError:
     logger.error(
         'cloud.json 未创建，程序已自动创建，请参考 https://github.com/daizihan233/KuoHuBit/issues/17 填写该文件的内容')
     sys.exit(1)
-try:
-    dyn_yaml = yaml.safe_load(open('dynamic_config.yaml', 'r', encoding='UTF-8'))
-except FileNotFoundError:
+if not pathlib.Path("./dynamic_config.yaml").exists():
     safe_file_write('dynamic_config.yaml', """mute: []
 word: []
 img: []""")
@@ -84,6 +83,7 @@ def get_cloud_config(name: str):
 
 
 def get_dyn_config(name: str):
+    dyn_yaml = yaml.safe_load(open('dynamic_config.yaml', 'r', encoding='UTF-8'))
     try:
         return dyn_yaml[name]
     except KeyError:
