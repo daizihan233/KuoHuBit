@@ -140,7 +140,8 @@ async def f(app: Ariadne, group: Group, event: GroupMessage):
                 # 抗混淆：去除语气词
             )
             if (
-            ''.join(list(map(lambda x: x.text, event.message_chain[Plain])))) in cache_var.sensitive_words:  # 性能：整句匹配
+                    ''.join(list(
+                        map(lambda x: x.text, event.message_chain[Plain])))) in cache_var.sensitive_words:  # 性能：整句匹配
                 try:
                     await app.recall_message(event)
                 except PermissionError:
@@ -159,7 +160,7 @@ async def f(app: Ariadne, group: Group, event: GroupMessage):
                     if botfunc.get_config("violation_text_review"):
                         result = await using_tencent_cloud(
                             (''.join(list(map(lambda x: x.text, event.message_chain[Plain])))),
-                                                           str(event.sender.id))
+                            str(event.sender.id))
                         if result == "Block":
                             try:
                                 await app.recall_message(event)
