@@ -114,7 +114,10 @@ async def stop_review(app: Ariadne, group: Group, event: GroupMessage):
 @channel.use(
     ListenerSchema(
         listening_events=[GroupMessage],
-        decorators=[depen.match_image()]
+        decorators=[
+            depen.match_image(),
+            depen.check_authority_member()
+        ]
     )
 )
 async def image_review(app: Ariadne, message: MessageChain, event: GroupMessage):

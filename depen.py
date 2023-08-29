@@ -135,6 +135,19 @@ def check_authority_not_black(prompt: bool = True):
     return Depend(check_authority)
 
 
+def check_authority_member():
+    """
+    检查权限是否是群成员
+    :return: Depend
+    """
+
+    async def check_authority(member: Member):
+        if member.permission != MemberPerm.Member:
+            raise ExecutionStop
+
+    return Depend(check_authority)
+
+
 def match_image():
     """
     检测是否含有图片
