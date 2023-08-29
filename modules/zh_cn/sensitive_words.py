@@ -52,7 +52,7 @@ Edu Trust认证 2000
 jieba.load_userdict("./jieba_words.txt")
 
 
-async def using_tencent_cloud(content: str, user_id: str):
+async def using_tencent_cloud(content: str, user_id: str) -> str:
     if botfunc.r.hexists("sw", hashlib.sha384(content.encode()).hexdigest()):
         return botfunc.r.hget("sw", hashlib.sha384(content.encode()).hexdigest())
     try:
@@ -161,6 +161,7 @@ async def f(app: Ariadne, group: Group, event: GroupMessage):
                         result = await using_tencent_cloud(
                             (''.join(list(map(lambda x: x.text, event.message_chain[Plain])))),
                             str(event.sender.id))
+                        logger.debug(f"本地敏感词库 -> Block | 腾讯云文本内容安全 -> {result}")
                         if result == "Block":
                             try:
                                 await app.recall_message(event)
