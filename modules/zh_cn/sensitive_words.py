@@ -125,7 +125,10 @@ async def stop_word(app: Ariadne, group: Group, event: GroupMessage):
 @channel.use(
     ListenerSchema(
         listening_events=[GroupMessage],
-        decorators=[depen.match_text()]
+        decorators=[
+            depen.match_text(),
+            depen.check_authority_member()
+        ]
     )
 )
 async def f(app: Ariadne, group: Group, event: GroupMessage):
@@ -150,6 +153,20 @@ async def f(app: Ariadne, group: Group, event: GroupMessage):
             logger.debug(wd)
             for w in wd:
                 if w in cache_var.sensitive_words:
+                    if botfunc.get_config("violation_text_review"):
+                        result = await using_tencent_cloud(str(event.message_chain), str(event.sender.id))
+                        if result == "Block":
+                            try:
+                                await app.recall_message(event)
+                            except PermissionError:
+                                logger.error('无权操作！')
+                            else:
+                                await app.send_message(event.sender.group, MessageChain(
+                                    [At(event.sender.id),
+                                     "你的消息涉及敏感内容，为保护群聊消息已被撤回\n【数据来源：本地敏感词库 & 腾讯云文本内容安全】"]))
+                            break
+                        else:
+                            continue
                     try:
                         await app.recall_message(event)
                     except PermissionError:
