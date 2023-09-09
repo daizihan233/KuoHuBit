@@ -98,6 +98,10 @@ cursor.execute("""CREATE TABLE IF NOT EXISTS `no_six` (
 cursor.execute("""CREATE TABLE IF NOT EXISTS `inm` ( 
 `gid` bigint UNSIGNED NOT NULL PRIMARY KEY COMMENT '群号'
 ) ENGINE = innodb DEFAULT CHARACTER SET = "utf8mb4" COLLATE = "utf8mb4_general_ci" """)
+cursor.execute("""CREATE TABLE IF NOT EXISTS `top5_keywords` ( 
+`words` tinytext NOT NULL PRIMARY KEY COMMENT '词语',
+`count` int UNSIGNED NOT NULL COMMENT '次数'
+) ENGINE = innodb DEFAULT CHARACTER SET = "utf8mb4" COLLATE = "utf8mb4_general_ci" """)
 
 conn.commit()
 
