@@ -135,14 +135,20 @@ async def stop_word(app: Ariadne, group: Group, event: GroupMessage):
 async def f(app: Ariadne, group: Group, event: GroupMessage):
     if group.id in botfunc.get_dyn_config('word'):
         if not botfunc.get_config("text_review"):
-            msg = opc.convert(  # 抗混淆：繁简字转换
-                (''.join(list(map(lambda x: x.text, event.message_chain[Plain])))).strip(
-                    ' []【】{}\\!！.。…?？啊哦额呃嗯嘿/')
-                # 抗混淆：去除语气词
+            msg = (
+                opc.convert(  # 抗混淆：繁简字转换
+                    (
+                        ''.join(
+                            list(map(lambda x: x.text, event.message_chain[Plain]))
+                        )
+                    ).strip(' []【】{}\\!！.。…?？啊哦额呃嗯嘿/')  # 抗混淆：去除语气词
+                )
             )
             if (
-                    ''.join(list(
-                        map(lambda x: x.text, event.message_chain[Plain])))) in cache_var.sensitive_words:  # 性能：整句匹配
+                    ''.join(
+                        list(map(lambda x: x.text, event.message_chain[Plain]))
+                    )
+            ) in cache_var.sensitive_words:  # 性能：整句匹配
                 try:
                     await app.recall_message(event)
                 except PermissionError:
