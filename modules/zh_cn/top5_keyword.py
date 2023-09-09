@@ -1926,10 +1926,19 @@ async def get_words(message: MessageChain):
     for i in strings:
         for j in i:
             if j not in stopwords:
-                await botfunc.run_sql(
-                    "insert into top5_keywords(words, count) values (%s, 1) on DUPLICATE key update count=count+1;",
-                    j
+                top = await botfunc.select_fetchall(
+                    "SELECT words FROM top5_keywords ORDER BY count DESC"
                 )
+                if j in list(map(lambda x: x[0], top)):
+                    await botfunc.run_sql(
+                        "UPDATE top5_keywords SET count = count + 1 WHERE words = %s",
+                        j
+                    )
+                else:
+                    await botfunc.run_sql(
+                        "insert into top5_keywords(words, count) values (%s, 1)",
+                        j
+                    )
 
 
 @channel.use(SchedulerSchema(timers.crontabify("0 0 * * * 0")))
