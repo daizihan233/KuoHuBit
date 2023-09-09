@@ -12,3 +12,4 @@ count_ban: 4  # 木鱼调用频率限制
 # 注意：腾讯云内容安全 API 收费为 0.0025/条
 text_review: false  # 是否使用腾讯云内容安全 API 对文本内容进行审核：true -> 是 | false -> 否，使用本地敏感词库
 violation_text_review: true  # 是否使用腾讯云内容安全 API 对[违规]文本内容进行复审：true -> 是 | false -> 否，使用本地敏感词库
+
