@@ -7,6 +7,7 @@ from graia.saya import Channel
 from graia.saya.builtins.broadcast import ListenerSchema
 from graia.scheduler import timers
 from graia.scheduler.saya import SchedulerSchema
+from loguru import logger
 
 import botfunc
 import depen
@@ -1923,6 +1924,7 @@ async def get_words(message: MessageChain):
     strings = botfunc.seg_accurate(
         list(map(lambda x: x.text, message[Plain]))
     )
+    logger.debug(strings)
     for i in strings:
         for j in i:
             if j not in stopwords:
