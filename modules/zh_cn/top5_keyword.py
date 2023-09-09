@@ -1941,7 +1941,7 @@ async def delete_data():
 
 @channel.use(SchedulerSchema(timers.crontabify("30 21 * * * 0")))
 async def top5_data(app: Ariadne):
-    top = await botfunc.select_fetchall("SELECT words, count FROM top5_keywords LIMIT 5")
+    top = await botfunc.select_fetchall("SELECT words, count FROM top5_keywords ORDER BY count DESC LIMIT 5")
     string = "\n".join(["在您今天发的消息中，提到最多的关键词 Top5 是："] + [f"{i[0]} --- {i[1]}" for i in top])
     await app.send_friend_message(
         target=botfunc.get_config('su'),
@@ -1959,7 +1959,7 @@ async def top5_data(app: Ariadne):
     )
 )
 async def now_top5_data(app: Ariadne):
-    top = await botfunc.select_fetchall("SELECT words, count FROM top5_keywords LIMIT 5")
+    top = await botfunc.select_fetchall("SELECT words, count FROM top5_keywords ORDER BY count DESC LIMIT 5")
     string = "\n".join(["截至目前，在您今天发的消息中，提到最多的关键词 Top5 是："] + [f"{i[0]} --- {i[1]}" for i in top])
     await app.send_friend_message(
         target=botfunc.get_config('su'),
