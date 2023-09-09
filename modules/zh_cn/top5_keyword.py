@@ -1953,7 +1953,7 @@ async def top5_data(app: Ariadne):
     ListenerSchema(
         listening_events=[FriendMessage],
         decorators=[
-            depen.check_authority_su(),
+            depen.check_friend_su(),
             MatchContent("关键词")
         ]
     )
