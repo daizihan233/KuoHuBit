@@ -1,5 +1,4 @@
 qq: 2265453790  # 运行时登录的 QQ 号
-su: 183713750 # 机器人主人的 QQ 号
 verifyKey: "@(HANKuohu2)33###@MiraiApiHTTP"  # MAH 的 verifyKey
 recall: 30  # 涩图撤回等待时长（单位：秒）
 # 如果你没有那么多涩图API可以填一样的URL
