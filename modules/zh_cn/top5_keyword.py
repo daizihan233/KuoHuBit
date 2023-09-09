@@ -1921,7 +1921,8 @@ sup
 )
 async def get_words(message: MessageChain):
     strings = botfunc.seg_accurate(
-        list(map(lambda x: x.text, message[Plain]))
+        list(map(lambda x: x.text, message[Plain])),
+        truncation=True
     )
     for i in strings:
         for j in i:
