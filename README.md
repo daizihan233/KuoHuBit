@@ -21,6 +21,9 @@
 ~~如果代码像坨屎山一样那绝对跟我没关系~~
 
 - [Abjust](https://github.com/Abjust/)
+    - [Abjust/2kbit-csnew](https://github.com/Abjust/2kbit-csnew)
+    - [Abjust/2kbit-intp](https://github.com/Abjust/2kbit-intp)
+    - [Abjust/2kShit](https://github.com/Abjust/2kshit) 
     - [~~Abjust/2kbit-cs~~](https://github.com/Abjust/2kbit-cs)
         - [~~123Windows31/2kbot~~](https://github.com/123Windows31/2kbot)
         - [~~Emerald-AM9/Mica-App-Bot-~~](https://github.com/Emerald-AM9/Mica-App-Bot-)
@@ -31,10 +34,12 @@
 - [ObsidianCatalina](https://github.com/ObsidianCatalina/)
     - [~~ObsidianCatalina/ObsidianBot~~](https://github.com/ObsidianCatalina/ObsidianBot)
     - [ObsidianCatalina/OpenMariya](https://github.com/ObsidianCatalina/OpenMariya)
-        - [ltzXiaoYanMo/YanBot-OpenMariya_Edition](https://github.com/ltzXiaoYanMo/YanBot-OpenMariya_Edition)
+        - [~~ltzXiaoYanMo/YanBot-OpenMariya_Edition~~](https://github.com/ltzXiaoYanMo/YanBot-OpenMariya_Edition)
 - daizihan233 （本项目作者）
     - daizihan233/KuoHuBit （本项目）
         - [~~ltzXiaoYanMo/YanBot-KHB_Edition_Older~~](https://github.com/ltzXiaoYanMo/YanBot-KHB_Edition_Older)
-        - [ltzXiaoYanMo/YanBot_KHB_Edition](https://github.com/ltzXiaoYanMo/YanBot_KHB_Edition)
         - [emerald-am9/lightbit](https://gitee.com/emerald-am9/lightbit)
     - [daizihan233/KuoHuShit](https://github.com/daizihan233/KuoHuShit)
+- ltzXiaoYanMo
+  - [ltzXiaoYanMo/YanMoBit](https://github.com/ltzXiaoYanMo/YanMoBit)
+  - [ltzXiaoYanMo/YanBot-infp](https://github.com/ltzXiaoYanMo/YanBot-infp)
