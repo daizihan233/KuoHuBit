@@ -1,3 +1,7 @@
+#  本项目遵守 AGPL-3.0 协议，项目地址：https://github.com/daizihan233/MiraiHanBot
+
+#  本项目遵守 AGPL-3.0 协议，项目地址：https://github.com/daizihan233/MiraiHanBot
+
 from graia.ariadne.event.mirai import NewFriendRequestEvent, BotInvitedJoinGroupRequestEvent
 from graia.saya import Channel
 from graia.saya.builtins.broadcast.schema import ListenerSchema
