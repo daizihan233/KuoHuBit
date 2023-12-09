@@ -1,3 +1,5 @@
+#  本项目遵守 AGPL-3.0 协议，项目地址：https://github.com/daizihan233/MiraiHanBot
+
 import base64
 import hashlib
 import json
