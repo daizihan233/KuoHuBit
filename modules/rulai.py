@@ -5,6 +5,7 @@ from graia.ariadne.event.message import FriendMessage, TempMessage
 from graia.ariadne.model import Member, Friend
 from graia.ariadne.util.saya import listen
 from graia.saya import Channel
+from graia.saya.channel import ChannelMeta
 
 channel = Channel[ChannelMeta].current()
 channel.meta['name'] = "如来"
