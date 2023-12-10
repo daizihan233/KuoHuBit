@@ -15,6 +15,7 @@ from graia.ariadne.message.parser.base import MatchContent, DetectPrefix
 from graia.ariadne.model import Group, MemberPerm
 from graia.saya import Channel
 from graia.saya.builtins.broadcast.schema import ListenerSchema
+from graia.saya.channel import ChannelMeta
 from loguru import logger
 from tencentcloud.common import credential
 from tencentcloud.common.exception.tencent_cloud_sdk_exception import TencentCloudSDKException
@@ -24,10 +25,11 @@ import botfunc
 import cache_var
 import depen
 
-channel = Channel.current()
-channel.name("敏感词检测")
-channel.description("防止群被炸")
-channel.author("HanTools")
+channel = Channel[ChannelMeta].current()
+channel.meta['name'] = "敏感词检测"
+channel.meta['description'] = "防止群被炸"
+channel.meta['author'] = "KuoHu"
+
 opc = opencc.OpenCC('t2s')
 dyn_config = 'dynamic_config.yaml'
 """
@@ -157,7 +159,8 @@ async def f(app: Ariadne, group: Group, event: GroupMessage):
                     logger.error('无权操作！')
                 else:
                     await app.send_message(event.sender.group, MessageChain(
-                        [At(event.sender.id), "你的消息涉及敏感内容，为保护群聊消息已被撤回\n【数据来源：本地敏感词库】"]))
+                        [At(event.sender.id),
+                         "你的消息涉及敏感内容，为保护群聊消息已被撤回\n【数据来源：本地敏感词库 - 整句匹配】"]))
                 await botfunc.run_sql('UPDATE wd SET count=count+1 WHERE wd=%s', (str(event.message_chain),))
                 return
             wd = jieba.lcut(  # 准确率：分词
@@ -179,18 +182,21 @@ async def f(app: Ariadne, group: Group, event: GroupMessage):
                             else:
                                 await app.send_message(event.sender.group, MessageChain(
                                     [At(event.sender.id),
-                                     "你的消息涉及敏感内容，为保护群聊消息已被撤回\n【数据来源：本地敏感词库 & 腾讯云文本内容安全】"]))
+                                     "你的消息涉及敏感内容，为保护群聊消息已被撤回\n"
+                                     "【数据来源：本地敏感词库 & 腾讯云文本内容安全】"]))
                             break
                         else:
                             continue
-                    try:
-                        await app.recall_message(event)
-                    except PermissionError:
-                        logger.error('无权操作！')
                     else:
-                        await app.send_message(event.sender.group, MessageChain(
-                            [At(event.sender.id),
-                             "你的消息涉及敏感内容，为保护群聊消息已被撤回\n【数据来源：本地敏感词库】"]))
+                        try:
+                            await app.recall_message(event)
+                        except PermissionError:
+                            logger.error('无权操作！')
+                        else:
+                            await app.send_message(event.sender.group, MessageChain(
+                                [At(event.sender.id),
+                                 "你的消息涉及敏感内容，为保护群聊消息已被撤回\n"
+                                 "【数据来源：本地敏感词库 - 分词匹配】"]))
                     await botfunc.run_sql('UPDATE wd SET count=count+1 WHERE wd=%s', (w,))
                     break
         else:
@@ -204,7 +210,8 @@ async def f(app: Ariadne, group: Group, event: GroupMessage):
                 else:
                     await app.send_message(event.sender.group, MessageChain(
                         [At(event.sender.id),
-                         "你的消息涉及敏感内容，为保护群聊消息已被撤回\n【数据来源：腾讯云文本内容安全】"]))
+                         "你的消息涉及敏感内容，为保护群聊消息已被撤回\n"
+                         "【数据来源：腾讯云文本内容安全】"]))
 
 
 @channel.use(

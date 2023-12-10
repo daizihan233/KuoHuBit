@@ -8,13 +8,14 @@ from graia.ariadne.message.parser.base import DetectPrefix
 from graia.ariadne.model import Group
 from graia.saya import Channel
 from graia.saya.builtins.broadcast import ListenerSchema
+from graia.saya.channel import ChannelMeta
 
 import depen
 
-channel = Channel.current()
-channel.name("管理")
-channel.description("某种意义上，是种提权？")
-channel.author("HanTools")
+channel = Channel[ChannelMeta].current()
+channel.meta['name'] = "管理"
+channel.meta['description'] = "某种意义上，是种提权？"
+channel.meta['author'] = "KuoHu"
 
 
 @channel.use(

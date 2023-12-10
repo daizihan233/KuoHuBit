@@ -13,6 +13,7 @@ from graia.ariadne.message.parser.base import MatchContent
 from graia.ariadne.model import Group
 from graia.saya import Channel
 from graia.saya.builtins.broadcast import ListenerSchema
+from graia.saya.channel import ChannelMeta
 from loguru import logger
 from tencentcloud.common import credential
 from tencentcloud.common.exception import TencentCloudSDKException
@@ -21,10 +22,10 @@ from tencentcloud.ims.v20201229 import ims_client, models
 import botfunc
 import depen
 
-channel = Channel.current()
-channel.name("图片审核")
-channel.description("你疑似有点太极端了")
-channel.author("HanTools")
+channel = Channel[ChannelMeta].current()
+channel.meta['name'] = "图片审核"
+channel.meta['description'] = "你疑似有点太极端了"
+channel.meta['author'] = "KuoHu"
 dyn_config = 'dynamic_config.yaml'
 
 
@@ -97,7 +98,7 @@ async def start_review(app: Ariadne, group: Group, event: GroupMessage):
         listening_events=[GroupMessage],
         decorators=[
             MatchContent("图片审核，卸载！"),
-            depen.check_authority_op()
+            depen.check_authority_bot_op()
         ]
     )
 )
@@ -139,6 +140,7 @@ async def image_review(app: Ariadne, message: MessageChain, event: GroupMessage)
                         f"数据编码：{result['DataId']}\n"
                         f"\n"
                         f"**当你认为这是误判请提供【数据编码】给机器人账号所有者**\n"
-                        f"【数据来源：腾讯云图片内容安全】"
+                        f"【数据来源：腾讯云图片内容安全】\n"
+                        f"本机器人所有者为：{botfunc.get_su()}（来自配置文件）\n"
                     )])
                 )

@@ -9,15 +9,16 @@ from graia.ariadne.message.element import At
 from graia.ariadne.message.parser.base import DetectPrefix
 from graia.saya import Channel
 from graia.saya.builtins.broadcast import ListenerSchema
+from graia.saya.channel import ChannelMeta
 from loguru import logger
 
 import botfunc
 import depen
 
-channel = Channel.current()
-channel.name("黑名单")
-channel.description("屌你老母")
-channel.author("HanTools")
+channel = Channel[ChannelMeta].current()
+channel.meta['name'] = "黑名单"
+channel.meta['description'] = "屑"
+channel.meta['author'] = "KuoHu"
 
 
 @channel.use(

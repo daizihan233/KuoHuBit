@@ -10,6 +10,7 @@ from graia.ariadne.message.parser.base import MatchContent
 from graia.ariadne.model import Group
 from graia.saya import Channel
 from graia.saya.builtins.broadcast import ListenerSchema
+from graia.saya.channel import ChannelMeta
 from graia.scheduler import timers
 from graia.scheduler.saya import SchedulerSchema
 
@@ -17,10 +18,10 @@ import botfunc
 import cache_var
 import depen
 
-channel = Channel.current()
-channel.name("inm")
-channel.description("哼哼哼，啊啊啊啊啊")
-channel.author("HanTools")
+channel = Channel[ChannelMeta].current()
+channel.meta['name'] = "inm"
+channel.meta['description'] = "哼哼哼，啊啊啊啊啊"
+channel.meta['author'] = "KuoHu"
 
 
 @channel.use(SchedulerSchema(timers.crontabify("45 11 * * * 14")))

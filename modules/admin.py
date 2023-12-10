@@ -7,14 +7,15 @@ from graia.ariadne.message.parser.base import DetectPrefix
 from graia.ariadne.model import Group
 from graia.saya import Channel
 from graia.saya.builtins.broadcast import ListenerSchema
+from graia.saya.channel import ChannelMeta
 
 import botfunc
 import depen
 
-channel = Channel.current()
-channel.name("管理员")
-channel.description("114514")
-channel.author("HanTools")
+channel = Channel[ChannelMeta].current()
+channel.meta['name'] = "管理员"
+channel.meta['description'] = "对群和机器人进行管理"
+channel.meta['author'] = "KuoHu"
 
 
 @channel.use(

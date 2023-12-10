@@ -12,14 +12,15 @@ from graia.ariadne.message.parser.base import DetectPrefix, MatchContent
 from graia.ariadne.model import Group
 from graia.saya import Channel
 from graia.saya.builtins.broadcast.schema import ListenerSchema
+from graia.saya.channel import ChannelMeta
 from loguru import logger
 
 import botfunc
 
-channel = Channel.current()
-channel.name("面包厂")
-channel.description("好吃")
-channel.author("HanTools")
+channel = Channel[ChannelMeta].current()
+channel.meta['name'] = "面包厂"
+channel.meta['description'] = "好吃"
+channel.meta['author'] = "KuoHu"
 get_data_sql = '''SELECT id, level, time, bread, experience FROM bread WHERE id = %s'''
 
 

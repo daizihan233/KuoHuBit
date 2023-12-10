@@ -9,11 +9,12 @@ from graia.ariadne.message.element import Plain, At
 from graia.ariadne.model import Group, Member
 from graia.ariadne.util.saya import listen
 from graia.saya import Channel
+from graia.saya.channel import ChannelMeta
 
-channel = Channel.current()
-channel.name("event")
-channel.description("有些事总是不知不觉的……")
-channel.author("HanTools")
+channel = Channel[ChannelMeta].current()
+channel.meta['name'] = "event"
+channel.meta['description'] = "有些事总是不知不觉的……"
+channel.meta['author'] = "KuoHu"
 
 
 @listen(MemberLeaveEventQuit)

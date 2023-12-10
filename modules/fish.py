@@ -10,13 +10,14 @@ from graia.ariadne.message.parser.base import MatchContent
 from graia.ariadne.model import Group
 from graia.ariadne.util.saya import listen, decorate
 from graia.saya import Channel
+from graia.saya.channel import ChannelMeta
 
 import botfunc
 
-channel = Channel.current()
-channel.name("摸鱼日记")
-channel.description("上班是不可能上班的~")
-channel.author("HanTools")
+channel = Channel[ChannelMeta].current()
+channel.meta['name'] = "摸鱼日历"
+channel.meta['description'] = "摸🐟"
+channel.meta['author'] = "KuoHu"
 
 
 @listen(GroupMessage)
