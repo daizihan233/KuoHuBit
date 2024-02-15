@@ -4,7 +4,7 @@ import g4f
 from graia.amnesia.message import MessageChain
 from graia.ariadne.app import Ariadne
 from graia.ariadne.event.message import GroupMessage, FriendMessage
-from graia.ariadne.message.element import Plain, At
+from graia.ariadne.message.element import Plain
 from graia.ariadne.message.parser.base import MentionMe
 from graia.ariadne.model import Group, Member, Friend
 from graia.ariadne.util.saya import listen
@@ -62,7 +62,6 @@ async def gpt(app: Ariadne, group: Group, member: Member, event: GroupMessage, m
         target=group,
         message=MessageChain(
             [
-                At(member.id),
                 Plain(response),
                 Plain(f"\n\n开发者注：{random.choice(tips)}")
             ]
@@ -72,7 +71,7 @@ async def gpt(app: Ariadne, group: Group, member: Member, event: GroupMessage, m
 
 
 @listen(FriendMessage)
-async def gpt_f(app: Ariadne, friend: Friend, event: GroupMessage, message: MessageChain):
+async def gpt_f(app: Ariadne, friend: Friend, event: FriendMessage, message: MessageChain):
     try:
         messages[friend.id].append({"role": "user", "content": str(message)})
     except KeyError:
