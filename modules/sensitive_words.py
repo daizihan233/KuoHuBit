@@ -18,7 +18,9 @@ from graia.saya.builtins.broadcast.schema import ListenerSchema
 from graia.saya.channel import ChannelMeta
 from loguru import logger
 from tencentcloud.common import credential
-from tencentcloud.common.exception.tencent_cloud_sdk_exception import TencentCloudSDKException
+from tencentcloud.common.exception.tencent_cloud_sdk_exception import (
+    TencentCloudSDKException,
+)
 from tencentcloud.tms.v20201229 import tms_client, models
 
 import botfunc
@@ -26,12 +28,12 @@ import cache_var
 import depen
 
 channel = Channel[ChannelMeta].current()
-channel.meta['name'] = "敏感词检测"
-channel.meta['description'] = "防止群被炸"
-channel.meta['author'] = "KuoHu"
+channel.meta["name"] = "敏感词检测"
+channel.meta["description"] = "防止群被炸"
+channel.meta["author"] = "KuoHu"
 
-opc = opencc.OpenCC('t2s')
-dyn_config = 'dynamic_config.yaml'
+opc = opencc.OpenCC("t2s")
+dyn_config = "dynamic_config.yaml"
 """
 ./jieba_words.txt 是什么？
 jieba 确实是一个非常不错的分词工具
@@ -62,22 +64,21 @@ async def using_tencent_cloud(content: str, user_id: str) -> str:
     try:
         cred = credential.Credential(
             botfunc.get_cloud_config("QCloud_Secret_id"),
-            botfunc.get_cloud_config("QCloud_Secret_key")
+            botfunc.get_cloud_config("QCloud_Secret_key"),
         )
         client = tms_client.TmsClient(cred, "ap-guangzhou")
         req = models.TextModerationRequest()
         params = {
             "BizType": botfunc.get_cloud_config("text_biztype"),
             "Content": base64.b64encode(content.encode()).decode(),
-            "User": {
-                "UserId": user_id,
-                "AccountType": "2"
-            }
+            "User": {"UserId": user_id, "AccountType": "2"},
         }
         req.from_json_string(json.dumps(params))
         resp = client.TextModeration(req)
         logger.info(resp.to_json_string())
-        botfunc.r.hset('sw', hashlib.sha384(content.encode()).hexdigest(), resp.Suggestion)
+        botfunc.r.hset(
+            "sw", hashlib.sha384(content.encode()).hexdigest(), resp.Suggestion
+        )
         return resp.Suggestion
     except TencentCloudSDKException as err:
         logger.error(err)
@@ -87,18 +88,15 @@ async def using_tencent_cloud(content: str, user_id: str) -> str:
 @channel.use(
     ListenerSchema(
         listening_events=[GroupMessage],
-        decorators=[
-            MatchContent("开启本群敏感词检测"),
-            depen.check_authority_bot_op()
-        ]
+        decorators=[MatchContent("开启本群敏感词检测"), depen.check_authority_bot_op()],
     )
 )
 async def start_word(app: Ariadne, group: Group, event: GroupMessage):
-    with open(dyn_config, 'r') as cf:
+    with open(dyn_config, "r") as cf:
         cfy = yaml.safe_load(cf)
-    cfy['word'].append(group.id)
-    cfy['word'] = list(set(cfy["word"]))
-    with open(dyn_config, 'w') as cf:
+    cfy["word"].append(group.id)
+    cfy["word"] = list(set(cfy["word"]))
+    with open(dyn_config, "w") as cf:
         yaml.dump(cfy, cf)
     await app.send_message(group, MessageChain([At(event.sender.id), Plain(" OK辣！")]))
 
@@ -106,84 +104,103 @@ async def start_word(app: Ariadne, group: Group, event: GroupMessage):
 @channel.use(
     ListenerSchema(
         listening_events=[GroupMessage],
-        decorators=[
-            MatchContent("关闭本群敏感词检测"),
-            depen.check_authority_op()
-        ]
+        decorators=[MatchContent("关闭本群敏感词检测"), depen.check_authority_op()],
     )
 )
 async def stop_word(app: Ariadne, group: Group, event: GroupMessage):
     admin = await botfunc.get_all_admin()
-    if event.sender.permission in [MemberPerm.Administrator, MemberPerm.Owner] or event.sender.id in admin:
-        with open(dyn_config, 'r') as cf:
+    if (
+            event.sender.permission in [MemberPerm.Administrator, MemberPerm.Owner]
+            or event.sender.id in admin
+    ):
+        with open(dyn_config, "r") as cf:
             cfy = yaml.safe_load(cf)
         try:
-            cfy['word'].remove(group.id)
-            cfy['word'] = list(set(cfy["word"]))
-            with open(dyn_config, 'w') as cf:
+            cfy["word"].remove(group.id)
+            cfy["word"] = list(set(cfy["word"]))
+            with open(dyn_config, "w") as cf:
                 yaml.dump(cfy, cf)
-            await app.send_message(group, MessageChain([At(event.sender.id), Plain(" OK辣！")]))
+            await app.send_message(
+                group, MessageChain([At(event.sender.id), Plain(" OK辣！")])
+            )
         except Exception as err:
-            await app.send_message(group, MessageChain([At(event.sender.id), Plain(f" 报错辣！{err}")]))
+            await app.send_message(
+                group, MessageChain([At(event.sender.id), Plain(f" 报错辣！{err}")])
+            )
 
 
 @channel.use(
     ListenerSchema(
         listening_events=[GroupMessage],
-        decorators=[
-            depen.match_text(),
-            depen.check_authority_member()
-        ]
+        decorators=[depen.match_text(), depen.check_authority_member()],
     )
 )
 async def f(app: Ariadne, group: Group, event: GroupMessage):
-    if group.id in botfunc.get_dyn_config('word'):
+    if group.id in botfunc.get_dyn_config("word"):
         if not botfunc.get_config("text_review"):
-            msg = (
-                opc.convert(  # 抗混淆：繁简字转换
-                    (
-                        ''.join(
-                            list(map(lambda x: x.text, event.message_chain[Plain]))
-                        )
-                    ).strip(' []【】{}\\!！.。…?？啊哦额呃嗯嘿/')  # 抗混淆：去除语气词
-                )
+            msg = opc.convert(  # 抗混淆：繁简字转换
+                (
+                    "".join(list(map(lambda x: x.text, event.message_chain[Plain])))
+                ).strip(
+                    " []【】{}\\!！.。…?？啊哦额呃嗯嘿/"
+                )  # 抗混淆：去除语气词
             )
             if (
-                    ''.join(
-                        list(map(lambda x: x.text, event.message_chain[Plain]))
-                    )
+                    "".join(list(map(lambda x: x.text, event.message_chain[Plain])))
             ) in cache_var.sensitive_words:  # 性能：整句匹配
                 try:
                     await app.recall_message(event)
                 except PermissionError:
-                    logger.error('无权操作！')
+                    logger.error("无权操作！")
                 else:
-                    await app.send_message(event.sender.group, MessageChain(
-                        [At(event.sender.id),
-                         "你的消息涉及敏感内容，为保护群聊消息已被撤回\n【数据来源：本地敏感词库 - 整句匹配】"]))
-                await botfunc.run_sql('UPDATE wd SET count=count+1 WHERE wd=%s', (str(event.message_chain),))
+                    await app.send_message(
+                        event.sender.group,
+                        MessageChain(
+                            [
+                                At(event.sender.id),
+                                "你的消息涉及敏感内容，为保护群聊消息已被撤回\n【数据来源：本地敏感词库 - 整句匹配】",
+                            ]
+                        ),
+                    )
+                await botfunc.run_sql(
+                    "UPDATE wd SET count=count+1 WHERE wd=%s",
+                    (str(event.message_chain),),
+                )
                 return
-            wd = jieba.lcut(  # 准确率：分词
-                msg
-            )
+            wd = jieba.lcut(msg)  # 准确率：分词
             logger.debug(wd)
             for w in wd:
                 if w in cache_var.sensitive_words:
                     if botfunc.get_config("violation_text_review"):
                         result = await using_tencent_cloud(
-                            (''.join(list(map(lambda x: x.text, event.message_chain[Plain])))),
-                            str(event.sender.id))
+                            (
+                                "".join(
+                                    list(
+                                        map(
+                                            lambda x: x.text, event.message_chain[Plain]
+                                        )
+                                    )
+                                )
+                            ),
+                            str(event.sender.id),
+                        )
                         logger.debug(f"本地敏感词库 -> Block | 腾讯云文本内容安全 -> {result}")
                         if result == "Block":
                             try:
                                 await app.recall_message(event)
                             except PermissionError:
-                                logger.error('无权操作！')
+                                logger.error("无权操作！")
                             else:
-                                await app.send_message(event.sender.group, MessageChain(
-                                    [At(event.sender.id),
-                                     "你的消息涉及敏感内容，为保护群聊消息已被撤回\n"
-                                     "【数据来源：本地敏感词库 & 腾讯云文本内容安全】"]))
+                                await app.send_message(
+                                    event.sender.group,
+                                    MessageChain(
+                                        [
+                                            At(event.sender.id),
+                                            "你的消息涉及敏感内容，为保护群聊消息已被撤回\n"
+                                            "【数据来源：本地敏感词库 & 腾讯云文本内容安全】",
+                                        ]
+                                    ),
+                                )
                             break
                         else:
                             continue
@@ -191,72 +208,90 @@ async def f(app: Ariadne, group: Group, event: GroupMessage):
                         try:
                             await app.recall_message(event)
                         except PermissionError:
-                            logger.error('无权操作！')
+                            logger.error("无权操作！")
                         else:
-                            await app.send_message(event.sender.group, MessageChain(
-                                [At(event.sender.id),
-                                 "你的消息涉及敏感内容，为保护群聊消息已被撤回\n"
-                                 "【数据来源：本地敏感词库 - 分词匹配】"]))
-                    await botfunc.run_sql('UPDATE wd SET count=count+1 WHERE wd=%s', (w,))
+                            await app.send_message(
+                                event.sender.group,
+                                MessageChain(
+                                    [
+                                        At(event.sender.id),
+                                        "你的消息涉及敏感内容，为保护群聊消息已被撤回\n"
+                                        "【数据来源：本地敏感词库 - 分词匹配】",
+                                    ]
+                                ),
+                            )
+                    await botfunc.run_sql(
+                        "UPDATE wd SET count=count+1 WHERE wd=%s", (w,)
+                    )
                     break
         else:
-            result = await using_tencent_cloud((''.join(list(map(lambda x: x.text, event.message_chain[Plain])))),
-                                               str(event.sender.id))
+            result = await using_tencent_cloud(
+                ("".join(list(map(lambda x: x.text, event.message_chain[Plain])))),
+                str(event.sender.id),
+            )
             if result == "Block":
                 try:
                     await app.recall_message(event)
                 except PermissionError:
-                    logger.error('无权操作！')
+                    logger.error("无权操作！")
                 else:
-                    await app.send_message(event.sender.group, MessageChain(
-                        [At(event.sender.id),
-                         "你的消息涉及敏感内容，为保护群聊消息已被撤回\n"
-                         "【数据来源：腾讯云文本内容安全】"]))
+                    await app.send_message(
+                        event.sender.group,
+                        MessageChain(
+                            [
+                                At(event.sender.id),
+                                "你的消息涉及敏感内容，为保护群聊消息已被撤回\n" "【数据来源：腾讯云文本内容安全】",
+                            ]
+                        ),
+                    )
 
 
 @channel.use(
     ListenerSchema(
         listening_events=[GroupMessage],
-        decorators=[
-            DetectPrefix("加敏感词"),
-            depen.check_authority_op()
-        ]
+        decorators=[DetectPrefix("加敏感词"), depen.check_authority_op()],
     )
 )
-async def add(app: Ariadne, event: GroupMessage, message: MessageChain = DetectPrefix("加敏感词")):
+async def add(
+        app: Ariadne, event: GroupMessage, message: MessageChain = DetectPrefix("加敏感词")
+):
     if str(message) not in cache_var.sensitive_words:
         try:
-            await botfunc.run_sql('INSERT INTO wd(wd, count) VALUES (%s, 0)', (str(message),))
+            await botfunc.run_sql(
+                "INSERT INTO wd(wd, count) VALUES (%s, 0)", (str(message),)
+            )
         except Exception as err:
-            await app.send_message(event.sender.group, f'寄！{err}')
+            await app.send_message(event.sender.group, f"寄！{err}")
         else:
-            await app.send_message(event.sender.group, '好辣！')
+            await app.send_message(event.sender.group, "好辣！")
         try:
             cache_var.sensitive_words.append(str(message))
         except Exception as err:
             logger.error(err)
     else:
-        await app.send_message(event.sender.group, '有没有一种可能，这个词已经加过了')
+        await app.send_message(event.sender.group, "有没有一种可能，这个词已经加过了")
 
 
 @channel.use(
     ListenerSchema(
         listening_events=[GroupMessage],
-        decorators=[
-            DetectPrefix("删敏感词"),
-            depen.check_authority_op()
-        ]
+        decorators=[DetectPrefix("删敏感词"), depen.check_authority_op()],
     )
 )
-async def rm(app: Ariadne, event: GroupMessage, message: MessageChain = DetectPrefix("删敏感词")):
+async def rm(
+        app: Ariadne, event: GroupMessage, message: MessageChain = DetectPrefix("删敏感词")
+):
     admin = await botfunc.get_all_admin()
-    if event.sender.permission in [MemberPerm.Administrator, MemberPerm.Owner] or event.sender.id in admin:
+    if (
+            event.sender.permission in [MemberPerm.Administrator, MemberPerm.Owner]
+            or event.sender.id in admin
+    ):
         try:
-            await botfunc.run_sql('DELETE FROM wd WHERE wd=%s', (message,))
+            await botfunc.run_sql("DELETE FROM wd WHERE wd=%s", (message,))
         except Exception as err:
-            await app.send_message(event.sender.group, f'寄！{err}')
+            await app.send_message(event.sender.group, f"寄！{err}")
         else:
-            await app.send_message(event.sender.group, '好辣！')
+            await app.send_message(event.sender.group, "好辣！")
         try:
             cache_var.sensitive_words.remove(str(message))
         except Exception as err:

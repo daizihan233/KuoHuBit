@@ -12,8 +12,10 @@ from loguru import logger
 from paddlenlp import Taskflow
 
 
-def safe_file_read(filename: str, encode: str = "UTF-8", mode: str = "r") -> str or bytes:
-    if mode == 'r':
+def safe_file_read(
+        filename: str, encode: str = "UTF-8", mode: str = "r"
+) -> str or bytes:
+    if mode == "r":
         with open(filename, mode, encoding=encode) as file:
             portalocker.lock(file, portalocker.LOCK_EX)
             tmp = file.read()
@@ -28,7 +30,7 @@ def safe_file_read(filename: str, encode: str = "UTF-8", mode: str = "r") -> str
 
 
 def safe_file_write(filename: str, s, mode: str = "w", encode: str = "UTF-8"):
-    if 'b' not in mode:
+    if "b" not in mode:
         with open(filename, mode, encoding=encode) as file:
             portalocker.lock(file, portalocker.LOCK_EX)
             file.write(s)
@@ -41,11 +43,13 @@ def safe_file_write(filename: str, s, mode: str = "w", encode: str = "UTF-8"):
 
 
 loop = asyncio.get_event_loop()
-config_yaml = yaml.safe_load(open('config.yaml', 'r', encoding='UTF-8'))
+config_yaml = yaml.safe_load(open("config.yaml", "r", encoding="UTF-8"))
 try:
-    cloud_config_json = json.load(open('cloud.json', 'r', encoding='UTF-8'))
+    cloud_config_json = json.load(open("cloud.json", "r", encoding="UTF-8"))
 except FileNotFoundError:
-    safe_file_write('cloud.json', """{
+    safe_file_write(
+        "cloud.json",
+        """{
   "QCloud_Secret_id": "",
   "QCloud_Secret_key": "",
   "MySQL_Pwd": "",
@@ -56,22 +60,27 @@ except FileNotFoundError:
   "Redis_Host": "localhost",
   "Redis_port": 6379,
   "snao_key": ""
-}""")
+}""",
+    )
     logger.error(
-        'cloud.json 未创建，程序已自动创建，请参考 https://github.com/daizihan233/KuoHuBit/issues/17 填写该文件的内容')
+        "cloud.json 未创建，程序已自动创建，请参考 https://github.com/daizihan233/KuoHuBit/issues/17 填写该文件的内容"
+    )
     sys.exit(1)
 if not pathlib.Path("./dynamic_config.yaml").exists():
-    safe_file_write('dynamic_config.yaml', """mute: []
+    safe_file_write(
+        "dynamic_config.yaml",
+        """mute: []
 word: []
-img: []""")
-    logger.warning('dynamic_config.yaml 已被程序自动创建')
+img: []""",
+    )
+    logger.warning("dynamic_config.yaml 已被程序自动创建")
 
 
 def get_config(name: str):
     try:
         return config_yaml[name]
     except KeyError:
-        logger.error(f'{name} 在配置文件中找不到')
+        logger.error(f"{name} 在配置文件中找不到")
         return None
 
 
@@ -79,25 +88,29 @@ def get_cloud_config(name: str):
     try:
         return cloud_config_json[name]
     except KeyError:
-        logger.error(f'{name} 在配置文件中找不到')
+        logger.error(f"{name} 在配置文件中找不到")
         return ""
 
 
 def get_dyn_config(name: str):
-    dyn_yaml = yaml.safe_load(open('dynamic_config.yaml', 'r', encoding='UTF-8'))
+    dyn_yaml = yaml.safe_load(open("dynamic_config.yaml", "r", encoding="UTF-8"))
     try:
         return dyn_yaml[name]
     except KeyError:
-        logger.error(f'{name} 在配置文件中找不到')
+        logger.error(f"{name} 在配置文件中找不到")
         return []
 
 
 async def select_fetchone(sql, arg=None):
-    conn = await aiomysql.connect(host=get_cloud_config('MySQL_Host'),
-                                  port=get_cloud_config('MySQL_Port'),
-                                  user=get_cloud_config('MySQL_User'),
-                                  password=get_cloud_config('MySQL_Pwd'), charset='utf8mb4',
-                                  db=get_cloud_config('MySQL_db'), loop=loop)
+    conn = await aiomysql.connect(
+        host=get_cloud_config("MySQL_Host"),
+        port=get_cloud_config("MySQL_Port"),
+        user=get_cloud_config("MySQL_User"),
+        password=get_cloud_config("MySQL_Pwd"),
+        charset="utf8mb4",
+        db=get_cloud_config("MySQL_db"),
+        loop=loop,
+    )
 
     cur = await conn.cursor()
     if arg:
@@ -111,11 +124,15 @@ async def select_fetchone(sql, arg=None):
 
 
 async def select_fetchall(sql, arg=None):
-    conn = await aiomysql.connect(host=get_cloud_config('MySQL_Host'),
-                                  port=get_cloud_config('MySQL_Port'),
-                                  user=get_cloud_config('MySQL_User'),
-                                  password=get_cloud_config('MySQL_Pwd'), charset='utf8mb4',
-                                  db=get_cloud_config('MySQL_db'), loop=loop)
+    conn = await aiomysql.connect(
+        host=get_cloud_config("MySQL_Host"),
+        port=get_cloud_config("MySQL_Port"),
+        user=get_cloud_config("MySQL_User"),
+        password=get_cloud_config("MySQL_Pwd"),
+        charset="utf8mb4",
+        db=get_cloud_config("MySQL_db"),
+        loop=loop,
+    )
 
     cur = await conn.cursor()
     if arg:
@@ -129,11 +146,15 @@ async def select_fetchall(sql, arg=None):
 
 
 async def run_sql(sql, arg=None):
-    conn = await aiomysql.connect(host=get_cloud_config('MySQL_Host'),
-                                  port=get_cloud_config('MySQL_Port'),
-                                  user=get_cloud_config('MySQL_User'),
-                                  password=get_cloud_config('MySQL_Pwd'), charset='utf8mb4',
-                                  db=get_cloud_config('MySQL_db'), loop=loop)
+    conn = await aiomysql.connect(
+        host=get_cloud_config("MySQL_Host"),
+        port=get_cloud_config("MySQL_Port"),
+        user=get_cloud_config("MySQL_User"),
+        password=get_cloud_config("MySQL_Pwd"),
+        charset="utf8mb4",
+        db=get_cloud_config("MySQL_db"),
+        loop=loop,
+    )
 
     cur = await conn.cursor()
     if arg:
@@ -155,7 +176,7 @@ async def get_all_admin() -> list:
 
 
 async def get_all_sb() -> list:
-    tmp = await select_fetchall('SELECT uid FROM blacklist')
+    tmp = await select_fetchall("SELECT uid FROM blacklist")
     t = []
     for i in tmp:
         t.append(i[0])
@@ -163,35 +184,32 @@ async def get_all_sb() -> list:
 
 
 async def get_su() -> int:
-    tmp = get_config('su')
+    tmp = get_config("su")
     return tmp
 
 
 if get_cloud_config("Redis_Pwd") is not None:
     backend = requests_cache.RedisCache(
-        host=get_cloud_config('Redis_Host'),
-        port=get_cloud_config('Redis_port'),
-        password=get_cloud_config('Redis_Pwd')
+        host=get_cloud_config("Redis_Host"),
+        port=get_cloud_config("Redis_port"),
+        password=get_cloud_config("Redis_Pwd"),
     )
     p = redis.ConnectionPool(
-        host=get_cloud_config('Redis_Host'),
-        port=get_cloud_config('Redis_port'),
-        password=get_cloud_config('Redis_Pwd')
+        host=get_cloud_config("Redis_Host"),
+        port=get_cloud_config("Redis_port"),
+        password=get_cloud_config("Redis_Pwd"),
     )
 else:
     backend = requests_cache.RedisCache(
-        host=get_cloud_config('Redis_Host'),
-        port=get_cloud_config('Redis_port')
+        host=get_cloud_config("Redis_Host"), port=get_cloud_config("Redis_port")
     )
     p = redis.ConnectionPool(
-        host=get_cloud_config('Redis_Host'),
-        port=get_cloud_config('Redis_port')
+        host=get_cloud_config("Redis_Host"), port=get_cloud_config("Redis_port")
     )
-session = requests_cache.CachedSession("global_session", backend=backend, expire_after=360)
+session = requests_cache.CachedSession(
+    "global_session", backend=backend, expire_after=360
+)
 r = redis.Redis(connection_pool=p, decode_responses=True)
 seg_accurate = Taskflow(
-    "word_segmentation",
-    mode="accurate",
-    user_dict="./jieba_words.txt",
-    truncation=True
+    "word_segmentation", mode="accurate", user_dict="./jieba_words.txt", truncation=True
 )  # 精确中文分词

@@ -1911,21 +1911,18 @@ sup
 ～
 ～±
 ～＋
-￥""".split("\n")
+￥""".split(
+    "\n"
+)
 
 
 @channel.use(
     ListenerSchema(
-        listening_events=[GroupMessage],
-        decorators=[
-            depen.check_authority_su()
-        ]
+        listening_events=[GroupMessage], decorators=[depen.check_authority_su()]
     )
 )
 async def get_words(message: MessageChain):
-    strings = botfunc.seg_accurate(
-        list(map(lambda x: x.text, message[Plain]))
-    )
+    strings = botfunc.seg_accurate(list(map(lambda x: x.text, message[Plain])))
     logger.debug(strings)
     for i in strings:
         for j in i:
@@ -1935,46 +1932,41 @@ async def get_words(message: MessageChain):
                 )
                 if j in list(map(lambda x: x[0], top)):
                     await botfunc.run_sql(
-                        "UPDATE top5_keywords SET count = count + 1 WHERE words = %s",
-                        j
+                        "UPDATE top5_keywords SET count = count + 1 WHERE words = %s", j
                     )
                 else:
                     await botfunc.run_sql(
-                        "insert into top5_keywords(words, count) values (%s, 1)",
-                        j
+                        "insert into top5_keywords(words, count) values (%s, 1)", j
                     )
 
 
 @channel.use(SchedulerSchema(timers.crontabify("0 0 * * * 0")))
 async def delete_data():
-    await botfunc.run_sql(
-        "truncate table top5_keywords;"
-    )
+    await botfunc.run_sql("truncate table top5_keywords;")
 
 
 @channel.use(SchedulerSchema(timers.crontabify("30 21 * * * 0")))
 async def top5_data(app: Ariadne):
-    top = await botfunc.select_fetchall("SELECT words, count FROM top5_keywords ORDER BY count DESC LIMIT 5")
-    string = "\n".join(["在您今天发的消息中，提到最多的关键词 Top5 是："] + [f"{i[0]} --- {i[1]}" for i in top])
-    await app.send_friend_message(
-        target=botfunc.get_config('su'),
-        message=string
+    top = await botfunc.select_fetchall(
+        "SELECT words, count FROM top5_keywords ORDER BY count DESC LIMIT 5"
     )
+    string = "\n".join(
+        ["在您今天发的消息中，提到最多的关键词 Top5 是："] + [f"{i[0]} --- {i[1]}" for i in top]
+    )
+    await app.send_friend_message(target=botfunc.get_config("su"), message=string)
 
 
 @channel.use(
     ListenerSchema(
         listening_events=[FriendMessage],
-        decorators=[
-            depen.check_friend_su(),
-            MatchContent("关键词")
-        ]
+        decorators=[depen.check_friend_su(), MatchContent("关键词")],
     )
 )
 async def now_top5_data(app: Ariadne):
-    top = await botfunc.select_fetchall("SELECT words, count FROM top5_keywords ORDER BY count DESC LIMIT 5")
-    string = "\n".join(["截至目前，在您今天发的消息中，提到最多的关键词 Top5 是："] + [f"{i[0]} --- {i[1]}" for i in top])
-    await app.send_friend_message(
-        target=botfunc.get_config('su'),
-        message=string
+    top = await botfunc.select_fetchall(
+        "SELECT words, count FROM top5_keywords ORDER BY count DESC LIMIT 5"
     )
+    string = "\n".join(
+        ["截至目前，在您今天发的消息中，提到最多的关键词 Top5 是："] + [f"{i[0]} --- {i[1]}" for i in top]
+    )
+    await app.send_friend_message(target=botfunc.get_config("su"), message=string)

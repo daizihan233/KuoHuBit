@@ -15,16 +15,18 @@ from graia.saya.channel import ChannelMeta
 import botfunc
 
 channel = Channel[ChannelMeta].current()
-channel.meta['name'] = "摸鱼日历"
-channel.meta['description'] = "摸🐟"
-channel.meta['author'] = "KuoHu"
+channel.meta["name"] = "摸鱼日历"
+channel.meta["description"] = "摸🐟"
+channel.meta["author"] = "KuoHu"
 
 
 @listen(GroupMessage)
 @decorate(MatchContent("鱼"))
 async def fish(app: Ariadne, group: Group, event: GroupMessage):
-    data: str = json.loads(botfunc.session.get("http://bjb.yunwj.top/php/mo-yu/php.php").text)['wb']
-    data: str = data.replace('【换行】', '\n')
+    data: str = json.loads(
+        botfunc.session.get("http://bjb.yunwj.top/php/mo-yu/php.php").text
+    )["wb"]
+    data: str = data.replace("【换行】", "\n")
     await app.send_message(
         group,
         MessageChain([At(event.sender.id), Plain(f" \n{data}")]),

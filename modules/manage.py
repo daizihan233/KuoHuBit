@@ -13,24 +13,21 @@ from graia.saya.channel import ChannelMeta
 import depen
 
 channel = Channel[ChannelMeta].current()
-channel.meta['name'] = "管理"
-channel.meta['description'] = "某种意义上，是种提权？"
-channel.meta['author'] = "KuoHu"
+channel.meta["name"] = "管理"
+channel.meta["description"] = "某种意义上，是种提权？"
+channel.meta["author"] = "KuoHu"
 
 
 @channel.use(
     ListenerSchema(
         listening_events=[GroupMessage],
-        decorators=[
-            DetectPrefix("禁言 "),
-            depen.check_authority_op()
-        ]
+        decorators=[DetectPrefix("禁言 "), depen.check_authority_op()],
     )
 )
 async def fish(app: Ariadne, group: Group, message: MessageChain = DetectPrefix("禁言 ")):
     msg = message.include(At, Plain)
     time = None
-    result = ''
+    result = ""
     for m in msg:
         if isinstance(m, At):
             if time is not None:
@@ -47,7 +44,7 @@ async def fish(app: Ariadne, group: Group, message: MessageChain = DetectPrefix(
                     result += f"{m.target} | 禁言 1 分钟 | 错误：【无权限】\n"
         else:
             try:
-                time = int(str(m).lstrip(' ').rstrip(' ')) * 60
+                time = int(str(m).lstrip(" ").rstrip(" ")) * 60
             except ValueError:
                 pass
     await app.send_group_message(group, result)
@@ -56,16 +53,13 @@ async def fish(app: Ariadne, group: Group, message: MessageChain = DetectPrefix(
 @channel.use(
     ListenerSchema(
         listening_events=[GroupMessage],
-        decorators=[
-            DetectPrefix("踢出 "),
-            depen.check_authority_op()
-        ]
+        decorators=[DetectPrefix("踢出 "), depen.check_authority_op()],
     )
 )
 async def fish(app: Ariadne, group: Group, message: MessageChain = DetectPrefix("踢出 ")):
     msg = message.include(At)
     m: At
-    result = ''
+    result = ""
     for m in msg:
         try:
             await app.kick_member(group, m.target)

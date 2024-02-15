@@ -20,28 +20,28 @@ from loguru import logger
 import botfunc
 
 channel = Channel[ChannelMeta].current()
-channel.meta['name'] = "来份涩图"
-channel.meta['description'] = "人类有三大欲望……"
-channel.meta['author'] = "KuoHu"
+channel.meta["name"] = "来份涩图"
+channel.meta["description"] = "人类有三大欲望……"
+channel.meta["author"] = "KuoHu"
 
 
 @listen(GroupMessage)
 @decorate(MatchContent("涩图来"))
 async def setu(app: Ariadne, group: Group):
-    p = botfunc.get_config('setu_api2_probability')
+    p = botfunc.get_config("setu_api2_probability")
     ch = random.randint(1, p)
     if ch == p:
-        url = botfunc.get_config('setu_api2')
+        url = botfunc.get_config("setu_api2")
     else:
-        url = botfunc.get_config('setu_api')
-    logger.info(f'使用URL：{url}（p={p}, ch={ch}, (ch == p)={ch == p}）')
+        url = botfunc.get_config("setu_api")
+    logger.info(f"使用URL：{url}（p={p}, ch={ch}, (ch == p)={ch == p}）")
     # 涩图不一样，这里不能使用缓存
     session = Ariadne.service.client_session
     async with session.get(url) as response:
         data = await response.read()
 
     b_msg = await app.send_group_message(group, MessageChain(Image(data_bytes=data)))
-    await asyncio.sleep(botfunc.get_config('recall'))
+    await asyncio.sleep(botfunc.get_config("recall"))
     await app.recall_message(b_msg)
 
 
@@ -49,25 +49,28 @@ async def setu(app: Ariadne, group: Group):
 @decorate(MatchContent("无内鬼，来点加密压缩包"))
 async def setu_7z(app: Ariadne, group: Group):
     img_id = time.time()
-    await app.send_message(group, f'[{img_id}] 装弹中……')
-    fdir = f'./work/{img_id}'
+    await app.send_message(group, f"[{img_id}] 装弹中……")
+    fdir = f"./work/{img_id}"
     os.makedirs(fdir)
     for index in range(10):
-        p = botfunc.get_config('setu_api2_probability')
+        p = botfunc.get_config("setu_api2_probability")
         ch = random.randint(1, p)
         if ch == p:
-            url = botfunc.get_config('setu_api2')
+            url = botfunc.get_config("setu_api2")
         else:
-            url = botfunc.get_config('setu_api')
-        logger.info(f'使用URL：{url}（p={p}, ch={ch}, (ch == p)={ch == p}）')
+            url = botfunc.get_config("setu_api")
+        logger.info(f"使用URL：{url}（p={p}, ch={ch}, (ch == p)={ch == p}）")
         # 涩图不一样，这里不能使用缓存
         session = Ariadne.service.client_session
         async with session.get(url) as response:
             data = await response.read()
-        botfunc.safe_file_write(filename=f'{fdir}/{index}.png', mode='wb', s=data)
+        botfunc.safe_file_write(filename=f"{fdir}/{index}.png", mode="wb", s=data)
     os.system(f"7z a {fdir}/res.7z {fdir} -p{group.id}")
-    await app.send_message(group, f'[{img_id}] 发射中……')
-    await app.upload_file(data=botfunc.safe_file_read(f'{fdir}/res.7z', mode='rb'), target=group,
-                          name=f"s{time.time()}.7z")
+    await app.send_message(group, f"[{img_id}] 发射中……")
+    await app.upload_file(
+        data=botfunc.safe_file_read(f"{fdir}/res.7z", mode="rb"),
+        target=group,
+        name=f"s{time.time()}.7z",
+    )
     await asyncio.sleep(600)
     shutil.rmtree(fdir)

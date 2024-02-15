@@ -27,9 +27,9 @@ def check_authority_bot_op(prompt: bool = True):
                         [
                             At(member.id),
                             Plain("你没有指定权限，无法执行此指令\n"),
-                            Plain("要求：【是】机器人的op")
+                            Plain("要求：【是】机器人的op"),
                         ]
-                    )
+                    ),
                 )
             raise ExecutionStop
 
@@ -51,9 +51,9 @@ def check_authority_group_op(prompt: bool = True):
                         [
                             At(member.id),
                             Plain("你没有指定权限，无法执行此指令\n"),
-                            Plain("要求：【是】群管理员 / 【是】群主")
+                            Plain("要求：【是】群管理员 / 【是】群主"),
                         ]
-                    )
+                    ),
                 )
             raise ExecutionStop
 
@@ -68,7 +68,10 @@ def check_authority_op(prompt: bool = True):
 
     async def check_authority(app: Ariadne, group: Group, member: Member):
         admin = await botfunc.get_all_admin()
-        if member.permission not in [MemberPerm.Administrator, MemberPerm.Owner] and member.id not in admin:
+        if (
+                member.permission not in [MemberPerm.Administrator, MemberPerm.Owner]
+                and member.id not in admin
+        ):
             if prompt:
                 await app.send_message(
                     group,
@@ -76,9 +79,9 @@ def check_authority_op(prompt: bool = True):
                         [
                             At(member.id),
                             Plain("你没有指定权限，无法执行此指令\n"),
-                            Plain("要求：【是】群管理员 / 【是】群主 / 【是】机器人op")
+                            Plain("要求：【是】群管理员 / 【是】群主 / 【是】机器人op"),
                         ]
-                    )
+                    ),
                 )
             raise ExecutionStop
 
@@ -129,9 +132,9 @@ def check_authority_black(prompt: bool = True):
                         [
                             At(member.id),
                             Plain("你没有指定权限，无法执行此指令\n"),
-                            Plain("最低要求：【是】黑名单内的人")
+                            Plain("最低要求：【是】黑名单内的人"),
                         ]
-                    )
+                    ),
                 )
             raise ExecutionStop
 
@@ -154,9 +157,9 @@ def check_authority_not_black(prompt: bool = True):
                         [
                             At(member.id),
                             Plain("你没有指定权限，无法执行此指令\n"),
-                            Plain("最低要求：【不是】黑名单内的人")
+                            Plain("最低要求：【不是】黑名单内的人"),
                         ]
-                    )
+                    ),
                 )
             raise ExecutionStop
 

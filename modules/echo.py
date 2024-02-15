@@ -14,34 +14,29 @@ from graia.saya.channel import ChannelMeta
 import botfunc
 
 channel = Channel[ChannelMeta].current()
-channel.meta['name'] = "Hello World!"
-channel.meta['description'] = "哼哼哼，啊啊啊啊啊"
-channel.meta['author'] = "KuoHu"
+channel.meta["name"] = "Hello World!"
+channel.meta["description"] = "哼哼哼，啊啊啊啊啊"
+channel.meta["author"] = "KuoHu"
 
 
-@channel.use(
-    ListenerSchema(
-        listening_events=[GroupMessage]
-    )
-)
-async def echo(app: Ariadne, group: Group, source: Source, message: MessageChain = DetectPrefix("/echo ")):
-    for w in (
-            "echo", "6", "9"
-    ):
+@channel.use(ListenerSchema(listening_events=[GroupMessage]))
+async def echo(
+        app: Ariadne,
+        group: Group,
+        source: Source,
+        message: MessageChain = DetectPrefix("/echo "),
+):
+    for w in ("echo", "6", "9"):
         if message.display.startswith(w):
             return
     m: ActiveGroupMessage = await app.send_group_message(
         group,
         message,
     )
-    botfunc.r.hset('echo', source.id, m.source.id)
+    botfunc.r.hset("echo", source.id, m.source.id)
 
 
-@channel.use(
-    ListenerSchema(
-        listening_events=[GroupRecallEvent]
-    )
-)
+@channel.use(ListenerSchema(listening_events=[GroupRecallEvent]))
 async def echo(app: Ariadne, group: Group, event: GroupRecallEvent):
     if botfunc.r.hexists("echo", event.message_id):
         await app.recall_message(botfunc.r.hget("echo", event.message_id), group)

@@ -1,5 +1,7 @@
 #  本项目遵守 AGPL-3.0 协议，项目地址：https://github.com/daizihan233/MiraiHanBot
 
+#  本项目遵守 AGPL-3.0 协议，项目地址：https://github.com/daizihan233/MiraiHanBot
+
 from graia.ariadne.app import Ariadne
 from graia.ariadne.event.message import FriendMessage, TempMessage
 from graia.ariadne.model import Member, Friend
@@ -8,9 +10,9 @@ from graia.saya import Channel
 from graia.saya.channel import ChannelMeta
 
 channel = Channel[ChannelMeta].current()
-channel.meta['name'] = "如来"
-channel.meta['description'] = "在有人找机器人私聊的时候，如来"
-channel.meta['author'] = "KuoHu"
+channel.meta["name"] = "如来"
+channel.meta["description"] = "在有人找机器人私聊的时候，如来"
+channel.meta["author"] = "KuoHu"
 
 
 rutext = """中国人认为宇宙万法的那个源头
@@ -53,7 +55,9 @@ rutext = """中国人认为宇宙万法的那个源头
 把这个事说了一句名言
 维特根斯坦说，这个世界上有语言能说的，叫说清楚，这个世界上也有超出语言，说不明白的，维特根斯坦直接用了俩字，闭嘴
 那没法说嘛
-所以才有了，如来什么，拈花，迦叶微笑""".split('\n')
+所以才有了，如来什么，拈花，迦叶微笑""".split(
+    "\n"
+)
 
 index = 0
 

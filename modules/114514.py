@@ -19,9 +19,9 @@ import cache_var
 import depen
 
 channel = Channel[ChannelMeta].current()
-channel.meta['name'] = "inm"
-channel.meta['description'] = "哼哼哼，啊啊啊啊啊"
-channel.meta['author'] = "KuoHu"
+channel.meta["name"] = "inm"
+channel.meta["description"] = "哼哼哼，啊啊啊啊啊"
+channel.meta["author"] = "KuoHu"
 
 
 @channel.use(SchedulerSchema(timers.crontabify("45 11 * * * 14")))
@@ -29,21 +29,18 @@ async def inm(app: Ariadne):
     for group in cache_var.inm:
         try:
             await app.send_group_message(
-                target=group,
-                message=f"哼哼哼，{'啊' * random.randint(5, 20)}"
+                target=group, message=f"哼哼哼，{'啊' * random.randint(5, 20)}"
             )
         except ValueError:
             loguru.logger.warning(
-                f'{group} 不存在！请检查机器人是否被踢出，请尝试让机器人重新加群或手动删除数据库数据并重启机器人！')
+                f"{group} 不存在！请检查机器人是否被踢出，请尝试让机器人重新加群或手动删除数据库数据并重启机器人！"
+            )
 
 
 @channel.use(
     ListenerSchema(
         listening_events=[GroupMessage],
-        decorators=[
-            MatchContent("臭死力"),
-            depen.check_authority_op()
-        ]
+        decorators=[MatchContent("臭死力"), depen.check_authority_op()],
     )
 )
 async def homo(app: Ariadne, group: Group, source: Source):
@@ -51,20 +48,13 @@ async def homo(app: Ariadne, group: Group, source: Source):
         return
     cache_var.inm.append(group.id)
     await botfunc.run_sql("INSERT INTO inm VALUES (%s)", (group.id,))
-    await app.send_message(
-        target=group,
-        quote=source,
-        message='草'
-    )
+    await app.send_message(target=group, quote=source, message="草")
 
 
 @channel.use(
     ListenerSchema(
         listening_events=[GroupMessage],
-        decorators=[
-            MatchContent("香死力"),
-            depen.check_authority_op()
-        ]
+        decorators=[MatchContent("香死力"), depen.check_authority_op()],
     )
 )
 async def homo(app: Ariadne, group: Group, source: Source, event: GroupMessage):
@@ -75,8 +65,4 @@ async def homo(app: Ariadne, group: Group, source: Source, event: GroupMessage):
         return
     cache_var.inm.remove(group.id)
     await botfunc.run_sql("DELETE FROM inm WHERE gid=%s", (group.id,))
-    await app.send_message(
-        target=group,
-        quote=source,
-        message='艹'
-    )
+    await app.send_message(target=group, quote=source, message="艹")
