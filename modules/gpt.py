@@ -3,7 +3,7 @@ import random
 import g4f
 from graia.amnesia.message import MessageChain
 from graia.ariadne.app import Ariadne
-from graia.ariadne.event.message import GroupMessage
+from graia.ariadne.event.message import GroupMessage, FriendMessage
 from graia.ariadne.message.element import Plain, At
 from graia.ariadne.message.parser.base import MentionMe
 from graia.ariadne.model import Group, Member
@@ -47,6 +47,7 @@ tips = [  # 开发者注
 
 
 @listen(GroupMessage)
+@listen(FriendMessage)
 async def gpt(app: Ariadne, group: Group, member: Member, event: GroupMessage, message: MessageChain = MentionMe()):
     messages[member.id].append({"role": "user", "content": str(message)})
     response = await g4f.ChatCompletion.create_async(
