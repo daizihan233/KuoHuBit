@@ -42,7 +42,8 @@ tips = [  # 开发者注
     "我相信你能使用脑子自行渲染 MarkDown 和 LaTeX，如果不知道是啥可以去 Google，不能 Google 就 Bing，脑子转不过来无法在脑内渲染的可以使用"
     "强大的互联网提供的在线查看工具",
     "请不要去尝试让他为你做一份502炒白砂糖，并纠结为什么会拒绝，这相当于你在酒吧点炒饭，你和AI真是旗鼓相当的对手",
-    "当你无法得到回复除了GPT还在思考，还可能是 Failed to send message, your account may be blocked."
+    "当你无法得到回复除了GPT还在思考，还可能是 Failed to send message, your account may be blocked.",
+    "如果GPT回复了「抱歉，我无法回答这个问题。」不是Bug，你踏马踩红线辣（"
 ]
 
 
