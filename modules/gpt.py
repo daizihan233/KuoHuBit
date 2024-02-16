@@ -139,7 +139,7 @@ async def gpt(
     if cache_var.cue_status:
         c = cue
     response, warn = await req(c, member.name, member.id)
-    messages[member.id].append({"role": "assitant", "content": response})
+    messages[member.id].append({"role": "assistant", "content": response})
     await app.send_group_message(
         target=group,
         message=MessageChain(
@@ -163,7 +163,7 @@ async def gpt_f(
     if cache_var.cue_status:
         c = cue
     response, warn = await req(c, friend.nickname, friend.id)
-    messages[friend.id].append({"role": "assitant", "content": response})
+    messages[friend.id].append({"role": "assistant", "content": response})
     await app.send_friend_message(
         target=friend,
         message=MessageChain(
