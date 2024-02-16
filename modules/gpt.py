@@ -96,7 +96,7 @@ async def gpt(
 async def gpt_f(
         app: Ariadne, friend: Friend, event: FriendMessage, message: MessageChain
 ):
-    if friend.id == botfunc.get_su() and (message.startswith("deny") or message.startswith("accept")):
+    if friend.id == await botfunc.get_su() and (message.startswith("deny") or message.startswith("accept")):
         return
     try:
         messages[friend.id].append({"role": "user", "content": str(message)})
