@@ -113,7 +113,7 @@ async def gpt_f(
                          "role": "system",
                          "content": c.format(
                              date=f"{now.year}/{now.month}/{now.day}",
-                             name=friend.name
+                             name=friend.nickname
                          )
                      }
                  ] + messages[friend.id],
