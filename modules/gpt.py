@@ -49,7 +49,8 @@ tips = [  # 开发者注
     "这个地方很重要，请不要忽视“开发者注”",
     "本模块使用 https://www.aigc2d.com/ 作为 ChatGPT 的 API",
     "你知道吗？这个功能使用的是付费服务",
-    "本项目从不盈利"
+    "本项目从不盈利",
+    "赞助这个项目 https://afdian.net/a/KuoHu"
 ]
 client = AsyncOpenAI(
     api_key=botfunc.get_cloud_config("gptkey"),
