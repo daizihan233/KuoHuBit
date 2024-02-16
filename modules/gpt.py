@@ -247,13 +247,19 @@ async def deny(app: Ariadne, message: MessageChain = DetectPrefix("deny ")):
         await app.send_friend_message(
             target=int(str(message)),
             message=MessageChain(
-                Plain(f"开发者：我认为你太极端了（提示词没有通过，请修改，具体可询问机器人开发者{await botfunc.get_su()}）")
+                [
+                    Plain(
+                        f"开发者：我认为你太极端了（提示词没有通过，请修改，具体可询问机器人开发者{await botfunc.get_su()}）")
+                ]
             )
         )
     else:
         await app.send_group_message(
             target=int(str(message)),
             message=MessageChain(
-                Plain(f"开发者：我认为你太极端了（提示词没有通过，请修改，具体可询问机器人开发者{await botfunc.get_su()}）")
+                [
+                    Plain(
+                        f"开发者：我认为你太极端了（提示词没有通过，请修改，具体可询问机器人开发者{await botfunc.get_su()}）")
+                ]
             )
         )
