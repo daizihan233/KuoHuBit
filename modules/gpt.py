@@ -240,7 +240,7 @@ async def accept(app: Ariadne, message: MessageChain = DetectPrefix("accept ")):
         decorators=[DetectPrefix("deny "), depen.check_friend_su()],
     )
 )
-async def deny(app: Ariadne, message: MessageChain = DetectPrefix("accept ")):
+async def deny(app: Ariadne, message: MessageChain = DetectPrefix("deny ")):
     cache_var.cue_status[int(str(message))] = True
     await botfunc.run_sql("""UPDATE cue SET status=true WHERE ids=%s""", int(str(message)))
     if int(str(message)) == cache_var.cue_who[int(str(message))]:  # 是私聊
