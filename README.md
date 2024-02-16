@@ -43,3 +43,7 @@
 - ltzXiaoYanMo
   - [ltzXiaoYanMo/YanMoBit](https://github.com/ltzXiaoYanMo/YanMoBit)
   - [ltzXiaoYanMo/YanBot-infp](https://github.com/ltzXiaoYanMo/YanBot-infp)
+
+# 赞助
+
+此外，你也可以 [点击这里](https://afdian.net/a/KuoHu) 赞助这个项目（虽然这不会给你带来任何东西）
