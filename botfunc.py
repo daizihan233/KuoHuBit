@@ -59,7 +59,8 @@ except FileNotFoundError:
   "MySQL_User": "root",
   "Redis_Host": "localhost",
   "Redis_port": 6379,
-  "snao_key": ""
+  "snao_key": "",
+  "gptkey": "AIGC10241-"
 }""",
     )
     logger.error(
