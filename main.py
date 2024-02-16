@@ -130,6 +130,14 @@ cursor.execute(
 `count` int UNSIGNED NOT NULL COMMENT '次数'
 ) ENGINE = innodb DEFAULT CHARACTER SET = "utf8mb4" COLLATE = "utf8mb4_general_ci" """
 )
+cursor.execute(
+    """CREATE TABLE IF NOT EXISTS `cue` ( 
+`ids` int UNSIGNED NOT NULL COMMENT 'ID',
+`words` TINYTEXT NOT NULL COMMENT '提示词',
+`status` BOOLEAN NOT NULL COMMENT '是否通过',
+`who` INT UNSIGNED NOT NULL COMMENT '谁写的'
+) ENGINE = innodb DEFAULT CHARACTER SET = "utf8mb4" COLLATE = "utf8mb4_general_ci" """
+)
 
 conn.commit()
 
@@ -167,6 +175,12 @@ cache_var.sensitive_words = [x[0] for x in cursor.fetchall()]
 
 cursor.execute("SELECT gid FROM no_six")
 cache_var.no_6 = [x[0] for x in cursor.fetchall()]
+
+cursor.execute("SELECT ids, words, status, who FROM cue")
+for ids, words, status, who in [x for x in cursor.fetchall()]:
+    cache_var.cue[ids] = words
+    cache_var.cue_status[ids] = status
+    cache_var.cue_who[ids] = who
 
 cursor.execute("SELECT uid FROM admin")
 if not cursor.fetchall():
