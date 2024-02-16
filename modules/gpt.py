@@ -222,14 +222,14 @@ async def accept(app: Ariadne, message: MessageChain = DetectPrefix("accept ")):
         await app.send_friend_message(
             target=int(str(message)),
             message=MessageChain(
-                Plain("恭喜！已通过审核")
+                [Plain("恭喜！已通过审核")]
             )
         )
     else:
         await app.send_group_message(
             target=int(str(message)),
             message=MessageChain(
-                Plain("恭喜！已通过审核")
+                [Plain("恭喜！已通过审核")]
             )
         )
 
