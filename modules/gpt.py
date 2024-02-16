@@ -1,5 +1,6 @@
 import datetime
 import random
+import traceback
 
 import g4f
 import openai
@@ -109,6 +110,7 @@ async def req(c: str, name: str, ids: int) -> tuple:
         token = num_tokens_from_messages(msg, "gpt-3.5-turbo")
         warn = f"本次共消耗 {token} token！（约为 {round(token / 167 * 0.0021, 5)} 元）"
     except openai.APIError:
+        print(traceback.format_exc())
         logger.warning("openai.APIError，已回退至 You.com")
         response = await g4f.ChatCompletion.create_async(
             model=g4f.models.gpt_4,
