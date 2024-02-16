@@ -158,10 +158,13 @@ async def add(app: Ariadne, member: Member, group: Group, event: GroupMessage,
         quote=event.source,
     )
     await app.send_friend_message(
-        target=botfunc.get_su(),
+        target=await botfunc.get_su(),
         message=MessageChain(
-            Plain(
-                f"请审核来自 {group.id} 中 {member.id} 的提示词修改请求：\n\n{str(message)}\n\n同意回复：accept {group.id}\n拒绝回复：deny {group.id}")
+            [
+                Plain(
+                    f"请审核来自 {group.id} 中 {member.id} 的提示词修改请求：\n\n{str(message)}\n\n同意回复：accept {group.id}\n拒绝回复：deny {group.id}"
+                )
+            ]
         )
     )
 
@@ -195,10 +198,13 @@ async def add_f(app: Ariadne, friend: Friend, event: FriendMessage,
         quote=event.source,
     )
     await app.send_friend_message(
-        target=botfunc.get_su(),
+        target=await botfunc.get_su(),
         message=MessageChain(
-            Plain(
-                f"请审核来自 {friend.id} 的提示词修改请求：\n\n{str(message)}\n\n同意回复：accept {friend.id}\n拒绝回复：deny {friend.id}")
+            [
+                Plain(
+                    f"请审核来自 {friend.id} 的提示词修改请求：\n\n{str(message)}\n\n同意回复：accept {friend.id}\n拒绝回复：deny {friend.id}"
+                )
+            ]
         )
     )
 
@@ -241,13 +247,13 @@ async def accept(app: Ariadne, message: MessageChain = DetectPrefix("accept ")):
         await app.send_friend_message(
             target=int(str(message)),
             message=MessageChain(
-                Plain(f"开发者：我认为你太极端了（提示词没有通过，请修改，具体可询问机器人开发者{botfunc.get_su()}）")
+                Plain(f"开发者：我认为你太极端了（提示词没有通过，请修改，具体可询问机器人开发者{await botfunc.get_su()}）")
             )
         )
     else:
         await app.send_group_message(
             target=int(str(message)),
             message=MessageChain(
-                Plain(f"开发者：我认为你太极端了（提示词没有通过，请修改，具体可询问机器人开发者{botfunc.get_su()}）")
+                Plain(f"开发者：我认为你太极端了（提示词没有通过，请修改，具体可询问机器人开发者{await botfunc.get_su()}）")
             )
         )
