@@ -143,7 +143,7 @@ async def add(app: Ariadne, member: Member, group: Group, event: GroupMessage,
     )
     cache_var.cue[group.id] = str(message)
     cache_var.cue_status[group.id] = False
-    cache_var.cue_who[group.id] = group.id
+    cache_var.cue_who[group.id] = member.id
     await app.send_group_message(
         target=group,
         message=MessageChain(
