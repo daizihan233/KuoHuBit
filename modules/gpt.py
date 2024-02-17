@@ -119,8 +119,8 @@ async def req(c: str, name: str, ids: int, message: MessageChain, event: Message
         return "我测你码什么问题这么长（请将问题缩短至200以内）", "本消息并非 GPT 回复"
     now = datetime.date.today()
 
-    if messages.get(event.quote.id, None) is not None:
-        node = MessageNode(message, ids, messages.get[event.quote.id])
+    if event.quote is not None and messages.get(event.quote.id, None) is not None:  # 短路
+        node = MessageNode(message, ids, messages[event.quote.id])
         if node.root.uid != botfunc.get_config("qq"):
             return "？（请回复一条由机器人发出的消息）", "本消息非 GPT 回复"
     else:
