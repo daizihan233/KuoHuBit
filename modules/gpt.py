@@ -143,12 +143,7 @@ async def req(c: str, name: str, ids: int, message: MessageChain, event: Message
                       name=name
                   )
               }
-          ] + x + [
-              {
-                  "role": "user",
-                  "content": str(node.message)
-              }
-          ]
+          ] + x
     logger.debug(msg)
     try:
         response = await client.chat.completions.create(
