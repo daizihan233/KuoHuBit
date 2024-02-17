@@ -149,6 +149,7 @@ async def req(c: str, name: str, ids: int, message: MessageChain, event: Message
                   "content": str(node.message)
               }
           ]
+    logger.debug(msg)
     try:
         response = await client.chat.completions.create(
             model="gpt-3.5-turbo",
@@ -157,9 +158,8 @@ async def req(c: str, name: str, ids: int, message: MessageChain, event: Message
         )
         response = response.choices[0].message.content
         token = num_tokens_from_messages(msg, "gpt-3.5-turbo")
-        warn = f"本次共追溯 {len(msg) - 1} 条历史消息，消耗 {token} token！（约为 {round(token / 167 * 0.0021, 5)} 元）"
+        warn = f"本次共追溯 {len(msg) - 2} 条历史消息，消耗 {token} token！（约为 {round(token / 167 * 0.0021, 5)} 元）"
     except openai.APIError:
-        logger.debug(msg)
         print(traceback.format_exc())
         logger.warning("openai.APIError，已回退至 You.com")
         response = await g4f.ChatCompletion.create_async(
