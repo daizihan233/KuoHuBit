@@ -152,8 +152,9 @@ async def req(c: str, name: str, ids: int, message: MessageChain, event: Message
             max_tokens=1988  # 单次不超过 0.025 元
         )
         response = response.choices[0].message.content
+        msg.append({"role": "assistant", "content": response})
         token = num_tokens_from_messages(msg, "gpt-3.5-turbo")
-        warn = f"本次共追溯 {len(msg) - 2} 条历史消息，消耗 {token} token！（约为 {round(token / 167 * 0.0021, 5)} 元）"
+        warn = f"本次共追溯 {len(msg) - 1} 条历史消息，消耗 {token} token！（约为 {round(token / 167 * 0.0021, 5)} 元）"
     except openai.APIError:
         print(traceback.format_exc())
         logger.warning("openai.APIError，已回退至 You.com")
