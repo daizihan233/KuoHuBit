@@ -120,7 +120,7 @@ async def req(c: str, name: str, ids: int, message: MessageChain, event: Message
     now = datetime.date.today()
 
     if messages.get(event.quote.id, None) is not None:
-        node = MessageNode(message, ids, messages.get(event.quote.id, None))
+        node = MessageNode(message, ids, messages.get[event.quote.id])
         if node.root.uid != botfunc.get_config("qq"):
             return "？（请回复一条由机器人发出的消息）", "本消息非 GPT 回复"
     else:
