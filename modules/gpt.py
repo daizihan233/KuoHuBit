@@ -143,7 +143,12 @@ async def req(c: str, name: str, ids: int, message: MessageChain, event: Message
                       name=name
                   )
               }
-          ] + x + [str(node.message)]
+          ] + x + [
+              {
+                  "role": "user",
+                  "content": str(node.message)
+              }
+          ]
     try:
         response = await client.chat.completions.create(
             model="gpt-3.5-turbo",
