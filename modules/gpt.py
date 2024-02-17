@@ -169,7 +169,8 @@ async def req(c: str, name: str, ids: int, message: MessageChain, event: Message
             provider=g4f.Provider.You,
         )
         warn = "openai.APIError：已回退至 You.com"
-    messages[event.quote.id].next_node = node
+    if event.quote is not None:
+        messages[event.quote.id].next_node = node
     messages[event.id] = node
     return response, warn
 
