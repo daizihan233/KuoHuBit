@@ -18,7 +18,7 @@ async def six(response: Response):
 @app.post("/bot/imgsafe/fix")
 def fix_result(
         response: Response,
-        request_id: str = Body("RequestId")
+        request_id=Body("RequestId")
 ):
     response.status_code = 200
     botfunc.r.hdel("imgsafe", botfunc.r.hget("imgsafe", request_id))
