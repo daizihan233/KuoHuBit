@@ -7,9 +7,9 @@ import json
 import yaml
 from graia.amnesia.message import MessageChain
 from graia.ariadne.app import Ariadne
-from graia.ariadne.event.message import GroupMessage
+from graia.ariadne.event.message import GroupMessage, FriendMessage
 from graia.ariadne.message.element import Plain, At, Image
-from graia.ariadne.message.parser.base import MatchContent
+from graia.ariadne.message.parser.base import MatchContent, DetectPrefix
 from graia.ariadne.model import Group
 from graia.saya import Channel
 from graia.saya.builtins.broadcast import ListenerSchema
@@ -147,3 +147,24 @@ async def image_review(app: Ariadne, message: MessageChain, event: GroupMessage)
                         ]
                     ),
                 )
+
+
+@channel.use(
+    ListenerSchema(
+        listening_events=[FriendMessage],
+        decorators=[DetectPrefix("clear "), depen.check_friend_su()],
+    )
+)
+async def clear_cache(app: Ariadne, message: MessageChain = DetectPrefix("clear ")):
+    botfunc.r.hdel("imgsafe", botfunc.r.hget("imgsafe", str(message)))
+    botfunc.r.hdel("imgsafe", str(message))
+    await app.send_friend_message(
+        target=await botfunc.get_su(),
+        message=MessageChain(
+            [
+                Plain(
+                    f"已清除 {str(message)} 的缓存"
+                )
+            ]
+        )
+    )

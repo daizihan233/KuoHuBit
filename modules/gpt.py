@@ -200,7 +200,12 @@ async def gpt(
 async def gpt_f(
         app: Ariadne, friend: Friend, event: FriendMessage, message: MessageChain
 ):
-    if friend.id == await botfunc.get_su() and (message.startswith("deny") or message.startswith("accept")):
+    if (friend.id == await botfunc.get_su() and
+            (
+                    message.startswith("deny ") or
+                    message.startswith("accept ") or
+                    message.startswith("clear ")
+            )):
         return
     c = cache_var.cue.get(friend.id, cue)
     if cache_var.cue_status:
