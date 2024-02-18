@@ -57,7 +57,12 @@ async def using_tencent_cloud(content: str, user_id: str) -> dict:
                     "SubLabel": resp.SubLabel,
                     "DataId": resp.RequestId,
                 }
-            ),
+            )
+        )
+        botfunc.r.hset(
+            "imgsafe",
+            resp.RequestId,
+            hashlib.sha384(content.encode()).hexdigest()
         )
         logger.debug(f"新图片入库！{resp.Suggestion} | {resp.SubLabel} | {resp.RequestId}")
         return {
