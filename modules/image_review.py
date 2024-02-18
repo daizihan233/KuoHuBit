@@ -137,7 +137,7 @@ async def image_review(app: Ariadne, message: MessageChain, event: GroupMessage)
                                 f"\n"
                                 f"**当你认为这是误判请提供【数据编码】给机器人账号所有者**\n"
                                 f"【数据来源：腾讯云图片内容安全】\n"
-                                f"本机器人所有者为：{botfunc.get_su()}（来自配置文件）\n"
+                                f"本机器人所有者为：{await botfunc.get_su()}（来自配置文件）\n"
                             ),
                         ]
                     ),
