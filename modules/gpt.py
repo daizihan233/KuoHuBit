@@ -148,8 +148,7 @@ async def req(c: str, name: str, ids: int, message: MessageChain, event: Message
     try:
         response = await client.chat.completions.create(
             model="gpt-3.5-turbo",
-            messages=msg,
-            max_tokens=1988  # 单次不超过 0.025 元
+            messages=msg
         )
         response = response.choices[0].message.content
         msg.append({"role": "assistant", "content": response})
