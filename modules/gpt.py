@@ -184,7 +184,7 @@ async def gpt(
         message: MessageChain = MentionMe(),
 ):
     c = cache_var.cue.get(group.id, cue)
-    if not cache_var.cue_status:
+    if not cache_var.cue_status[group.id]:
         c = cue
     response, warn = await req(c, member.name, member.id, message, event)
     m = await app.send_group_message(
@@ -212,7 +212,7 @@ async def gpt_f(
             )):
         return
     c = cache_var.cue.get(friend.id, cue)
-    if cache_var.cue_status:
+    if cache_var.cue_status[friend.id]:
         c = cue
     response, warn = await req(c, friend.nickname, friend.id, message, event)
     m = await app.send_friend_message(
