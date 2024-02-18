@@ -115,8 +115,6 @@ def num_tokens_from_messages(message, model="gpt-3.5-turbo"):
 
 
 async def req(c: str, name: str, ids: int, message: MessageChain, event: MessageEvent) -> tuple:
-    if len(str(message)) > 200:
-        return "我测你码什么问题这么长（请将问题缩短至200以内）", "本消息并非 GPT 回复"
     now = datetime.date.today()
 
     if event.quote is not None and messages.get(event.quote.id, None) is not None:  # 短路
