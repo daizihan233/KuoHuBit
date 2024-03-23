@@ -143,6 +143,7 @@ cursor.execute(
 `ids` int UNSIGNED AUTO_INCREMENT NOT NULL PRIMARY KEY COMMENT '投票ID',
 `gid` int UNSIGNED NOT NULL COMMENT '群号',
 `uid` int UNSIGNED NOT NULL COMMENT '发起者QQ号',
+`type` int UNSIGNED NOT NULL COMMENT '投票类型',
 `status` boolean NOT NULL COMMENT '投票状态（正在进行/已结束）',
 `result` int NOT NULL COMMENT '投票结果',
 `title` text NOT NULL COMMENT '投票标题',

@@ -5,9 +5,7 @@ from typing import Union, Dict, Any
 from arclet.alconna import Alconna, Args, Option, Arg, CommandMeta, MultiVar
 from arclet.alconna.graia import alcommand
 from graia.ariadne.app import Ariadne
-from graia.ariadne.event.message import GroupMessage
 from graia.ariadne.model import Group, Member
-from graia.ariadne.util.saya import listen
 from graia.saya import Channel
 from graia.saya.channel import ChannelMeta
 
@@ -73,14 +71,13 @@ class Problem:
 
 
 @alcommand(Problem.single, private=False, send_error=True)
-@listen(GroupMessage)
 async def initiate_single(app: Ariadne, group: Group, member: Member, title: str, option: list, deny: list,
                           accept: list):
     options: Dict[Any, Any] = {key: 0 for key in option}
     options["deny"] = deny
     options["accept"] = accept
     results = await botfunc.select_fetchall(
-        """INSERT INTO vote (gid, uid, status, result, title, options) VALUES (%s, %s, false, -1, %s, %s)""",
+        """INSERT INTO vote (gid, uid, type, status, result, title, options) VALUES (%s, %s, 0, false, -1, %s, %s)""",
         (group.id, member.id, title, json.dumps(options))
     )
     opt_str = "\n".join(
