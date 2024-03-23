@@ -4,7 +4,6 @@
 #  - 使用 AGPL-3.0 协议
 #  - 注明使用了 Mirai 并其源代码来自此仓库
 import os
-from asyncio import AbstractEventLoop
 
 import pymysql
 import requests
@@ -16,7 +15,6 @@ from graia.ariadne.connection.config import (
     config,
 )
 from graia.saya import Saya
-from graia.saya.builtins.broadcast import BroadcastBehaviour
 from loguru import logger
 from rich.progress import track
 
@@ -24,10 +22,6 @@ import botfunc
 import cache_var
 
 saya = create(Saya)
-create(AbstractEventLoop)
-create(BroadcastBehaviour)
-from arclet.alconna.graia.saya import AlconnaBehaviour
-create(AlconnaBehaviour)
 
 app = Ariadne(
     connection=config(

@@ -13,7 +13,16 @@ authors = [
     { name = "daizihan233", email = "y066ydg5@duck.com" },
 ]
 dependencies = [
-    "graia-ariadne[standard]<1.0.0,>=0.10.2",
+    "graia-ariadne[full]>=0.11.7",
+    "arclet-alconna<2.0.0, >=1.8.1",
+    "arclet-alconna-tools<0.8.0, >=0.7.0",
+    "tarina>=0.4.2",
+    "nepattern<0.7.0, >=0.6.0",
+    "creart>=0.3.0",
+    "graia-amnesia>=0.5.0",
+    "graia-broadcast>=0.18.2",
+    "graia-saya>=0.0.17",
+    "launart>=0.5.0",
     "pyyaml<7.0,>=6.0",
     "requests-cache<1.0.0,>=0.9.7",
     "redis<5.0.0,>=4.4.0",
