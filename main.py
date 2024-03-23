@@ -7,7 +7,7 @@ import os
 
 import pymysql
 import requests
-from arclet.alconna.graia.saya import AlconnaBehaviour
+from arclet.alconna.graia import AlconnaBehaviour
 from creart import create
 from graia.ariadne.app import Ariadne
 from graia.ariadne.connection.config import (
