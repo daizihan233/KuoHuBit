@@ -34,7 +34,7 @@ class Problem:
         meta=CommandMeta(
             "发起一个单项选择投票",
             usage="传入标题和选项即可，选项前不必附带序号，参数间使用换行分割，同一参数下多个值使用空格分割",
-            example="单项选择投票\n你玩原神吗？\n不玩\n玩\n原神，启动！\n--deny local 123456 789114 514191",
+            example="发起单选投票\n你玩原神吗？\n不玩\n玩\n原神，启动！\n--deny local 123456 789114 514191",
         ),
         separators="\n"
     )
