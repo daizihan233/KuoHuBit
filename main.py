@@ -4,6 +4,7 @@
 #  - 使用 AGPL-3.0 协议
 #  - 注明使用了 Mirai 并其源代码来自此仓库
 import os
+from asyncio import AbstractEventLoop
 
 import pymysql
 import requests
@@ -23,7 +24,9 @@ import botfunc
 import cache_var
 
 saya = create(Saya)
+create(AbstractEventLoop)
 create(AlconnaBehaviour)
+
 app = Ariadne(
     connection=config(
         botfunc.get_config("qq"),
