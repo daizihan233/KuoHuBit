@@ -23,7 +23,6 @@ import botfunc
 import cache_var
 
 saya = create(Saya)
-create(AlconnaBehaviour)
 app = Ariadne(
     connection=config(
         botfunc.get_config("qq"),
