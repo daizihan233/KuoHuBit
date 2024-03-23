@@ -2,13 +2,11 @@
 import json
 from typing import Union, Dict, Any
 
-from arclet.alconna import Alconna, Args, Option, Arg, CommandMeta, MultiVar
-from arclet.alconna.graia import AlconnaSchema, AlconnaDispatcher
+from arclet.alconna import Args, Option, Arg, CommandMeta, MultiVar, Alconna
+from arclet.alconna.graia import alcommand
 from graia.ariadne.app import Ariadne
-from graia.ariadne.event.message import GroupMessage
 from graia.ariadne.model import Group, Member
 from graia.saya import Channel
-from graia.saya.builtins.broadcast import ListenerSchema
 from graia.saya.channel import ChannelMeta
 
 import botfunc
@@ -72,8 +70,7 @@ class Problem:
     )
 
 
-@channel.use(AlconnaSchema(AlconnaDispatcher(Problem.single)))
-@channel.use(ListenerSchema(listening_events=[GroupMessage]))
+@alcommand(Problem.single, private=False, send_error=True)
 async def initiate_single(app: Ariadne, group: Group, member: Member, title: str, option: list, deny: list,
                           accept: list):
     options: Dict[Any, Any] = {key: 0 for key in option}
