@@ -3,7 +3,7 @@ import json
 from typing import Union, Dict, Any
 
 from arclet.alconna import Alconna, Args, Option, Arg, CommandMeta, MultiVar
-from arclet.alconna.graia import AlconnaDispatcher
+from arclet.alconna.graia import AlconnaDispatcher, AlconnaSchema
 from graia.ariadne.app import Ariadne
 from graia.ariadne.event.message import GroupMessage
 from graia.ariadne.model import Group, Member
@@ -73,9 +73,15 @@ class Problem:
 
 
 @channel.use(
+    AlconnaSchema(
+        AlconnaDispatcher(
+            Problem.single
+        )
+    )
+)
+@channel.use(
     ListenerSchema(
-        listening_events=[GroupMessage],
-        inline_dispatchers=[AlconnaDispatcher(Problem.single)],
+        listening_events=[GroupMessage]
     )
 )
 async def initiate_single(app: Ariadne, group: Group, member: Member, title: str, option: list, deny: list,
