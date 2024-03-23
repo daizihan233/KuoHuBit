@@ -22,7 +22,7 @@ class Problem:
     option = Args(Arg("option#选项", MultiVar(str)))
     deny = Option("--deny", Args(Arg("deny", MultiVar(Union[int, str]), seps=" ")),
                   help_text="阻止这些人参加投票，本群中的人可用 local 表示", default=[])
-    accept = Option("--accept", Args(Arg("accept", MultiVar(Union[int, str])), seps=" "),
+    accept = Option("--accept", Args(Arg("accept", MultiVar(Union[int, str]), seps=" ")),
                     help_text="仅允许这些人参加投票，本群中的人可用 local 表示", default=[])
     single = Alconna(
         "发起单选投票",

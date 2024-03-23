@@ -211,6 +211,6 @@ session = requests_cache.CachedSession(
     "global_session", backend=backend, expire_after=360
 )
 r = redis.Redis(connection_pool=p, decode_responses=True)
-seg_accurate = Taskflow(
-    "word_segmentation", mode="accurate", user_dict="./jieba_words.txt", truncation=True
-)  # 精确中文分词
+# seg_accurate = Taskflow(
+#     "word_segmentation", mode="accurate", user_dict="./jieba_words.txt", truncation=True
+# )  # 精确中文分词
