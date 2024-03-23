@@ -8,7 +8,6 @@ from asyncio import AbstractEventLoop
 
 import pymysql
 import requests
-from arclet.alconna.graia.saya import AlconnaBehaviour
 from creart import create
 from graia.ariadne.app import Ariadne
 from graia.ariadne.connection.config import (
@@ -25,6 +24,7 @@ import cache_var
 
 saya = create(Saya)
 create(AbstractEventLoop)
+from arclet.alconna.graia.saya import AlconnaBehaviour
 create(AlconnaBehaviour)
 
 app = Ariadne(
