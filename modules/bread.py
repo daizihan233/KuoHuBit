@@ -1,4 +1,4 @@
-#  本项目遵守 AGPL-3.0 协议，项目地址：https://github.com/daizihan233/MiraiHanBot
+# 本项目遵守 AGPL-3.0 协议，项目地址：https://github.com/daizihan233/MiraiHanBot
 
 import math
 import random
@@ -163,3 +163,17 @@ async def setu(app: Ariadne, group: Group):
 )
 async def get_bread(app: Ariadne, group: Group, event: GroupMessage):
     await app.send_group_message(group, "啊？", quote=event.source)
+
+
+@channel.use(
+    ListenerSchema(listening_events=[GroupMessage], decorators=[MatchContent("来份括弧")])
+)
+async def get_bread(app: Ariadne, group: Group, event: GroupMessage):
+    await app.send_group_message(group, "（）", quote=event.source)
+
+
+@channel.use(
+    ListenerSchema(listening_events=[GroupMessage], decorators=[MatchContent("来份烟墨")])
+)
+async def get_bread(app: Ariadne, group: Group, event: GroupMessage):
+    await app.send_group_message(group, "😅", quote=event.source)

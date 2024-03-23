@@ -135,7 +135,25 @@ cursor.execute(
 `ids` int UNSIGNED NOT NULL COMMENT 'ID',
 `words` VARCHAR(2000) NOT NULL COMMENT '提示词',
 `status` BOOLEAN NOT NULL COMMENT '是否通过',
-`who` INT UNSIGNED NOT NULL COMMENT '谁写的'
+`who` INT UNSIGNED NOT NULL COMMENT '撰写者'
+) ENGINE = innodb DEFAULT CHARACTER SET = "utf8mb4" COLLATE = "utf8mb4_general_ci" """
+)
+cursor.execute(
+    """CREATE TABLE IF NOT EXISTS `vote` ( 
+`ids` int UNSIGNED AUTO_INCREMENT NOT NULL PRIMARY KEY COMMENT '投票ID',
+`gid` int UNSIGNED NOT NULL COMMENT '群号',
+`uid` int UNSIGNED NOT NULL COMMENT '发起者QQ号',
+`status` boolean NOT NULL COMMENT '投票状态（正在进行/已结束）',
+`result` int NOT NULL COMMENT '投票结果',
+`title` text NOT NULL COMMENT '投票标题',
+`options` longtext NOT NULL COMMENT '投票选项'
+) ENGINE = innodb DEFAULT CHARACTER SET = "utf8mb4" COLLATE = "utf8mb4_general_ci" """
+)
+cursor.execute(
+    """CREATE TABLE IF NOT EXISTS `vote_data` (
+`ids` int UNSIGNED NOT NULL COMMENT '投票ID',
+`uid` int UNSIGNED NOT NULL COMMENT 'QQ号',
+`data` longtext NOT NULL COMMENT '投票数据'
 ) ENGINE = innodb DEFAULT CHARACTER SET = "utf8mb4" COLLATE = "utf8mb4_general_ci" """
 )
 
