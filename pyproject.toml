@@ -14,7 +14,6 @@ authors = [
 ]
 dependencies = [
     "graia-ariadne[full]>=0.11.7",
-    "graia-saya==0.0.16",
     "arclet-alconna<2.0.0, >=1.8.1",
     "arclet-alconna-tools<0.8.0, >=0.7.0",
     "tarina>=0.4.2",
