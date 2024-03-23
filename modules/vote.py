@@ -7,8 +7,8 @@ from arclet.alconna.graia import alcommand
 from graia.ariadne.app import Ariadne
 from graia.ariadne.event.message import GroupMessage
 from graia.ariadne.model import Group, Member
+from graia.ariadne.util.saya import listen
 from graia.saya import Channel
-from graia.saya.builtins.broadcast import ListenerSchema
 from graia.saya.channel import ChannelMeta
 
 import botfunc
@@ -73,11 +73,7 @@ class Problem:
 
 
 @alcommand(Problem.single, private=False, send_error=True)
-@channel.use(
-    ListenerSchema(
-        listening_events=[GroupMessage]
-    )
-)
+@listen(GroupMessage)
 async def initiate_single(app: Ariadne, group: Group, member: Member, title: str, option: list, deny: list,
                           accept: list):
     options: Dict[Any, Any] = {key: 0 for key in option}
