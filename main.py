@@ -7,7 +7,6 @@ import os
 
 import pymysql
 import requests
-from arclet.alconna.graia import AlconnaBehaviour
 from creart import create
 from graia.ariadne.app import Ariadne
 from graia.ariadne.connection.config import (
@@ -23,7 +22,6 @@ import botfunc
 import cache_var
 
 saya = create(Saya)
-create(AlconnaBehaviour)
 app = Ariadne(
     connection=config(
         botfunc.get_config("qq"),
