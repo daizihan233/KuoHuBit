@@ -73,7 +73,7 @@ class Problem:
 
 
 @listen(GroupMessage)
-@dispatch(AlconnaDispatcher(Problem.single))
+@dispatch(AlconnaDispatcher(Problem.single, skip_for_unmatch=False))
 async def initiate_single(app: Ariadne, group: Group, member: Member, title: str, option: list, deny: list,
                           accept: list):
     options: Dict[Any, Any] = {key: 0 for key in option}
