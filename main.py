@@ -16,6 +16,7 @@ from graia.ariadne.connection.config import (
     config,
 )
 from graia.saya import Saya
+from graia.saya.builtins.broadcast import BroadcastBehaviour
 from loguru import logger
 from rich.progress import track
 
@@ -24,6 +25,7 @@ import cache_var
 
 saya = create(Saya)
 create(AbstractEventLoop)
+create(BroadcastBehaviour)
 from arclet.alconna.graia.saya import AlconnaBehaviour
 create(AlconnaBehaviour)
 
