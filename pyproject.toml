@@ -38,6 +38,9 @@ dependencies = [
     "g4f[all]>=0.2.1.3",
     "openai>=1.12.0",
     "tiktoken>=0.6.0",
+    "arclet-alconna-graia>=0.14.0",
+    "arclet-alconna-ariadne>=0.14.0",
+    "graiax-shortcut>=0.3.0",
 ]
 requires-python = ">=3.10,<3.13"
 license = { text = "AGPL-3.0" }
