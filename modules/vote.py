@@ -126,6 +126,6 @@ async def initiate_single(
         f"不可参加：{options['deny']}\n"
         f"标题：{main_args['title']}\n"
         f"选项：\n"
-        f"{opt_str}n"
+        f"{opt_str}"
     )
     await app.send_group_message(group, send_msg)
