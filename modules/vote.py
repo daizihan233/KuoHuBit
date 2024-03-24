@@ -106,8 +106,8 @@ async def initiate_single(
     options: Dict[Any, Any] = {key: 0 for key in main_args["option"]}
     options["deny"] = opt_args.get("deny", [])
     options["accept"] = opt_args.get("accept", [])
-    results = await botfunc.select_fetchall(
-        """INSERT INTO vote (gid, uid, type, status, result, title, options) VALUES (%s, %s, 0, false, -1, %s, %s)""",
+    results = await botfunc.select_fetchone(
+        """INSERT INTO vote (gid, uid, type, status, result, title, options) VALUES (%s, %s, 0, false, -1, %s, %s); select @@IDENTITY""",
         (group.id, member.id, main_args["title"], json.dumps(options)),
     )
     opt_str = "\n".join([f"{x[0]}.{x[1]}" for x in enumerate(options, 1)])
