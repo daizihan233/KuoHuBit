@@ -1,6 +1,6 @@
 #  本项目遵守 AGPL-3.0 协议，项目地址：https://github.com/daizihan233/MiraiHanBot
 import json
-from typing import Union, Dict, Any
+from typing import Union, Dict, Any, Match
 
 from arclet.alconna import Args, Option, Arg, CommandMeta, MultiVar, Alconna
 from arclet.alconna.graia import AlconnaDispatcher, AlconnaSchema
@@ -97,10 +97,10 @@ async def initiate_single(
         app: Ariadne,
         group: Group,
         member: Member,
-        title: str,
-        option: list,
-        deny: list,
-        accept: list,
+        title: Match[str],
+        option: Match[list],
+        deny: Match[list],
+        accept: Match[list],
 ):
     options: Dict[Any, Any] = {key: 0 for key in option}
     options["deny"] = deny
