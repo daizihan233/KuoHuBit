@@ -159,10 +159,13 @@ async def initiate_single(
     options = {
         "options": {key: 0 for key in main_args["option"]},
         "deny": opt_args.get("deny", []),
-        "accept": opt_args.get("accept", [])}
+        "accept": opt_args.get("accept", []),
+        "max": opt_args.get("max", -1),
+        "min": opt_args.get("min", 1)
+    }
 
     await botfunc.run_sql(
-        """INSERT INTO vote (gid, uid, type, status, result, title, options) VALUES (%s, %s, 0, false, -1, %s, %s);""",
+        """INSERT INTO vote (gid, uid, type, status, result, title, options) VALUES (%s, %s, 1, false, -1, %s, %s);""",
         (group.id, member.id, main_args["title"], json.dumps(options, ensure_ascii=False)),
     )
     results = await botfunc.select_fetchone(
@@ -176,6 +179,49 @@ async def initiate_single(
         f"发起者：{member.id}\n"
         f"仅可参加：{options['accept']}\n"
         f"不可参加：{options['deny']}\n"
+        f"最多可选：{'全部' if options['max'] == -1 else options['max']} 项"
+        f"最少需选：{options['min']}"
+        f"标题：{main_args['title']}\n"
+        f"选项：\n"
+        f"{opt_str}"
+    )
+    await app.send_group_message(group, send_msg)
+
+
+@channel.use(AlconnaSchema(AlconnaDispatcher(Problem.proportion, skip_for_unmatch=False)))
+@channel.use(ListenerSchema(listening_events=[GroupMessage]))
+async def initiate_single(
+        app: Ariadne,
+        group: Group,
+        member: Member,
+        result: Arparma
+):
+    logger.debug(result)
+    main_args = result.main_args
+    opt_args = result.other_args
+    options = {
+        "options": {key: 0 for key in main_args["option"]},
+        "deny": opt_args.get("deny", []),
+        "accept": opt_args.get("accept", []),
+        "sort": opt_args.get("sort", False)
+    }
+
+    await botfunc.run_sql(
+        """INSERT INTO vote (gid, uid, type, status, result, title, options) VALUES (%s, %s, 1, false, -1, %s, %s);""",
+        (group.id, member.id, main_args["title"], json.dumps(options, ensure_ascii=False)),
+    )
+    results = await botfunc.select_fetchone(
+        "SELECT MAX(ids) FROM vote"
+    )
+
+    opt_str = "\n".join([f"{x[0]}.{x[1]}" for x in enumerate(options["options"].keys(), 1)])
+    send_msg = (
+        f"⟨{results[0]}⟩ 号表决已创建！内容如下：\n"
+        f"类型：单选投票\n"
+        f"发起者：{member.id}\n"
+        f"仅可参加：{options['accept']}\n"
+        f"不可参加：{options['deny']}\n"
+        f"模式：{'排序' if options['sort'] else '比重'}"
         f"标题：{main_args['title']}\n"
         f"选项：\n"
         f"{opt_str}"
