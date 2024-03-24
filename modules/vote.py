@@ -38,36 +38,29 @@ class Problem:
     single = Alconna(
         "发起单选投票",
         title,
-        "\n",
         option,
-        "\n",
         deny,
-        "\n",
         accept,
         meta=CommandMeta(
             "发起一个单项选择投票",
             usage="传入标题和选项即可，选项前不必附带序号，参数间使用换行分割，同一参数下多个值使用空格分割",
             example="发起单选投票\n你玩原神吗？\n不玩\n玩\n原神，启动！\n--deny local 123456 789114 514191",
         ),
+        separators="\n"
     )
 
     multiple = Alconna(
         "发起多选投票",
         title,
-        "\n",
         option,
-        "\n",
         deny,
-        "\n",
         accept,
-        "\n",
         Option(
             "--max",
             Args(Arg("max", int)),
             help_text="最多可选多少项，-1 代表可全选，默认所有",
             default=-1,
         ),
-        "\n",
         Option(
             "--min",
             Args(Arg("max", int)),
@@ -79,19 +72,16 @@ class Problem:
             usage="传入标题和选项即可，选项前不必附带序号，参数间使用换行分割，同一参数下多个值使用空格分割",
             example="发起多选投票\n你玩什么游戏？\n三蹦子\n原神\n星铁\n--deny local 123456 789114 514191",
         ),
+        separators="\n"
     )
 
     proportion = Alconna(
         "发起比重投票",
         Args(Arg("max#最大比重", int)),
         title,
-        "\n",
         option,
-        "\n",
         deny,
-        "\n",
         accept,
-        "\n",
         Option(
             "--sort",
             Args(Arg("sort", bool, seps=" ")),
@@ -100,9 +90,10 @@ class Problem:
         ),
         meta=CommandMeta(
             "发起一个比重/排序投票",
-            usage="传入最大比重标题和选项即可，选项前不必附带序号，参数间使用换行分割，同一参数下多个值使用空格分割",
+            usage="传入最大比重、标题和选项即可，选项前不必附带序号，参数间使用换行分割，同一参数下多个值使用空格分割",
             example="发起比重投票\n114\n你对以下时代马戏团的人的好感度？\n马+7\n迷你世界\n原神\n--deny local 123456 789114 514191\n--sort True",
         ),
+        separators="\n"
     )
 
 
