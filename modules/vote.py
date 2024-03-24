@@ -91,8 +91,8 @@ class Problem:
     )
 
 
-@channel.use(ListenerSchema(listening_events=[GroupMessage]))
 @channel.use(AlconnaSchema(AlconnaDispatcher(Problem.single, skip_for_unmatch=False)))
+@channel.use(ListenerSchema(listening_events=[GroupMessage]))
 async def initiate_single(
         app: Ariadne,
         group: Group,
