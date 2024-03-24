@@ -203,6 +203,7 @@ async def initiate_single(
         "options": {key: 0 for key in main_args["option"]},
         "deny": opt_args.get("deny", []),
         "accept": opt_args.get("accept", []),
+        "max": main_args["max"]
         "sort": opt_args.get("sort", False)
     }
 
