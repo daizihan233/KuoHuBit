@@ -101,22 +101,23 @@ async def initiate_single(
         result: Arparma
 ):
     logger.debug(result)
-    return  # test
-    options: Dict[Any, Any] = {key: 0 for key in option}
-    options["deny"] = deny
-    options["accept"] = accept
+    main_args = result.main_args
+    opt_args = result.other_args
+    options: Dict[Any, Any] = {key: 0 for key in main_args["option"]}
+    options["deny"] = opt_args["deny"]
+    options["accept"] = opt_args["accept"]
     results = await botfunc.select_fetchall(
         """INSERT INTO vote (gid, uid, type, status, result, title, options) VALUES (%s, %s, 0, false, -1, %s, %s)""",
-        (group.id, member.id, title, json.dumps(options)),
+        (group.id, member.id, main_args["title"], json.dumps(options)),
     )
     opt_str = "\n".join([f"{x[0]}.{x[1]}" for x in enumerate(options, 1)])
     send_msg = (
         f"⟨{results[0]}⟩ 号表决已创建！内容如下：\n"
         f"类型：单选投票\n"
         f"发起者：{member.id}\n"
-        f"仅可参加：{accept}\n"
-        f"不可参加：{deny}\n"
-        f"标题：{title}\n"
+        f"仅可参加：{options['accept']}\n"
+        f"不可参加：{options['deny']}\n"
+        f"标题：{main_args['title']}\n"
         f"选项：\n"
         f"{opt_str}n"
     )
