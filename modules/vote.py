@@ -1,6 +1,6 @@
 #  本项目遵守 AGPL-3.0 协议，项目地址：https://github.com/daizihan233/MiraiHanBot
 import json
-from typing import Union, Dict, Any
+from typing import Union
 
 from arclet.alconna import Args, Option, Arg, CommandMeta, MultiVar, Alconna, Arparma
 from arclet.alconna.graia import AlconnaDispatcher, AlconnaSchema
@@ -103,7 +103,8 @@ async def initiate_single(
     logger.debug(result)
     main_args = result.main_args
     opt_args = result.other_args
-    options: Dict[Any, Any] = {key: 0 for key in main_args["option"]}
+    options = {}
+    options["options"] = {key: 0 for key in main_args["option"]}
     options["deny"] = opt_args.get("deny", [])
     options["accept"] = opt_args.get("accept", [])
 
@@ -115,7 +116,7 @@ async def initiate_single(
         "SELECT MAX(ids) FROM vote"
     )
 
-    opt_str = "\n".join([f"{x[0]}.{x[1]}" for x in enumerate(options, 1)])
+    opt_str = "\n".join([f"{x[0]}.{x[1]}" for x in enumerate(options["options"].keys(), 1)])
     send_msg = (
         f"⟨{results[0]}⟩ 号表决已创建！内容如下：\n"
         f"类型：单选投票\n"
