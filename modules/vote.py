@@ -91,7 +91,7 @@ class Problem:
     )
 
 
-@channel.use(AlconnaSchema(AlconnaDispatcher(Problem.single, skip_for_unmatch=False)))
+@channel.use(AlconnaSchema(AlconnaDispatcher(Problem.single, send_flag="reply", skip_for_unmatch=False)))
 @channel.use(ListenerSchema(listening_events=[GroupMessage]))
 async def initiate_single(
         app: Ariadne,
