@@ -103,14 +103,15 @@ async def initiate_single(
     logger.debug(result)
     main_args = result.main_args
     opt_args = result.other_args
-    options = {}
-    options["options"] = {key: 0 for key in main_args["option"]}
-    options["deny"] = opt_args.get("deny", [])
-    options["accept"] = opt_args.get("accept", [])
+    options = {
+        "options": {key: 0 for key in main_args["option"]},
+        "deny": opt_args.get("deny", []),
+        "accept": opt_args.get("accept", [])}
+
 
     await botfunc.run_sql(
         """INSERT INTO vote (gid, uid, type, status, result, title, options) VALUES (%s, %s, 0, false, -1, %s, %s);""",
-        (group.id, member.id, main_args["title"], json.dumps(options)),
+        (group.id, member.id, main_args["title"], json.dumps(options, ensure_ascii=False)),
     )
     results = await botfunc.select_fetchone(
         "SELECT MAX(ids) FROM vote"
