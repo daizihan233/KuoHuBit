@@ -85,7 +85,7 @@ class Problem:
             default=False,
         ),
         meta=CommandMeta(
-            "发起一个单项选择投票",
+            "发起一个比重/排序投票",
             usage="传入最大比重标题和选项即可，选项前不必附带序号，参数间使用换行分割，同一参数下多个值使用空格分割",
             example="发起比重投票\n114\n你对以下时代马戏团的人的好感度？\n马+7\n迷你世界\n原神\n--deny local 123456 789114 514191\n--sort True",
         ),
