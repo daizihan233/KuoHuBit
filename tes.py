@@ -1,7 +1,6 @@
 from typing import Union
 
 from arclet.alconna import Args, Option, Arg, CommandMeta, MultiVar, Alconna
-from arclet.alconna.tools import MarkdownTextFormatter
 
 
 class Problem:
@@ -56,4 +55,7 @@ class Problem:
 
 
 Problem.single.parse("发起单选投票 --help")
+Problem.single.parse("发起单选投票")
+Problem.single.parse("发起单选投")
+
 print(Problem.single.parse("发起单选投票\n你玩原神吗？\n不玩\n玩\n原神，启动！\n--deny local 123456 789114 514191"))
