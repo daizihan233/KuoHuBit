@@ -222,6 +222,7 @@ async def initiate_single(
         f"仅可参加：{options['accept']}\n"
         f"不可参加：{options['deny']}\n"
         f"模式：{'排序' if options['sort'] else '比重'}\n"
+        f"可分配：{options['max']}\n"
         f"标题：{main_args['title']}\n"
         f"选项：\n"
         f"{opt_str}"
