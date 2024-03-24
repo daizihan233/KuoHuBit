@@ -106,10 +106,15 @@ async def initiate_single(
     options: Dict[Any, Any] = {key: 0 for key in main_args["option"]}
     options["deny"] = opt_args.get("deny", [])
     options["accept"] = opt_args.get("accept", [])
-    results = await botfunc.select_fetchone(
-        """INSERT INTO vote (gid, uid, type, status, result, title, options) VALUES (%s, %s, 0, false, -1, %s, %s); select @@IDENTITY""",
+
+    await botfunc.run_sql(
+        """INSERT INTO vote (gid, uid, type, status, result, title, options) VALUES (%s, %s, 0, false, -1, %s, %s);""",
         (group.id, member.id, main_args["title"], json.dumps(options)),
     )
+    results = await botfunc.select_fetchone(
+        "SELECT MAX(ids) FROM vote"
+    )
+
     opt_str = "\n".join([f"{x[0]}.{x[1]}" for x in enumerate(options, 1)])
     send_msg = (
         f"⟨{results[0]}⟩ 号表决已创建！内容如下：\n"
