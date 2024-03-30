@@ -10,6 +10,7 @@ from graia.broadcast.exceptions import ExecutionStop
 
 import botfunc
 
+NO_AUTHORITY = "你没有指定权限，无法执行此指令\n"
 
 def check_authority_bot_op(prompt: bool = True):
     """
@@ -26,7 +27,7 @@ def check_authority_bot_op(prompt: bool = True):
                     MessageChain(
                         [
                             At(member.id),
-                            Plain("你没有指定权限，无法执行此指令\n"),
+                            Plain(NO_AUTHORITY),
                             Plain("要求：【是】机器人的op"),
                         ]
                     ),
@@ -50,7 +51,7 @@ def check_authority_group_op(prompt: bool = True):
                     MessageChain(
                         [
                             At(member.id),
-                            Plain("你没有指定权限，无法执行此指令\n"),
+                            Plain(NO_AUTHORITY),
                             Plain("要求：【是】群管理员 / 【是】群主"),
                         ]
                     ),
@@ -78,7 +79,7 @@ def check_authority_op(prompt: bool = True):
                     MessageChain(
                         [
                             At(member.id),
-                            Plain("你没有指定权限，无法执行此指令\n"),
+                            Plain(NO_AUTHORITY),
                             Plain("要求：【是】群管理员 / 【是】群主 / 【是】机器人op"),
                         ]
                     ),
@@ -131,7 +132,7 @@ def check_authority_black(prompt: bool = True):
                     MessageChain(
                         [
                             At(member.id),
-                            Plain("你没有指定权限，无法执行此指令\n"),
+                            Plain(NO_AUTHORITY),
                             Plain("最低要求：【是】黑名单内的人"),
                         ]
                     ),
@@ -156,7 +157,7 @@ def check_authority_not_black(prompt: bool = True):
                     MessageChain(
                         [
                             At(member.id),
-                            Plain("你没有指定权限，无法执行此指令\n"),
+                            Plain(NO_AUTHORITY),
                             Plain("最低要求：【不是】黑名单内的人"),
                         ]
                     ),

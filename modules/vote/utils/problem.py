@@ -7,6 +7,7 @@ from arclet.alconna import Args, Option, Arg, CommandMeta, MultiVar, Alconna
 class Problem:
     title = Args(Arg("title#标题", str))
     option = Args(Arg("option#选项", MultiVar(str)))
+    GENERAL_DESCRIPTION = "传入标题和选项即可，选项前不必附带序号，参数间使用换行分割，同一参数下多个值使用空格分割"
     deny = Option(
         "--deny",
         Args(Arg("deny", MultiVar(Union[int, str]), seps=" ")),
@@ -27,7 +28,7 @@ class Problem:
         accept,
         meta=CommandMeta(
             "发起一个单项选择投票",
-            usage="传入标题和选项即可，选项前不必附带序号，参数间使用换行分割，同一参数下多个值使用空格分割",
+            usage=GENERAL_DESCRIPTION,
             example="发起单选投票\n"
                     "你玩原神吗？\n"
                     "不玩\n"
@@ -58,7 +59,7 @@ class Problem:
         ),
         meta=CommandMeta(
             "发起一个多项选择投票",
-            usage="传入标题和选项即可，选项前不必附带序号，参数间使用换行分割，同一参数下多个值使用空格分割",
+            usage=GENERAL_DESCRIPTION,
             example="发起多选投票\n"
                     "你玩什么游戏？\n"
                     "三蹦子\n"
@@ -116,7 +117,7 @@ class Problem:
         ),
         meta=CommandMeta(
             "发起一个评分投票",
-            usage="传入标题和选项即可，选项前不必附带序号，参数间使用换行分割，同一参数下多个值使用空格分割",
+            usage=GENERAL_DESCRIPTION,
             example="发起比重投票\n"
                     "114\n"
                     "你对以下时代马戏团的人的好感度？\n"
@@ -139,7 +140,7 @@ class Problem:
         accept,
         meta=CommandMeta(
             "发起一个排序投票",
-            usage="传入标题和选项即可，选项前不必附带序号，参数间使用换行分割，同一参数下多个值使用空格分割",
+            usage=GENERAL_DESCRIPTION,
             example="发起比重投票\n"
                     "114\n"
                     "你对以下时代马戏团的人的好感度？\n"
