@@ -24,24 +24,21 @@ channel.meta["author"] = "KuoHu"
         decorators=[DetectPrefix("禁言 "), depen.check_authority_op()],
     )
 )
-async def fish(app: Ariadne, group: Group, message: MessageChain = DetectPrefix("禁言 ")):
+async def mute(app: Ariadne, group: Group, message: MessageChain = DetectPrefix("禁言 ")):
     msg = message.include(At, Plain)
     time = None
     result = ""
     for m in msg:
         if isinstance(m, At):
-            if time is not None:
-                try:
+            try:
+                if time is not None:
                     await app.mute_member(group, m.target, time)
                     result += f"{m.target} | 禁言 {time / 60} 分钟 | 成功\n"
-                except PermissionError:
-                    result += f"{m.target} | 禁言 {time / 60} 分钟 | 错误：【无权限】\n"
-            else:
-                try:
+                else:
                     await app.mute_member(group, m.target, 60)
                     result += f"{m.target} | 禁言 1 分钟 | 警告：【语法错误】\n"
-                except PermissionError:
-                    result += f"{m.target} | 禁言 1 分钟 | 错误：【无权限】\n"
+            except PermissionError:
+                result += f"{m.target} | 禁言 1 分钟 | 错误：【无权限】\n"
         else:
             try:
                 time = int(str(m).lstrip(" ").rstrip(" ")) * 60
@@ -56,7 +53,7 @@ async def fish(app: Ariadne, group: Group, message: MessageChain = DetectPrefix(
         decorators=[DetectPrefix("踢出 "), depen.check_authority_op()],
     )
 )
-async def fish(app: Ariadne, group: Group, message: MessageChain = DetectPrefix("踢出 ")):
+async def kick(app: Ariadne, group: Group, message: MessageChain = DetectPrefix("踢出 ")):
     msg = message.include(At)
     m: At
     result = ""

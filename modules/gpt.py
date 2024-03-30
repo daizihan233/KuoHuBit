@@ -56,7 +56,7 @@ client = AsyncOpenAI(
     api_key=botfunc.get_cloud_config("gptkey"),
     base_url="https://api.aigc2d.com/v1"
 )
-
+NOT_GPT_REPLY = "本消息非 GPT 回复"
 
 class MessageNode:
     """
@@ -120,7 +120,7 @@ async def req(c: str, name: str, ids: int, message: MessageChain, event: Message
     if event.quote is not None and messages.get(event.quote.id, None) is not None:  # 短路
         node = MessageNode(message, ids, messages[event.quote.id])
         if node.root.uid != botfunc.get_config("qq"):
-            return "？（请回复一条由机器人发出的消息）", "本消息非 GPT 回复"
+            return "？（请回复一条由机器人发出的消息）", NOT_GPT_REPLY
     else:
         node = MessageNode(message, ids, None)
     x = []
@@ -193,7 +193,7 @@ async def gpt(
         quote=event.source,
     )
 
-    if warn != "本消息非 GPT 回复":
+    if warn != NOT_GPT_REPLY:
         messages[m.source.id] = MessageNode(response, botfunc.get_config("qq"), messages[event.id])
         messages[event.id].next_node = messages[m.source.id]
 
@@ -220,7 +220,7 @@ async def gpt_f(
         ),
         quote=event.source,
     )
-    if warn != "本消息非 GPT 回复":
+    if warn != NOT_GPT_REPLY:
         messages[m.source.id] = MessageNode(response, botfunc.get_config("qq"), messages[event.id])
         messages[event.id].next_node = messages[m.source.id]
 

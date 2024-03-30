@@ -33,6 +33,7 @@ channel.meta["description"] = "防止群被炸"
 channel.meta["author"] = "KuoHu"
 
 opc = opencc.OpenCC("t2s")
+NO_AUTHORITY = "无权操作！"
 dyn_config = "dynamic_config.yaml"
 """
 ./jieba_words.txt 是什么？
@@ -151,7 +152,7 @@ async def f(app: Ariadne, group: Group, event: GroupMessage):
                 try:
                     await app.recall_message(event)
                 except PermissionError:
-                    logger.error("无权操作！")
+                    logger.error(NO_AUTHORITY)
                 else:
                     await app.send_message(
                         event.sender.group,
@@ -189,7 +190,7 @@ async def f(app: Ariadne, group: Group, event: GroupMessage):
                             try:
                                 await app.recall_message(event)
                             except PermissionError:
-                                logger.error("无权操作！")
+                                logger.error(NO_AUTHORITY)
                             else:
                                 await app.send_message(
                                     event.sender.group,
@@ -208,7 +209,7 @@ async def f(app: Ariadne, group: Group, event: GroupMessage):
                         try:
                             await app.recall_message(event)
                         except PermissionError:
-                            logger.error("无权操作！")
+                            logger.error(NO_AUTHORITY)
                         else:
                             await app.send_message(
                                 event.sender.group,
@@ -233,14 +234,15 @@ async def f(app: Ariadne, group: Group, event: GroupMessage):
                 try:
                     await app.recall_message(event)
                 except PermissionError:
-                    logger.error("无权操作！")
+                    logger.error(NO_AUTHORITY)
                 else:
                     await app.send_message(
                         event.sender.group,
                         MessageChain(
                             [
                                 At(event.sender.id),
-                                "你的消息涉及敏感内容，为保护群聊消息已被撤回\n" "【数据来源：腾讯云文本内容安全】",
+                                "你的消息涉及敏感内容，为保护群聊消息已被撤回\n"
+                                "【数据来源：腾讯云文本内容安全】",
                             ]
                         ),
                     )
