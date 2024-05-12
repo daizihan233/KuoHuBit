@@ -41,8 +41,8 @@
         - [emerald-am9/lightbit](https://gitee.com/emerald-am9/lightbit)
     - [daizihan233/KuoHuShit](https://github.com/daizihan233/KuoHuShit)
 - ltzXiaoYanMo
-  - [ltzXiaoYanMo/YanMoBit](https://github.com/ltzXiaoYanMo/YanMoBit)
-  - [ltzXiaoYanMo/YanBot-infp](https://github.com/ltzXiaoYanMo/YanBot-infp)
+  - ~~[ltzXiaoYanMo/YanMoBit](https://github.com/ltzXiaoYanMo/YanMoBit)~~
+  - ~~[ltzXiaoYanMo/YanBot-infp](https://github.com/ltzXiaoYanMo/YanBot-infp)~~
 
 # 赞助
 
