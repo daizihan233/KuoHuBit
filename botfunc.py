@@ -64,7 +64,7 @@ violation_text_review: true  # 是否使用腾讯云内容安全 API 对[违规]
         'config.yaml 文件不存在，已生成默认配置文件，请修改后重新运行。'
     )
     sys.exit(1)
-# config_yaml = yaml.safe_load(open("config.yaml", "r", encoding="UTF-8"))
+
 try:
     cloud_config_json = json.load(open("cloud.json", "r", encoding="UTF-8"))
 except FileNotFoundError:
