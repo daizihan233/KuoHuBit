@@ -33,8 +33,8 @@ async def repeat(
             td = str(r.hget(hash_name, f"{group.id}"))[2:-1]
             tc = int(td.split(",")[0])
             td = str(td.split(",")[1])
-            if tc == 1:
-                if message.as_persistent_string() == urllib.parse.unquote(td):
+            if message.as_persistent_string() == urllib.parse.unquote(td):
+                if tc == 1:
                     m = await app.send_group_message(
                         group,
                         MessageChain(
@@ -49,13 +49,13 @@ async def repeat(
                         f"{group.id}",
                         f"{tc + 1},{urllib.parse.quote(message.as_persistent_string())}",
                     )
-                else:
-                    r.hset(
-                        hash_name,
-                        f"{group.id}",
-                        f"1,{urllib.parse.quote(message.as_persistent_string())}",
-                    )
-                    botfunc.r.hset("repeat_source", f"{group.id}", source.id)
+            else:
+                r.hset(
+                    hash_name,
+                    f"{group.id}",
+                    f"1,{urllib.parse.quote(message.as_persistent_string())}",
+                )
+                botfunc.r.hset("repeat_source", f"{group.id}", source.id)
         else:
             r.hset(
                 hash_name,
