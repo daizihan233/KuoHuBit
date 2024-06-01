@@ -29,15 +29,15 @@ hash_name = "bot_repeat"
 async def repeat(
         app: Ariadne, group: Group, message: MessageChain, source: Source
 ):
-    if group.id not in botfunc.get_dyn_config("mute"):
+    if group.id not in botfunc.get_dyn_config("mute") and message.as_persistent_string() != "<! 不支持的消息类型 !>":
         logger.debug(f"hexists {hash_name} {group.id}")
         if r.hexists(hash_name, f"{group.id}"):
             td = r.hget(hash_name, f"{group.id}")
             logger.debug(f"hget {hash_name} {group.id}")
             td = str(td)
             logger.debug(
-                f"{message.as_persistent_string()} == {urllib.parse.unquote(td)} ? {message.as_persistent_string() == urllib.parse.unquote(td)}")
-            if message.as_persistent_string() == urllib.parse.unquote(td):
+                f"{message.as_persistent_string()} == {str(urllib.parse.unquote(td))} ? {message.as_persistent_string() == str(urllib.parse.unquote(td))}")
+            if message.as_persistent_string() == str(urllib.parse.unquote(td)):
                 m = await app.send_group_message(
                     group,
                     MessageChain(
