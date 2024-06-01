@@ -35,6 +35,8 @@ async def repeat(
             td = r.hget(hash_name, f"{group.id}")
             logger.debug(f"hget {hash_name} {group.id}")
             td = str(td)
+            logger.debug(
+                f"{message.as_persistent_string()} == {urllib.parse.unquote(td)} ? {message.as_persistent_string() == urllib.parse.unquote(td)}")
             if message.as_persistent_string() == urllib.parse.unquote(td):
                 m = await app.send_group_message(
                     group,
