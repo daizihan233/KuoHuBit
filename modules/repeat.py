@@ -36,8 +36,8 @@ async def repeat(
             logger.debug(f"hget {hash_name} {group.id}")
             td = str(td)
             logger.debug(
-                f"{message.as_persistent_string()} == {str(urllib.parse.unquote(td))} ? {message.as_persistent_string() == str(urllib.parse.unquote(td))}")
-            if message.as_persistent_string() == str(urllib.parse.unquote(td)):
+                f"{message.as_persistent_string()} == {urllib.parse.unquote(td)[2:-1]} ? {message.as_persistent_string() == urllib.parse.unquote(td)[2:-1]}")
+            if message.as_persistent_string() == urllib.parse.unquote(td)[2:-1]:
                 m = await app.send_group_message(
                     group,
                     MessageChain(
