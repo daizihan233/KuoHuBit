@@ -11,6 +11,7 @@ from graia.ariadne.model import Group
 from graia.saya import Channel
 from graia.saya.builtins.broadcast.schema import ListenerSchema
 from graia.saya.channel import ChannelMeta
+from loguru import logger
 
 import botfunc
 from botfunc import r
@@ -29,26 +30,33 @@ async def repeat(
         app: Ariadne, group: Group, message: MessageChain, source: Source
 ):
     if group.id not in botfunc.get_dyn_config("mute"):
+        logger.debug(f"hexists {hash_name} {group.id}")
         if r.hexists(hash_name, f"{group.id}"):
             td = r.hget(hash_name, f"{group.id}")
-            td = str(td).split(",")
-            if message.as_persistent_string() == urllib.parse.unquote(td[1]):
+            logger.debug(f"hget {hash_name} {group.id}")
+            td = str(td)
+            if message.as_persistent_string() == urllib.parse.unquote(td):
                 m = await app.send_group_message(
                     group,
                     MessageChain(
-                        urllib.parse.unquote(td[1])
+                        urllib.parse.unquote(td)
                     )
                 )
                 s = botfunc.r.hget("repeat_source", f"{group.id}")
                 botfunc.r.hset("repeat_source", s, m.source)
                 botfunc.r.hset("repeat_source", source.id, m.source)
+                logger.debug(f"hget repeat_source {group.id}")
+                logger.debug(f"hset repeat_source {s} {m.source}")
+                logger.debug(f"hset repeat_source {source.id} {m.source}")
         else:
             r.hset(
                 hash_name,
                 f"{group.id}",
-                f"1,{urllib.parse.quote(message.as_persistent_string())}",
+                f"{urllib.parse.quote(message.as_persistent_string())}",
             )
             botfunc.r.hset("repeat_source", f"{group.id}", source.id)
+            logger.debug(f"hset {hash_name} {group.id} {urllib.parse.quote(message.as_persistent_string())}")
+            logger.debug(f"hset repeat_source {group.id} {source.id}")
 
 
 @channel.use(ListenerSchema(listening_events=[GroupRecallEvent]))
