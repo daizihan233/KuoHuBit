@@ -30,11 +30,11 @@ async def repeat(
 ):
     if group.id not in botfunc.get_dyn_config("mute") and message.as_persistent_string() != "<! 不支持的消息类型 !>":
         if r.hexists(hash_name, f"{group.id}"):
-            td = str(r.hget(hash_name, f"{group.id}"))
+            td = str(r.hget(hash_name, f"{group.id}"))[2:-1]
             tc = int(td.split(",")[0])
             td = str(td.split(",")[1])
             if tc == 1:
-                if message.as_persistent_string() == urllib.parse.unquote(td)[2:-1]:
+                if message.as_persistent_string() == urllib.parse.unquote(td):
                     m = await app.send_group_message(
                         group,
                         MessageChain(
