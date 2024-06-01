@@ -48,6 +48,15 @@ async def repeat(
                 logger.debug(f"hget repeat_source {group.id}")
                 logger.debug(f"hset repeat_source {s} {m.source}")
                 logger.debug(f"hset repeat_source {source.id} {m.source}")
+            else:
+                r.hset(
+                    hash_name,
+                    f"{group.id}",
+                    f"{urllib.parse.quote(message.as_persistent_string())}",
+                )
+                botfunc.r.hset("repeat_source", f"{group.id}", source.id)
+                logger.debug(f"hset {hash_name} {group.id} {urllib.parse.quote(message.as_persistent_string())}")
+                logger.debug(f"hset repeat_source {group.id} {source.id}")
         else:
             r.hset(
                 hash_name,
