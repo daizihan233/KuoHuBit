@@ -227,7 +227,7 @@ with saya.module_context():
             )
             if "__pycache__" in module:
                 continue
-            if module[1] == "NO_USE":
+            if module[1] == "NO_USE" or len(module) > 3:
                 continue
             module = ".".join(module)[:-3]
             logger.info(f"{module} 将被载入")
