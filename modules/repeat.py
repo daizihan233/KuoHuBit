@@ -36,7 +36,7 @@ async def repeat(
                 m = await app.send_group_message(
                     group,
                     MessageChain(
-                        MessageChain(urllib.parse.unquote(td[1]))
+                        urllib.parse.unquote(td[1])
                     )
                 )
                 s = botfunc.r.hget("repeat_source", f"{group.id}")
