@@ -37,7 +37,7 @@ async def repeat(
                 if tc == 1:
                     m = await app.send_group_message(
                         group,
-                        MessageChain(
+                        MessageChain.from_persistent_string(
                             urllib.parse.unquote(td)
                         )
                     )
