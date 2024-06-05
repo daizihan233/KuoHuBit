@@ -1,10 +1,7 @@
 import datetime
 import decimal
 import random
-import traceback
 
-import g4f
-import openai
 from graia.amnesia.message import MessageChain
 from graia.ariadne.app import Ariadne
 from graia.ariadne.event.message import GroupMessage, FriendMessage, MessageEvent
@@ -129,17 +126,9 @@ async def req(c: str, name: str, ids: int, message: MessageChain, event: Message
         prompt_cost = calculate_cost_by_tokens(prompt_token, MODULE, "input")
         completion_cost = calculate_cost_by_tokens(completion_token, MODULE, "output")
         warn = (f"本次共追溯 {len(msg) - 2} 条历史消息，消耗 {prompt_token + completion_token} token！"
-                f"（约为 {round((prompt_cost + completion_cost) * decimal.Decimal('1.2') * 7, 5)} 元）")
-    except openai.APIError:
-        print(traceback.format_exc())
-        logger.warning("openai.APIError，已回退至 You.com")
-        response = await g4f.ChatCompletion.create_async(
-            model=g4f.models.gpt_4,
-            # 群号与QQ号相等的概率太低，没必要区分
-            messages=msg,
-            provider=g4f.Provider.You,
-        )
-        warn = "openai.APIError：已回退至 You.com"
+                f"（约为 {(prompt_cost + completion_cost) * decimal.Decimal('1.2') * 7} 元）")
+    except Exception as err:
+        return f"ERR: {err}", "出现错误！"
     if event.quote is not None and messages.get(event.quote.id, None) is not None:
         messages[event.quote.id].next_node = node
     messages[event.id] = node
