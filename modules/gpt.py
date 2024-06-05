@@ -17,7 +17,7 @@ from graia.saya.builtins.broadcast import ListenerSchema
 from graia.saya.channel import ChannelMeta
 from loguru import logger
 from openai import AsyncOpenAI
-from tokencost import calculate_prompt_cost, calculate_completion_cost, count_message_tokens, count_string_tokens
+from tokencost import calculate_prompt_cost, calculate_completion_cost
 
 import botfunc
 import cache_var
@@ -125,11 +125,9 @@ async def req(c: str, name: str, ids: int, message: MessageChain, event: Message
         response = response.choices[0].message.content
         msg.append({"role": "assistant", "content": response})
         prompt_cost = calculate_prompt_cost(msg, MODULE)
-        prompt_token = count_message_tokens(msg, model=MODULE)
         completion_cost = calculate_completion_cost(response, MODULE)
-        completion_token = count_string_tokens(response, model=MODULE)
-        warn = (f"本次共追溯 {len(msg) - 2} 条历史消息，消耗 {prompt_token + completion_token} token！（约为 "
-                f"{round(float((prompt_cost + completion_cost) * decimal.Decimal('1.2') * 7), 5)} 元）")
+        warn = (f"本次共追溯 {len(msg) - 2} 条历史消息，约花费为 "
+                f"{round(float((prompt_cost + completion_cost) * decimal.Decimal('1.2') * 7), 5)} 元")
     except openai.APIError:
         print(traceback.format_exc())
         logger.warning("openai.APIError，已回退至 You.com")
