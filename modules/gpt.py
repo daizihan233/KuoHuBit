@@ -1,10 +1,10 @@
 import datetime
+import decimal
 import random
 import traceback
 
 import g4f
 import openai
-import tiktoken
 from graia.amnesia.message import MessageChain
 from graia.ariadne.app import Ariadne
 from graia.ariadne.event.message import GroupMessage, FriendMessage, MessageEvent
@@ -17,6 +17,7 @@ from graia.saya.builtins.broadcast import ListenerSchema
 from graia.saya.channel import ChannelMeta
 from loguru import logger
 from openai import AsyncOpenAI
+from tokencost import calculate_prompt_cost, calculate_completion_cost, count_message_tokens, count_string_tokens
 
 import botfunc
 import cache_var
@@ -46,7 +47,7 @@ tips = [  # 开发者注
     "当你无法得到回复除了GPT还在思考，还可能是 Failed to send message, your account may be blocked.",
     "如果GPT回复了「抱歉，我无法回答这个问题。」不是Bug，你踏马踩红线辣（",
     "这个地方很重要，请不要忽视“开发者注”",
-    "本模块使用 https://www.aigc2d.com/ 作为 ChatGPT 的 API",
+    "本模块使用 https://www.aigc2d.com/ 作为 GPT 的 API",
     "你知道吗？这个功能使用的是付费服务",
     "本项目从不盈利",
     "赞助这个项目 https://afdian.net/a/KuoHu",
@@ -57,6 +58,7 @@ client = AsyncOpenAI(
     base_url="https://api.aigc2d.com/v1"
 )
 NOT_GPT_REPLY = "本消息非 GPT 回复"
+MODULE = "claude-3-opus-20240229"
 
 class MessageNode:
     """
@@ -79,39 +81,6 @@ class MessageNode:
             raise StopIteration
         self.index = self.index.root
         return self.index
-
-
-def num_tokens_from_messages(message, model="gpt-3.5-turbo"):
-    """Returns the number of tokens used by a list of messages."""
-    try:
-        encoding = tiktoken.encoding_for_model(model)
-    except KeyError:
-        print("Warning: model not found. Using cl100k_base encoding.")
-        encoding = tiktoken.get_encoding("cl100k_base")
-    if model == "gpt-3.5-turbo":
-        print("Warning: gpt-3.5-turbo may change over time. Returning num tokens assuming gpt-3.5-turbo-0301.")
-        return num_tokens_from_messages(message, model="gpt-3.5-turbo-0301")
-    elif model == "gpt-4":
-        print("Warning: gpt-4 may change over time. Returning num tokens assuming gpt-4-0314.")
-        return num_tokens_from_messages(message, model="gpt-4-0314")
-    elif model == "gpt-3.5-turbo-0301":
-        tokens_per_message = 4  # every message follows <|start|>{role/name}\n{content}<|end|>\n
-        tokens_per_name = -1  # if there's a name, the role is omitted
-    elif model == "gpt-4-0314":
-        tokens_per_message = 3
-        tokens_per_name = 1
-    else:
-        raise NotImplementedError(
-            f"""num_tokens_from_messages() is not implemented for model {model}. See https://github.com/openai/openai-python/blob/main/chatml.md for information on how messages are converted to tokens.""")
-    num_tokens = 0
-    for message in message:
-        num_tokens += tokens_per_message
-        for key, value in message.items():
-            num_tokens += len(encoding.encode(value))
-            if key == "name":
-                num_tokens += tokens_per_name
-    num_tokens += 3  # every reply is primed with <|start|>assistant<|message|>
-    return num_tokens
 
 
 async def req(c: str, name: str, ids: int, message: MessageChain, event: MessageEvent) -> tuple:
@@ -150,13 +119,16 @@ async def req(c: str, name: str, ids: int, message: MessageChain, event: Message
     logger.debug(msg)
     try:
         response = await client.chat.completions.create(
-            model="gpt-3.5-turbo",
+            model=MODULE,
             messages=msg
         )
         response = response.choices[0].message.content
         msg.append({"role": "assistant", "content": response})
-        token = num_tokens_from_messages(msg, "gpt-3.5-turbo")
-        warn = f"本次共追溯 {len(msg) - 2} 条历史消息，消耗 {token} token！（约为 {round(token / 167 * 0.0021, 5)} 元）"
+        prompt_cost = calculate_prompt_cost(msg, MODULE)
+        prompt_token = count_message_tokens(msg, model=MODULE)
+        completion_cost = calculate_completion_cost(response, MODULE)
+        completion_token = count_string_tokens(response, model=MODULE)
+        warn = f"本次共追溯 {len(msg) - 2} 条历史消息，消耗 {prompt_token + completion_token} token！（约为 {round((prompt_cost + completion_cost) * decimal.Decimal('1.2'), 5)} 元）"
     except openai.APIError:
         print(traceback.format_exc())
         logger.warning("openai.APIError，已回退至 You.com")
@@ -188,7 +160,8 @@ async def gpt(
     m = await app.send_group_message(
         target=group,
         message=MessageChain(
-            [Plain("\n"), Plain(response), Plain(f"\n\n\n开发者注：{random.choice(tips)}\nWARN: {warn}")]
+            [Plain("\n"), Plain(response),
+             Plain(f"\n\n\n---\n开发者注：{random.choice(tips)}\nWARN: {warn}\n使用模型：{MODULE}")]
         ),
         quote=event.source,
     )
@@ -216,7 +189,8 @@ async def gpt_f(
     m = await app.send_friend_message(
         target=friend,
         message=MessageChain(
-            [Plain("\n"), Plain(response), Plain(f"\n\n\n开发者注：{random.choice(tips)}\nWARN: {warn}")]
+            [Plain("\n"), Plain(response),
+             Plain(f"\n\n\n---\n开发者注：{random.choice(tips)}\nWARN: {warn}\n使用模型：{MODULE}")]
         ),
         quote=event.source,
     )
