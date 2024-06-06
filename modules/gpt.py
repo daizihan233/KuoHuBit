@@ -127,7 +127,8 @@ async def req(c: str, name: str, ids: int, message: MessageChain, event: Message
         prompt_cost = calculate_cost_by_tokens(prompt_token, MODULE, "input")
         completion_cost = calculate_cost_by_tokens(completion_token, MODULE, "output")
         warn = (f"本次共追溯 {len(msg) - 2} 条历史消息，消耗 {prompt_token + completion_token} token！"
-                f"（约为 {(prompt_cost + completion_cost) * decimal.Decimal('1.2') * 7} 元）")
+                f"（约为 {(prompt_cost + completion_cost) * decimal.Decimal('1.2') * 7} 元）"
+                f"使用模型：{MODULE}")
     except Exception as err:
         response = await client.chat.completions.create(
             model=SECOND_MODULE,
