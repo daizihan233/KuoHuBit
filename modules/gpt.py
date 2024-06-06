@@ -56,6 +56,7 @@ client = AsyncOpenAI(
 )
 NOT_GPT_REPLY = "本消息非 GPT 回复"
 MODULE = "claude-3-opus-20240229"
+SECOND_MODULE = "gpt-4"
 
 class MessageNode:
     """
@@ -128,7 +129,20 @@ async def req(c: str, name: str, ids: int, message: MessageChain, event: Message
         warn = (f"本次共追溯 {len(msg) - 2} 条历史消息，消耗 {prompt_token + completion_token} token！"
                 f"（约为 {(prompt_cost + completion_cost) * decimal.Decimal('1.2') * 7} 元）")
     except Exception as err:
-        return f"ERR: {err}", "出现错误！"
+        response = await client.chat.completions.create(
+            model=SECOND_MODULE,
+            messages=msg
+        )
+        prompt_token = response.usage.prompt_tokens
+        completion_token = response.usage.completion_tokens
+        response = response.choices[0].message.content
+        msg.append({"role": "assistant", "content": response})
+        prompt_cost = calculate_cost_by_tokens(prompt_token, SECOND_MODULE, "input")
+        completion_cost = calculate_cost_by_tokens(completion_token, SECOND_MODULE, "output")
+        warn = (f"本次共追溯 {len(msg) - 2} 条历史消息，消耗 {prompt_token + completion_token} token！"
+                f"（约为 {(prompt_cost + completion_cost) * decimal.Decimal('1.2') * 7} 元）\n"
+                f"使用模型：{SECOND_MODULE}\n"
+                f"因为 {MODULE} 模型报错：{err}")
     if event.quote is not None and messages.get(event.quote.id, None) is not None:
         messages[event.quote.id].next_node = node
     messages[event.id] = node
@@ -151,7 +165,7 @@ async def gpt(
         target=group,
         message=MessageChain(
             [Plain("\n"), Plain(response),
-             Plain(f"\n\n\n---\n开发者注：{random.choice(tips)}\nWARN: {warn}\n使用模型：{MODULE}")]
+             Plain(f"\n\n\n---\n开发者注：{random.choice(tips)}\nWARN: {warn}")]
         ),
         quote=event.source,
     )
@@ -180,7 +194,7 @@ async def gpt_f(
         target=friend,
         message=MessageChain(
             [Plain("\n"), Plain(response),
-             Plain(f"\n\n\n---\n开发者注：{random.choice(tips)}\nWARN: {warn}\n使用模型：{MODULE}")]
+             Plain(f"\n\n\n---\n开发者注：{random.choice(tips)}\nWARN: {warn}")]
         ),
         quote=event.source,
     )
