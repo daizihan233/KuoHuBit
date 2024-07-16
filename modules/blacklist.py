@@ -13,7 +13,7 @@ from graia.saya.channel import ChannelMeta
 from loguru import logger
 
 from utils import depen
-from utils.config import get_all_admin
+from utils.data import get_all_admin
 from utils.sql import run_sql, select_fetchone
 
 channel = Channel[ChannelMeta].current()

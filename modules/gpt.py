@@ -17,7 +17,8 @@ from openai import AsyncOpenAI
 from tokencost.costs import calculate_cost_by_tokens
 
 from utils import depen, var
-from utils.config import get_cloud_config, get_config, get_su
+from utils.config import get_cloud_config, get_config
+from utils.data import get_su
 from utils.sql import run_sql
 
 channel = Channel[ChannelMeta].current()

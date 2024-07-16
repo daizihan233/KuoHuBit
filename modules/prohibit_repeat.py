@@ -17,7 +17,8 @@ from graia.saya.channel import ChannelMeta
 from loguru import logger
 
 from utils import depen
-from utils.config import get_dyn_config, get_all_admin
+from utils.config import get_dyn_config
+from utils.data import get_all_admin
 from utils.var import r
 
 channel = Channel[ChannelMeta].current()

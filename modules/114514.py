@@ -15,7 +15,7 @@ from graia.scheduler import timers
 from graia.scheduler.saya import SchedulerSchema
 
 from utils import depen, var
-from utils.config import get_all_admin
+from utils.data import get_all_admin
 from utils.sql import run_sql
 
 channel = Channel[ChannelMeta].current()

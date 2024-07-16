@@ -10,7 +10,7 @@ from graia.saya.builtins.broadcast import ListenerSchema
 from graia.saya.channel import ChannelMeta
 
 from utils import depen
-from utils.config import get_all_admin
+from utils.data import get_all_admin
 from utils.sql import run_sql
 
 channel = Channel[ChannelMeta].current()
