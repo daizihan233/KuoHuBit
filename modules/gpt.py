@@ -48,7 +48,7 @@ tips = [  # 开发者注
     "本模块使用 https://www.aigc2d.com/ 作为 GPT 的 API",
     "你知道吗？这个功能使用的是付费服务",
     "本项目从不盈利",
-    "赞助这个项目 https://afdian.net/a/KuoHu",
+    "下面展示的这个花费其实没什么作用，只是单纯的展示，你并不需要为此支付什么",
     "你可以通过回复消息使机器人形成记忆"
 ]
 client = AsyncOpenAI(
@@ -134,7 +134,7 @@ async def req(c: str, name: str, ids: int, message: MessageChain, event: Message
         try:
             prompt_token, completion_token, prompt_cost, completion_cost, response = await chat(module, msg)
             warn = (f"本次共追溯 {len(msg) - 2} 条历史消息，消耗 {prompt_token + completion_token} token！"
-                    f"（约为 {(prompt_cost + completion_cost) * decimal.Decimal('1.2') * 7} 元）"
+                    f"（约为 {(prompt_cost + completion_cost) * decimal.Decimal('1.2') * 7} 元）\n"
                     f"使用模型：{module}")
             break
         except Exception as err:
