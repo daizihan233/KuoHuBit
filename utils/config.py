@@ -2,7 +2,6 @@
 import yaml
 from loguru import logger
 
-from utils.sql import select_fetchall
 from utils.var import config_yaml, cloud_config_json
 
 
@@ -29,25 +28,3 @@ def get_dyn_config(name: str):
     except KeyError:
         logger.error(f"{name} 在配置文件中找不到")
         return []
-
-
-async def get_all_admin() -> list:
-    tmp = await select_fetchall("SELECT uid FROM admin")
-    t = []
-    for i in tmp:
-        t.append(i[0])
-    logger.debug(t)
-    return list(t)
-
-
-async def get_all_sb() -> list:
-    tmp = await select_fetchall("SELECT uid FROM blacklist")
-    t = []
-    for i in tmp:
-        t.append(i[0])
-    return t
-
-
-async def get_su() -> int:
-    tmp = get_config("su")
-    return tmp
