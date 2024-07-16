@@ -19,8 +19,9 @@ from tencentcloud.common import credential
 from tencentcloud.common.exception import TencentCloudSDKException
 from tencentcloud.ims.v20201229 import ims_client, models
 
-import botfunc
-import depen
+from utils import depen
+from utils.config import get_su, get_cloud_config, get_dyn_config
+from utils.var import r
 
 channel = Channel[ChannelMeta].current()
 channel.meta["name"] = "图片审核"
@@ -30,25 +31,25 @@ dyn_config = "dynamic_config.yaml"
 
 
 async def using_tencent_cloud(content: str, user_id: str) -> dict:
-    if botfunc.r.hexists("imgsafe", hashlib.sha384(content.encode()).hexdigest()):
+    if r.hexists("imgsafe", hashlib.sha384(content.encode()).hexdigest()):
         return json.loads(
-            botfunc.r.hget("imgsafe", hashlib.sha384(content.encode()).hexdigest())
+            r.hget("imgsafe", hashlib.sha384(content.encode()).hexdigest())
         )
     try:
         cred = credential.Credential(
-            botfunc.get_cloud_config("QCloud_Secret_id"),
-            botfunc.get_cloud_config("QCloud_Secret_key"),
+            get_cloud_config("QCloud_Secret_id"),
+            get_cloud_config("QCloud_Secret_key"),
         )
         client = ims_client.ImsClient(cred, "ap-guangzhou")
         req = models.ImageModerationRequest()
         params = {
-            "BizType": botfunc.get_cloud_config("img_biztype"),
+            "BizType": get_cloud_config("img_biztype"),
             "FileContent": content,  # base64
             "User": {"UserId": user_id, "AccountType": "2"},
         }
         req.from_json_string(json.dumps(params))
         resp = client.ImageModeration(req)
-        botfunc.r.hset(
+        r.hset(
             "imgsafe",
             hashlib.sha384(content.encode()).hexdigest(),
             json.dumps(
@@ -59,7 +60,7 @@ async def using_tencent_cloud(content: str, user_id: str) -> dict:
                 }
             )
         )
-        botfunc.r.hset(
+        r.hset(
             "imgsafe",
             resp.RequestId,
             hashlib.sha384(content.encode()).hexdigest()
@@ -121,7 +122,7 @@ async def stop_review(app: Ariadne, group: Group, event: GroupMessage):
     )
 )
 async def image_review(app: Ariadne, message: MessageChain, event: GroupMessage):
-    if event.sender.group.id in botfunc.get_dyn_config("img"):
+    if event.sender.group.id in get_dyn_config("img"):
         for i in message[Image]:
             data = await i.get_bytes()
             result = await using_tencent_cloud(
@@ -142,7 +143,7 @@ async def image_review(app: Ariadne, message: MessageChain, event: GroupMessage)
                                 f"\n"
                                 f"**当你认为这是误判请提供【数据编码】给机器人账号所有者**\n"
                                 f"【数据来源：腾讯云图片内容安全】\n"
-                                f"本机器人所有者为：{await botfunc.get_su()}（来自配置文件）\n"
+                                f"本机器人所有者为：{await get_su()}（来自配置文件）\n"
                             ),
                         ]
                     ),
@@ -156,10 +157,10 @@ async def image_review(app: Ariadne, message: MessageChain, event: GroupMessage)
     )
 )
 async def clear_cache(app: Ariadne, message: MessageChain = DetectPrefix("clear ")):
-    botfunc.r.hdel("imgsafe", botfunc.r.hget("imgsafe", str(message)))
-    botfunc.r.hdel("imgsafe", str(message))
+    r.hdel("imgsafe", r.hget("imgsafe", str(message)))
+    r.hdel("imgsafe", str(message))
     await app.send_friend_message(
-        target=await botfunc.get_su(),
+        target=await get_su(),
         message=MessageChain(
             [
                 Plain(

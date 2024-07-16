@@ -12,8 +12,9 @@ from graia.saya.builtins.broadcast import ListenerSchema
 from graia.saya.channel import ChannelMeta
 from loguru import logger
 
-import botfunc
-import depen
+from utils import depen
+from utils.config import get_all_admin
+from utils.sql import run_sql, select_fetchone
 
 channel = Channel[ChannelMeta].current()
 channel.meta["name"] = "黑名单"
@@ -40,7 +41,7 @@ async def nmsl(
         flag = False
         msg += f"{i}：\n"
         try:
-            await botfunc.run_sql(
+            await run_sql(
                 "INSERT INTO blacklist(uid, op) VALUES (%s, %s)",
                 (i.target, event.sender.id),
             )
@@ -59,7 +60,7 @@ async def nmsl(
         msg += "\n"
     if flag:
         try:
-            await botfunc.run_sql(
+            await run_sql(
                 "INSERT INTO blacklist(uid, op) VALUES (%s, %s)",
                 (int(str(message)), event.sender.id),
             )
@@ -87,9 +88,9 @@ async def nmsl(
     )
 )
 async def kicksb(app: Ariadne, event: MemberJoinEvent):
-    admins = await botfunc.get_all_admin()
+    admins = await get_all_admin()
     if event.inviter.id not in admins:
-        t = await botfunc.select_fetchone(
+        t = await select_fetchone(
             "SELECT uid, op FROM blacklist WHERE uid = %s", (event.member.id,)
         )
         try:
@@ -117,7 +118,7 @@ async def nmms(
         app: Ariadne, event: GroupMessage, message: MessageChain = DetectPrefix("删黑")
 ):
     try:
-        await botfunc.run_sql(
+        await run_sql(
             "DELETE FROM blacklist WHERE uid = %s", (int(str(message)),)
         )
         await app.send_message(event.sender.group, "好乐！")

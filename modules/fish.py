@@ -12,7 +12,7 @@ from graia.ariadne.util.saya import listen, decorate
 from graia.saya import Channel
 from graia.saya.channel import ChannelMeta
 
-import botfunc
+from utils.var import session
 
 channel = Channel[ChannelMeta].current()
 channel.meta["name"] = "摸鱼日历"
@@ -24,7 +24,7 @@ channel.meta["author"] = "KuoHu"
 @decorate(MatchContent("鱼"))
 async def fish(app: Ariadne, group: Group, event: GroupMessage):
     data: str = json.loads(
-        botfunc.session.get("http://bjb.yunwj.top/php/mo-yu/php.php").text
+        session.get("http://bjb.yunwj.top/php/mo-yu/php.php").text
     )["wb"]
     data: str = data.replace("【换行】", "\n")
     await app.send_message(

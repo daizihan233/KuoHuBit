@@ -13,7 +13,8 @@ from graia.saya import Channel
 from graia.saya.channel import ChannelMeta
 from loguru import logger
 
-import botfunc
+from utils.config import get_cloud_config, get_config
+from utils.var import session
 
 channel = Channel[ChannelMeta].current()
 channel.meta["name"] = "snao搜图"
@@ -28,10 +29,10 @@ async def saucenao(
 ):
     if Image not in message:
         return
-    image_results = botfunc.session.get(
+    image_results = session.get(
         "https://saucenao.com/search.php",
         params={
-            "api_key": botfunc.get_cloud_config("snao_key"),
+            "api_key": get_cloud_config("snao_key"),
             "db": 999,  # 搜索所有数据库
             "output_type": 2,  # 以 Json 格式返回
             "testmode": 1,
@@ -42,7 +43,7 @@ async def saucenao(
     image_results = image_results.json()["results"]
     fwd_node_list = [
         ForwardNode(
-            target=botfunc.get_config("qq"),  # 机器人QQ号
+            target=get_config("qq"),  # 机器人QQ号
             time=datetime.datetime.now(),
             message=MessageChain(
                 [
@@ -67,7 +68,7 @@ async def saucenao(
         node_url = "\n".join(node["data"]["ext_urls"])
         fwd_node_list.append(
             ForwardNode(
-                target=botfunc.get_config("qq"),  # 机器人QQ号
+                target=get_config("qq"),  # 机器人QQ号
                 time=datetime.datetime.now(),
                 message=MessageChain(
                     [

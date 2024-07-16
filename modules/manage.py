@@ -10,7 +10,7 @@ from graia.saya import Channel
 from graia.saya.builtins.broadcast import ListenerSchema
 from graia.saya.channel import ChannelMeta
 
-import depen
+from utils import depen
 
 channel = Channel[ChannelMeta].current()
 channel.meta["name"] = "管理"

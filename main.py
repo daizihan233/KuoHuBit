@@ -19,41 +19,41 @@ from graia.saya import Saya
 from loguru import logger
 from rich.progress import track
 
-import botfunc
-import cache_var
+from utils import var
+from utils.config import get_config, get_cloud_config
 
 saya = create(Saya)
 create(AlconnaBehaviour)
 
 app = Ariadne(
     connection=config(
-        botfunc.get_config("qq"),
-        botfunc.get_config("verifyKey"),
-        HttpClientConfig(host=botfunc.get_config("mirai_api_http")),
-        WebsocketClientConfig(host=botfunc.get_config("mirai_api_http")),
+        get_config("qq"),
+        get_config("verifyKey"),
+        HttpClientConfig(host=get_config("mirai_api_http")),
+        WebsocketClientConfig(host=get_config("mirai_api_http")),
     ),
 )
 try:
     conn = pymysql.connect(
-        host=botfunc.get_cloud_config("MySQL_Host"),
-        port=botfunc.get_cloud_config("MySQL_Port"),
-        user=botfunc.get_cloud_config("MySQL_User"),
-        password=botfunc.get_cloud_config("MySQL_Pwd"),
+        host=get_cloud_config("MySQL_Host"),
+        port=get_cloud_config("MySQL_Port"),
+        user=get_cloud_config("MySQL_User"),
+        password=get_cloud_config("MySQL_Pwd"),
         charset="utf8mb4",
-        database=botfunc.get_cloud_config("MySQL_db"),
+        database=get_cloud_config("MySQL_db"),
     )
     cursor = conn.cursor()
 except pymysql.err.InternalError:
     conn = pymysql.connect(
-        host=botfunc.get_cloud_config("MySQL_Host"),
-        port=botfunc.get_cloud_config("MySQL_Port"),
-        user=botfunc.get_cloud_config("MySQL_User"),
-        password=botfunc.get_cloud_config("MySQL_Pwd"),
+        host=get_cloud_config("MySQL_Host"),
+        port=get_cloud_config("MySQL_Port"),
+        user=get_cloud_config("MySQL_User"),
+        password=get_cloud_config("MySQL_Pwd"),
         charset="utf8mb4",
     )
     cursor = conn.cursor()
     cursor.execute(
-        """create database if not exists %s""", (botfunc.get_cloud_config("MySQL_db"),)
+        """create database if not exists %s""", (get_cloud_config("MySQL_db"),)
     )
 
 cursor.execute(
@@ -164,8 +164,8 @@ cursor.execute(
 conn.commit()
 
 cursor.execute("SELECT wd, count FROM wd")
-cache_var.sensitive_words = [x[0] for x in cursor.fetchall()]
-if not cache_var.sensitive_words:
+var.sensitive_words = [x[0] for x in cursor.fetchall()]
+if not var.sensitive_words:
     print("未找到敏感词库！即将从GitHub仓库拉取……（请保证能正常访问jsDelivr）")
     input("> 是否继续？（回车 继续 / ^C 退出）")
     # 色情类
@@ -193,16 +193,16 @@ if not cache_var.sensitive_words:
         except pymysql.err.DataError:
             conn.rollback()
 cursor.execute("SELECT wd, count FROM wd")
-cache_var.sensitive_words = [x[0] for x in cursor.fetchall()]
+var.sensitive_words = [x[0] for x in cursor.fetchall()]
 
 cursor.execute("SELECT gid FROM no_six")
-cache_var.no_6 = [x[0] for x in cursor.fetchall()]
+var.no_6 = [x[0] for x in cursor.fetchall()]
 
 cursor.execute("SELECT ids, words, status, who FROM cue")
 for ids, words, status, who in [x for x in cursor.fetchall()]:
-    cache_var.cue[ids] = words
-    cache_var.cue_status[ids] = status
-    cache_var.cue_who[ids] = who
+    var.cue[ids] = words
+    var.cue_status[ids] = status
+    var.cue_who[ids] = who
 
 cursor.execute("SELECT uid FROM admin")
 if not cursor.fetchall():
@@ -212,7 +212,7 @@ if not cursor.fetchall():
 conn.commit()
 
 cursor.execute("SELECT gid FROM inm")
-cache_var.inm = [x[0] for x in cursor.fetchall()]
+var.inm = [x[0] for x in cursor.fetchall()]
 
 conn.close()
 with saya.module_context():

@@ -11,7 +11,7 @@ from graia.saya import Channel
 from graia.saya.builtins.broadcast.schema import ListenerSchema
 from graia.saya.channel import ChannelMeta
 
-import botfunc
+from utils.var import r
 
 channel = Channel[ChannelMeta].current()
 channel.meta["name"] = "Hello World!"
@@ -33,11 +33,11 @@ async def echo(
         group,
         message,
     )
-    botfunc.r.hset("echo", source.id, m.source.id)
+    r.hset("echo", source.id, m.source.id)
 
 
 @channel.use(ListenerSchema(listening_events=[GroupRecallEvent]))
 async def echo(app: Ariadne, group: Group, event: GroupRecallEvent):
-    if botfunc.r.hexists("echo", event.message_id):
-        await app.recall_message(botfunc.r.hget("echo", event.message_id), group)
-        botfunc.r.hdel("echo", event.message_id)
+    if r.hexists("echo", event.message_id):
+        await app.recall_message(r.hget("echo", event.message_id), group)
+        r.hdel("echo", event.message_id)

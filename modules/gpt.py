@@ -16,9 +16,9 @@ from loguru import logger
 from openai import AsyncOpenAI
 from tokencost.costs import calculate_cost_by_tokens
 
-import botfunc
-import cache_var
-import depen
+from utils import depen, var
+from utils.config import get_cloud_config, get_config, get_su
+from utils.sql import run_sql
 
 channel = Channel[ChannelMeta].current()
 channel.meta["name"] = "NyaGPT"
@@ -51,12 +51,12 @@ tips = [  # 开发者注
     "你可以通过回复消息使机器人形成记忆"
 ]
 client = AsyncOpenAI(
-    api_key=botfunc.get_cloud_config("gptkey"),
+    api_key=get_cloud_config("gptkey"),
     base_url="https://api.aigc2d.com/v1"
 )
 NOT_GPT_REPLY = "本消息非 GPT 回复"
-MODULE = "claude-3-opus-20240229"
-SECOND_MODULE = "gpt-4"
+MODULE_LIST = ["claude-3-5-sonnet-20240620", "claude-3-opus-20240229", "gpt-4", "gpt-3.5-turbo"]
+
 
 class MessageNode:
     """
@@ -81,12 +81,26 @@ class MessageNode:
         return self.index
 
 
+async def chat(module, msg):
+    response = await client.chat.completions.create(
+        model=module,
+        messages=msg
+    )
+    prompt_token = response.usage.prompt_tokens
+    completion_token = response.usage.completion_tokens
+    response = response.choices[0].message.content
+    msg.append({"role": "assistant", "content": response})
+    prompt_cost = calculate_cost_by_tokens(prompt_token, module, "input")
+    completion_cost = calculate_cost_by_tokens(completion_token, module, "output")
+    return prompt_token, completion_token, prompt_cost, completion_cost, response
+
+
 async def req(c: str, name: str, ids: int, message: MessageChain, event: MessageEvent) -> tuple:
     now = datetime.date.today()
 
     if event.quote is not None and messages.get(event.quote.id, None) is not None:  # 短路
         node = MessageNode(message, ids, messages[event.quote.id])
-        if node.root.uid != botfunc.get_config("qq"):
+        if node.root.uid != get_config("qq"):
             return "？（请回复一条由机器人发出的消息）", NOT_GPT_REPLY
     else:
         node = MessageNode(message, ids, None)
@@ -95,7 +109,7 @@ async def req(c: str, name: str, ids: int, message: MessageChain, event: Message
         i: MessageNode
         x.append(
             {
-                "role": "assistant" if i.uid == botfunc.get_config("qq") else "user",
+                "role": "assistant" if i.uid == get_config("qq") else "user",
                 "content": str(i.message)
             }
         )
@@ -115,35 +129,15 @@ async def req(c: str, name: str, ids: int, message: MessageChain, event: Message
               }
           ]
     logger.debug(msg)
-    try:
-        response = await client.chat.completions.create(
-            model=MODULE,
-            messages=msg
-        )
-        prompt_token = response.usage.prompt_tokens
-        completion_token = response.usage.completion_tokens
-        response = response.choices[0].message.content
-        msg.append({"role": "assistant", "content": response})
-        prompt_cost = calculate_cost_by_tokens(prompt_token, MODULE, "input")
-        completion_cost = calculate_cost_by_tokens(completion_token, MODULE, "output")
-        warn = (f"本次共追溯 {len(msg) - 2} 条历史消息，消耗 {prompt_token + completion_token} token！"
-                f"（约为 {(prompt_cost + completion_cost) * decimal.Decimal('1.2') * 7} 元）"
-                f"使用模型：{MODULE}")
-    except Exception as err:
-        response = await client.chat.completions.create(
-            model=SECOND_MODULE,
-            messages=msg
-        )
-        prompt_token = response.usage.prompt_tokens
-        completion_token = response.usage.completion_tokens
-        response = response.choices[0].message.content
-        msg.append({"role": "assistant", "content": response})
-        prompt_cost = calculate_cost_by_tokens(prompt_token, SECOND_MODULE, "input")
-        completion_cost = calculate_cost_by_tokens(completion_token, SECOND_MODULE, "output")
-        warn = (f"本次共追溯 {len(msg) - 2} 条历史消息，消耗 {prompt_token + completion_token} token！"
-                f"（约为 {(prompt_cost + completion_cost) * decimal.Decimal('1.2') * 7} 元）\n"
-                f"使用模型：{SECOND_MODULE}\n"
-                f"因为 {MODULE} 模型报错：{err}")
+    for module in MODULE_LIST:
+        try:
+            prompt_token, completion_token, prompt_cost, completion_cost, response = chat(module, msg)
+            warn = (f"本次共追溯 {len(msg) - 2} 条历史消息，消耗 {prompt_token + completion_token} token！"
+                    f"（约为 {(prompt_cost + completion_cost) * decimal.Decimal('1.2') * 7} 元）"
+                    f"使用模型：{module}")
+            break
+        except Exception as err:
+            logger.error(err)
     if event.quote is not None and messages.get(event.quote.id, None) is not None:
         messages[event.quote.id].next_node = node
     messages[event.id] = node
@@ -158,8 +152,8 @@ async def gpt(
         event: GroupMessage,
         message: MessageChain = MentionMe(),
 ):
-    c = cache_var.cue.get(group.id, cue)
-    if cache_var.cue.get(group.id, None) is not None and not cache_var.cue_status[group.id]:
+    c = var.cue.get(group.id, cue)
+    if var.cue.get(group.id, None) is not None and not var.cue_status[group.id]:
         c = cue
     response, warn = await req(c, member.name, member.id, message, event)
     m = await app.send_group_message(
@@ -172,7 +166,7 @@ async def gpt(
     )
 
     if warn != NOT_GPT_REPLY:
-        messages[m.source.id] = MessageNode(response, botfunc.get_config("qq"), messages[event.id])
+        messages[m.source.id] = MessageNode(response, get_config("qq"), messages[event.id])
         messages[event.id].next_node = messages[m.source.id]
 
 
@@ -180,15 +174,17 @@ async def gpt(
 async def gpt_f(
         app: Ariadne, friend: Friend, event: FriendMessage, message: MessageChain
 ):
-    if (friend.id == await botfunc.get_su() and
+    if (
+            friend.id == await get_su() and
             (
                     message.startswith("deny ") or
                     message.startswith("accept ") or
                     message.startswith("clear ")
-            )):
+            )
+    ):
         return
-    c = cache_var.cue.get(friend.id, cue)
-    if cache_var.cue.get(friend.id, None) is not None and not cache_var.cue_status[friend.id]:
+    c = var.cue.get(friend.id, cue)
+    if var.cue.get(friend.id, None) is not None and not var.cue_status[friend.id]:
         c = cue
     response, warn = await req(c, friend.nickname, friend.id, message, event)
     m = await app.send_friend_message(
@@ -200,7 +196,7 @@ async def gpt_f(
         quote=event.source,
     )
     if warn != NOT_GPT_REPLY:
-        messages[m.source.id] = MessageNode(response, botfunc.get_config("qq"), messages[event.id])
+        messages[m.source.id] = MessageNode(response, get_config("qq"), messages[event.id])
         messages[event.id].next_node = messages[m.source.id]
 
 
@@ -212,13 +208,13 @@ async def gpt_f(
 )
 async def add(app: Ariadne, member: Member, group: Group, event: GroupMessage,
               message: MessageChain = DetectPrefix("修改提示词 ")):
-    await botfunc.run_sql(
+    await run_sql(
         """REPLACE INTO cue(ids, words, status, who) VALUES(%s, %s, false, %s);""",
         (group.id, str(message), member.id)
     )
-    cache_var.cue[group.id] = str(message)
-    cache_var.cue_status[group.id] = False
-    cache_var.cue_who[group.id] = member.id
+    var.cue[group.id] = str(message)
+    var.cue_status[group.id] = False
+    var.cue_who[group.id] = member.id
     await app.send_group_message(
         target=group,
         message=MessageChain(
@@ -233,11 +229,16 @@ async def add(app: Ariadne, member: Member, group: Group, event: GroupMessage,
         quote=event.source,
     )
     await app.send_friend_message(
-        target=await botfunc.get_su(),
+        target=await get_su(),
         message=MessageChain(
             [
                 Plain(
-                    f"请审核来自 {group.id} 中 {member.id} 的提示词修改请求：\n\n{str(message)}\n\n同意回复：accept {group.id}\n拒绝回复：deny {group.id}"
+                    f"请审核来自 {group.id} 中 {member.id} 的提示词修改请求：\n"
+                    f"\n"
+                    f"{str(message)}\n"
+                    f"\n"
+                    f"同意回复：accept {group.id}\n"
+                    f"拒绝回复：deny {group.id}"
                 )
             ]
         )
@@ -252,14 +253,14 @@ async def add(app: Ariadne, member: Member, group: Group, event: GroupMessage,
 )
 async def add_f(app: Ariadne, friend: Friend, event: FriendMessage,
                 message: MessageChain = DetectPrefix("修改提示词 ")):
-    await botfunc.run_sql(
+    await run_sql(
         """REPLACE INTO cue(ids, words, status, who) VALUES(%s, %s, false, %s);""",
         (friend.id, str(message), friend.id)
     )
-    cache_var.cue[friend.id] = str(message)
-    cache_var.cue_status[friend.id] = False
-    cache_var.cue_who[friend.id] = friend.id
-    await app.send_group_message(
+    var.cue[friend.id] = str(message)
+    var.cue_status[friend.id] = False
+    var.cue_who[friend.id] = friend.id
+    await app.send_friend_message(
         target=friend,
         message=MessageChain(
             [
@@ -273,7 +274,7 @@ async def add_f(app: Ariadne, friend: Friend, event: FriendMessage,
         quote=event.source,
     )
     await app.send_friend_message(
-        target=await botfunc.get_su(),
+        target=await get_su(),
         message=MessageChain(
             [
                 Plain(
@@ -291,10 +292,10 @@ async def add_f(app: Ariadne, friend: Friend, event: FriendMessage,
     )
 )
 async def accept(app: Ariadne, message: MessageChain = DetectPrefix("accept ")):
-    cache_var.cue_status[int(str(message))] = True
-    await botfunc.run_sql("""UPDATE cue SET status=true WHERE ids=%s""", int(str(message)))
+    var.cue_status[int(str(message))] = True
+    await run_sql("""UPDATE cue SET status=true WHERE ids=%s""", int(str(message)))
     messages[int(str(message))] = []
-    if int(str(message)) == cache_var.cue_who[int(str(message))]:  # 是私聊
+    if int(str(message)) == var.cue_who[int(str(message))]:  # 是私聊
         await app.send_friend_message(
             target=int(str(message)),
             message=MessageChain(
@@ -317,15 +318,15 @@ async def accept(app: Ariadne, message: MessageChain = DetectPrefix("accept ")):
     )
 )
 async def deny(app: Ariadne, message: MessageChain = DetectPrefix("deny ")):
-    cache_var.cue_status[int(str(message))] = False
-    await botfunc.run_sql("""DELETE FROM cue WHERE ids=%s""", int(str(message)))
-    if int(str(message)) == cache_var.cue_who[int(str(message))]:  # 是私聊
+    var.cue_status[int(str(message))] = False
+    await run_sql("""DELETE FROM cue WHERE ids=%s""", int(str(message)))
+    if int(str(message)) == var.cue_who[int(str(message))]:  # 是私聊
         await app.send_friend_message(
             target=int(str(message)),
             message=MessageChain(
                 [
                     Plain(
-                        f"开发者：我认为你太极端了（提示词没有通过，请修改，具体可询问机器人开发者{await botfunc.get_su()}）")
+                        f"开发者：我认为你太极端了（提示词没有通过，请修改，具体可询问机器人开发者{await get_su()}）")
                 ]
             )
         )
@@ -335,7 +336,7 @@ async def deny(app: Ariadne, message: MessageChain = DetectPrefix("deny ")):
             message=MessageChain(
                 [
                     Plain(
-                        f"开发者：我认为你太极端了（提示词没有通过，请修改，具体可询问机器人开发者{await botfunc.get_su()}）")
+                        f"开发者：我认为你太极端了（提示词没有通过，请修改，具体可询问机器人开发者{await get_su()}）")
                 ]
             )
         )

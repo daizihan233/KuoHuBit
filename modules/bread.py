@@ -15,7 +15,7 @@ from graia.saya.builtins.broadcast.schema import ListenerSchema
 from graia.saya.channel import ChannelMeta
 from loguru import logger
 
-import botfunc
+from utils.sql import select_fetchone, run_sql
 
 channel = Channel[ChannelMeta].current()
 channel.meta["name"] = "面包厂"
@@ -43,7 +43,7 @@ async def get_bread(
             group, MessageChain([At(event.sender.id), Plain(f" 报错啦……{err}")])
         )
     else:
-        result = await botfunc.select_fetchone(get_data_sql, (group.id,))
+        result = await select_fetchone(get_data_sql, (group.id,))
 
         res = list(result)
         res[3] += ((int(time.time()) - res[2]) // 60) * random.randint(
@@ -73,12 +73,12 @@ async def get_bread(
                 ),
             )
         sql_2 = """UPDATE bread SET time = %s, bread = %s WHERE id = %s"""
-        await botfunc.run_sql(sql_2, (res[2], res[3], group.id))
+        await run_sql(sql_2, (res[2], res[3], group.id))
 
 
 @channel.use(ListenerSchema(listening_events=[GroupMessage]))
 async def update_bread(group: Group):
-    result = await botfunc.select_fetchone(get_data_sql, (group.id,))
+    result = await select_fetchone(get_data_sql, (group.id,))
 
     if result:
         res = list(result)
@@ -87,20 +87,20 @@ async def update_bread(group: Group):
             res[1] += 1
             res[4] = 0
             sql = """UPDATE bread SET level = %s, experience = %s WHERE id = %s"""
-            await botfunc.run_sql(sql, (res[1], res[4], group.id))
+            await run_sql(sql, (res[1], res[4], group.id))
         else:
             sql = """UPDATE bread SET experience = %s WHERE id = %s"""
-            await botfunc.run_sql(sql, (res[4], group.id))
+            await run_sql(sql, (res[4], group.id))
     else:
         sql = """INSERT INTO bread(id, level, time, bread, experience) VALUES (%s, 1, %s, 0, 0)"""
-        await botfunc.run_sql(sql, (group.id, int(time.time())))
+        await run_sql(sql, (group.id, int(time.time())))
 
 
 @channel.use(
     ListenerSchema(listening_events=[GroupMessage], decorators=[MatchContent("面包厂信息")])
 )
 async def setu(app: Ariadne, group: Group):
-    result = await botfunc.select_fetchone(get_data_sql, (group.id,))
+    result = await select_fetchone(get_data_sql, (group.id,))
 
     res = list(result)
     res[3] = ((int(time.time()) - res[2]) // 60) * random.randint(
@@ -110,7 +110,7 @@ async def setu(app: Ariadne, group: Group):
         res[3] = 2 ** result[1]
     res[2] = int(time.time())
     sql_2 = """UPDATE bread SET time = %s, bread = %s WHERE id = %s"""
-    await botfunc.run_sql(sql_2, (res[2], res[3], group.id))
+    await run_sql(sql_2, (res[2], res[3], group.id))
     try:
         await app.send_message(
             group,

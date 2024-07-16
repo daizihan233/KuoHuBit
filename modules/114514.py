@@ -14,9 +14,9 @@ from graia.saya.channel import ChannelMeta
 from graia.scheduler import timers
 from graia.scheduler.saya import SchedulerSchema
 
-import botfunc
-import cache_var
-import depen
+from utils import depen, var
+from utils.config import get_all_admin
+from utils.sql import run_sql
 
 channel = Channel[ChannelMeta].current()
 channel.meta["name"] = "inm"
@@ -26,7 +26,7 @@ channel.meta["author"] = "KuoHu"
 
 @channel.use(SchedulerSchema(timers.crontabify("45 11 * * * 14")))
 async def inm(app: Ariadne):
-    for group in cache_var.inm:
+    for group in var.inm:
         try:
             await app.send_group_message(
                 target=group, message=f"哼哼哼，{'啊' * random.randint(5, 20)}"
@@ -44,10 +44,10 @@ async def inm(app: Ariadne):
     )
 )
 async def homo(app: Ariadne, group: Group, source: Source):
-    if group.id in cache_var.inm:
+    if group.id in var.inm:
         return
-    cache_var.inm.append(group.id)
-    await botfunc.run_sql("INSERT INTO inm VALUES (%s)", (group.id,))
+    var.inm.append(group.id)
+    await run_sql("INSERT INTO inm VALUES (%s)", (group.id,))
     await app.send_message(target=group, quote=source, message="草")
 
 
@@ -58,11 +58,11 @@ async def homo(app: Ariadne, group: Group, source: Source):
     )
 )
 async def homo(app: Ariadne, group: Group, source: Source, event: GroupMessage):
-    admins = await botfunc.get_all_admin()
+    admins = await get_all_admin()
     if event.sender.id not in admins:
         return
-    if group.id not in cache_var.inm:
+    if group.id not in var.inm:
         return
-    cache_var.inm.remove(group.id)
-    await botfunc.run_sql("DELETE FROM inm WHERE gid=%s", (group.id,))
+    var.inm.remove(group.id)
+    await run_sql("DELETE FROM inm WHERE gid=%s", (group.id,))
     await app.send_message(target=group, quote=source, message="艹")

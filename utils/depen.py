@@ -1,6 +1,8 @@
 """
 KHB 常用的逻辑判断
 """
+#  本项目遵守 AGPL-3.0 协议，项目地址：https://github.com/daizihan233/MiraiHanBot
+
 from graia.amnesia.message import MessageChain
 from graia.ariadne import Ariadne
 from graia.ariadne.message.element import At, Plain, Image
@@ -8,9 +10,10 @@ from graia.ariadne.model import Group, Member, MemberPerm, Friend
 from graia.broadcast.builtin.decorators import Depend
 from graia.broadcast.exceptions import ExecutionStop
 
-import botfunc
+from utils.config import get_all_admin, get_all_sb, get_su
 
 NO_AUTHORITY = "你没有指定权限，无法执行此指令\n"
+
 
 def check_authority_bot_op(prompt: bool = True):
     """
@@ -19,7 +22,7 @@ def check_authority_bot_op(prompt: bool = True):
     """
 
     async def check_authority(app: Ariadne, group: Group, member: Member):
-        admin = await botfunc.get_all_admin()
+        admin = await get_all_admin()
         if member.id not in admin:
             if prompt:
                 await app.send_message(
@@ -68,7 +71,7 @@ def check_authority_op(prompt: bool = True):
     """
 
     async def check_authority(app: Ariadne, group: Group, member: Member):
-        admin = await botfunc.get_all_admin()
+        admin = await get_all_admin()
         if (
                 member.permission not in [MemberPerm.Administrator, MemberPerm.Owner]
                 and member.id not in admin
@@ -96,7 +99,7 @@ def check_authority_su():
     """
 
     async def check_authority(member: Member):
-        su = await botfunc.get_su()
+        su = await get_su()
         if member.id != su:
             raise ExecutionStop
 
@@ -110,7 +113,7 @@ def check_friend_su():
     """
 
     async def check_authority(friend: Friend):
-        su = await botfunc.get_su()
+        su = await get_su()
         if friend.id != su:
             raise ExecutionStop
 
@@ -124,7 +127,7 @@ def check_authority_black(prompt: bool = True):
     """
 
     async def check_authority(app: Ariadne, group: Group, member: Member):
-        sb = await botfunc.get_all_sb()
+        sb = await get_all_sb()
         if member.id not in sb:
             if prompt:
                 await app.send_message(
@@ -149,7 +152,7 @@ def check_authority_not_black(prompt: bool = True):
     """
 
     async def check_authority(app: Ariadne, group: Group, member: Member):
-        sb = await botfunc.get_all_sb()
+        sb = await get_all_sb()
         if member.id in sb:
             if prompt:
                 await app.send_message(

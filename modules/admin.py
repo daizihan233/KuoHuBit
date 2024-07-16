@@ -9,8 +9,9 @@ from graia.saya import Channel
 from graia.saya.builtins.broadcast import ListenerSchema
 from graia.saya.channel import ChannelMeta
 
-import botfunc
-import depen
+from utils import depen
+from utils.config import get_all_admin
+from utils.sql import run_sql
 
 channel = Channel[ChannelMeta].current()
 channel.meta["name"] = "管理员"
@@ -32,7 +33,7 @@ async def add_admin(
         app: Ariadne, group: Group, message: MessageChain = DetectPrefix("上管")
 ):
     try:
-        await botfunc.run_sql(
+        await run_sql(
             "INSERT INTO admin(uid) VALUES (%s)", (int(str(message).lstrip("上管")),)
         )
     except Exception as err:
@@ -57,11 +58,11 @@ async def del_admin(
         event: GroupMessage,
         message: MessageChain = DetectPrefix("下管"),
 ):
-    admins = await botfunc.get_all_admin()
+    admins = await get_all_admin()
     if event.sender.id not in admins:
         return
     try:
-        await botfunc.run_sql("DELETE FROM admin WHERE uid = %s", (int(str(message)),))
+        await run_sql("DELETE FROM admin WHERE uid = %s", (int(str(message)),))
     except Exception as err:
         await app.send_message(group, f"寄！{err}")
     else:

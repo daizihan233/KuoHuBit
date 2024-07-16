@@ -36,8 +36,6 @@ dependencies = [
     "rich>=13.4.2",
     "tencentcloud-sdk-python-tms>=3.0.967",
     "tencentcloud-sdk-python-ims>=3.0.967",
-    "paddlepaddle>=2.5.1",
-    "paddlenlp>=2.6.0",
     "pypinyin>=0.49.0",
     "setuptools>=69.0.2",
     "pip>=23.3.1",
@@ -47,6 +45,7 @@ dependencies = [
     "arclet-alconna-graia>=0.14.0",
     "arclet-alconna-ariadne>=0.14.0",
     "graiax-shortcut>=0.3.0",
+    "tokencost>=0.1.11",
 ]
 requires-python = ">=3.10,<3.13"
 license = { text = "AGPL-3.0" }

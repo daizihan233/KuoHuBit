@@ -23,9 +23,10 @@ from tencentcloud.common.exception.tencent_cloud_sdk_exception import (
 )
 from tencentcloud.tms.v20201229 import tms_client, models
 
-import botfunc
-import cache_var
-import depen
+from utils import depen, var
+from utils.config import get_cloud_config, get_all_admin, get_config, get_dyn_config
+from utils.sql import run_sql
+from utils.var import r
 
 channel = Channel[ChannelMeta].current()
 channel.meta["name"] = "敏感词检测"
@@ -60,24 +61,24 @@ jieba.load_userdict("./jieba_words.txt")
 
 
 async def using_tencent_cloud(content: str, user_id: str) -> str:
-    if botfunc.r.hexists("sw", hashlib.sha384(content.encode()).hexdigest()):
-        return botfunc.r.hget("sw", hashlib.sha384(content.encode()).hexdigest())
+    if r.hexists("sw", hashlib.sha384(content.encode()).hexdigest()):
+        return r.hget("sw", hashlib.sha384(content.encode()).hexdigest())
     try:
         cred = credential.Credential(
-            botfunc.get_cloud_config("QCloud_Secret_id"),
-            botfunc.get_cloud_config("QCloud_Secret_key"),
+            get_cloud_config("QCloud_Secret_id"),
+            get_cloud_config("QCloud_Secret_key"),
         )
         client = tms_client.TmsClient(cred, "ap-guangzhou")
         req = models.TextModerationRequest()
         params = {
-            "BizType": botfunc.get_cloud_config("text_biztype"),
+            "BizType": get_cloud_config("text_biztype"),
             "Content": base64.b64encode(content.encode()).decode(),
             "User": {"UserId": user_id, "AccountType": "2"},
         }
         req.from_json_string(json.dumps(params))
         resp = client.TextModeration(req)
         logger.info(resp.to_json_string())
-        botfunc.r.hset(
+        r.hset(
             "sw", hashlib.sha384(content.encode()).hexdigest(), resp.Suggestion
         )
         return resp.Suggestion
@@ -109,7 +110,7 @@ async def start_word(app: Ariadne, group: Group, event: GroupMessage):
     )
 )
 async def stop_word(app: Ariadne, group: Group, event: GroupMessage):
-    admin = await botfunc.get_all_admin()
+    admin = await get_all_admin()
     if (
             event.sender.permission in [MemberPerm.Administrator, MemberPerm.Owner]
             or event.sender.id in admin
@@ -137,8 +138,8 @@ async def stop_word(app: Ariadne, group: Group, event: GroupMessage):
     )
 )
 async def f(app: Ariadne, group: Group, event: GroupMessage):
-    if group.id in botfunc.get_dyn_config("word"):
-        if not botfunc.get_config("text_review"):
+    if group.id in get_dyn_config("word"):
+        if not get_config("text_review"):
             msg = opc.convert(  # 抗混淆：繁简字转换
                 (
                     "".join(list(map(lambda x: x.text, event.message_chain[Plain])))
@@ -148,7 +149,7 @@ async def f(app: Ariadne, group: Group, event: GroupMessage):
             )
             if (
                     "".join(list(map(lambda x: x.text, event.message_chain[Plain])))
-            ) in cache_var.sensitive_words:  # 性能：整句匹配
+            ) in var.sensitive_words:  # 性能：整句匹配
                 try:
                     await app.recall_message(event)
                 except PermissionError:
@@ -163,7 +164,7 @@ async def f(app: Ariadne, group: Group, event: GroupMessage):
                             ]
                         ),
                     )
-                await botfunc.run_sql(
+                await run_sql(
                     "UPDATE wd SET count=count+1 WHERE wd=%s",
                     (str(event.message_chain),),
                 )
@@ -171,8 +172,8 @@ async def f(app: Ariadne, group: Group, event: GroupMessage):
             wd = jieba.lcut(msg)  # 准确率：分词
             logger.debug(wd)
             for w in wd:
-                if w in cache_var.sensitive_words:
-                    if botfunc.get_config("violation_text_review"):
+                if w in var.sensitive_words:
+                    if get_config("violation_text_review"):
                         result = await using_tencent_cloud(
                             (
                                 "".join(
@@ -221,7 +222,7 @@ async def f(app: Ariadne, group: Group, event: GroupMessage):
                                     ]
                                 ),
                             )
-                    await botfunc.run_sql(
+                    await run_sql(
                         "UPDATE wd SET count=count+1 WHERE wd=%s", (w,)
                     )
                     break
@@ -257,9 +258,9 @@ async def f(app: Ariadne, group: Group, event: GroupMessage):
 async def add(
         app: Ariadne, event: GroupMessage, message: MessageChain = DetectPrefix("加敏感词")
 ):
-    if str(message) not in cache_var.sensitive_words:
+    if str(message) not in var.sensitive_words:
         try:
-            await botfunc.run_sql(
+            await run_sql(
                 "INSERT INTO wd(wd, count) VALUES (%s, 0)", (str(message),)
             )
         except Exception as err:
@@ -267,7 +268,7 @@ async def add(
         else:
             await app.send_message(event.sender.group, "好辣！")
         try:
-            cache_var.sensitive_words.append(str(message))
+            var.sensitive_words.append(str(message))
         except Exception as err:
             logger.error(err)
     else:
@@ -283,18 +284,18 @@ async def add(
 async def rm(
         app: Ariadne, event: GroupMessage, message: MessageChain = DetectPrefix("删敏感词")
 ):
-    admin = await botfunc.get_all_admin()
+    admin = await get_all_admin()
     if (
             event.sender.permission in [MemberPerm.Administrator, MemberPerm.Owner]
             or event.sender.id in admin
     ):
         try:
-            await botfunc.run_sql("DELETE FROM wd WHERE wd=%s", (message,))
+            await run_sql("DELETE FROM wd WHERE wd=%s", (message,))
         except Exception as err:
             await app.send_message(event.sender.group, f"寄！{err}")
         else:
             await app.send_message(event.sender.group, "好辣！")
         try:
-            cache_var.sensitive_words.remove(str(message))
+            var.sensitive_words.remove(str(message))
         except Exception as err:
             logger.error(err)

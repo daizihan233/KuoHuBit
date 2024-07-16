@@ -16,9 +16,9 @@ from graia.saya.builtins.broadcast.schema import ListenerSchema
 from graia.saya.channel import ChannelMeta
 from loguru import logger
 
-import botfunc
-import depen
-from botfunc import r
+from utils import depen
+from utils.config import get_dyn_config, get_all_admin
+from utils.var import r
 
 channel = Channel[ChannelMeta].current()
 channel.meta["name"] = "防刷屏"
@@ -33,7 +33,7 @@ hash_name = "bot_repeat_record"
 async def repeat_record(
         app: Ariadne, group: Group, member: Member, message: MessageChain
 ):
-    if group.id in botfunc.get_dyn_config("mute"):
+    if group.id in get_dyn_config("mute"):
         limit_time = 300  # 5 分钟（5s * 60s = 300s）
         if r.hexists(hash_name, f"{group.id},{member.id}"):
             td = r.hget(hash_name, f"{group.id},{member.id}")
@@ -85,7 +85,7 @@ async def repeat_record(
     )
 )
 async def start_mute(app: Ariadne, group: Group, event: GroupMessage):
-    admin = await botfunc.get_all_admin()
+    admin = await get_all_admin()
     if (
             event.sender.permission in [MemberPerm.Administrator, MemberPerm.Owner]
             or event.sender.id in admin
@@ -106,7 +106,7 @@ async def start_mute(app: Ariadne, group: Group, event: GroupMessage):
     )
 )
 async def stop_mute(app: Ariadne, group: Group, event: GroupMessage):
-    admin = await botfunc.get_all_admin()
+    admin = await get_all_admin()
     if (
             event.sender.permission in [MemberPerm.Administrator, MemberPerm.Owner]
             or event.sender.id in admin

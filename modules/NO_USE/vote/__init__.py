@@ -11,7 +11,6 @@ from graia.saya.builtins.broadcast import ListenerSchema
 from graia.saya.channel import ChannelMeta
 from loguru import logger
 
-import botfunc
 from .utils import problem, answer
 
 channel = Channel[ChannelMeta].current()
