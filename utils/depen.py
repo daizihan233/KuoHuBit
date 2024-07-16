@@ -10,7 +10,7 @@ from graia.ariadne.model import Group, Member, MemberPerm, Friend
 from graia.broadcast.builtin.decorators import Depend
 from graia.broadcast.exceptions import ExecutionStop
 
-from utils.config import get_all_admin, get_all_sb, get_su
+from utils.data import get_all_admin, get_all_sb, get_su
 
 NO_AUTHORITY = "你没有指定权限，无法执行此指令\n"
 

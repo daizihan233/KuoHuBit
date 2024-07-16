@@ -68,4 +68,3 @@ word: []
 img: []""",
     )
     logger.warning("dynamic_config.yaml 已被程序自动创建")
-
