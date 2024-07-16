@@ -11,7 +11,7 @@ from graia.saya import Channel
 from graia.saya.builtins.broadcast.schema import ListenerSchema
 from graia.saya.channel import ChannelMeta
 
-from utils.var import r
+from utils.cache import r
 
 channel = Channel[ChannelMeta].current()
 channel.meta["name"] = "Hello World!"

@@ -20,8 +20,9 @@ from tencentcloud.common.exception import TencentCloudSDKException
 from tencentcloud.ims.v20201229 import ims_client, models
 
 from utils import depen
-from utils.config import get_su, get_cloud_config, get_dyn_config
-from utils.var import r
+from utils.cache import r
+from utils.config import get_cloud_config, get_dyn_config
+from utils.data import get_su
 
 channel = Channel[ChannelMeta].current()
 channel.meta["name"] = "图片审核"

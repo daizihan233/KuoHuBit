@@ -24,10 +24,10 @@ from tencentcloud.common.exception.tencent_cloud_sdk_exception import (
 from tencentcloud.tms.v20201229 import tms_client, models
 
 from utils import depen, var
+from utils.cache import r
 from utils.config import get_cloud_config, get_config, get_dyn_config
 from utils.data import get_all_admin
 from utils.sql import run_sql
-from utils.var import r
 
 channel = Channel[ChannelMeta].current()
 channel.meta["name"] = "敏感词检测"

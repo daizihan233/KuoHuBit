@@ -2,12 +2,9 @@ import json
 import pathlib
 import sys
 
-import redis
-import requests_cache
 import yaml
 from loguru import logger
 
-from utils.config import get_cloud_config
 from utils.file import safe_file_write
 
 sensitive_words = []
@@ -72,25 +69,3 @@ img: []""",
     )
     logger.warning("dynamic_config.yaml 已被程序自动创建")
 
-if get_cloud_config("Redis_Pwd") is not None:
-    backend = requests_cache.RedisCache(
-        host=get_cloud_config("Redis_Host"),
-        port=get_cloud_config("Redis_port"),
-        password=get_cloud_config("Redis_Pwd"),
-    )
-    p = redis.ConnectionPool(
-        host=get_cloud_config("Redis_Host"),
-        port=get_cloud_config("Redis_port"),
-        password=get_cloud_config("Redis_Pwd"),
-    )
-else:
-    backend = requests_cache.RedisCache(
-        host=get_cloud_config("Redis_Host"), port=get_cloud_config("Redis_port")
-    )
-    p = redis.ConnectionPool(
-        host=get_cloud_config("Redis_Host"), port=get_cloud_config("Redis_port")
-    )
-session = requests_cache.CachedSession(
-    "global_session", backend=backend, expire_after=360
-)
-r = redis.Redis(connection_pool=p, decode_responses=True)

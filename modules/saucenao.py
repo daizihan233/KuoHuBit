@@ -13,8 +13,8 @@ from graia.saya import Channel
 from graia.saya.channel import ChannelMeta
 from loguru import logger
 
+from utils.cache import session
 from utils.config import get_cloud_config, get_config
-from utils.var import session
 
 channel = Channel[ChannelMeta].current()
 channel.meta["name"] = "snao搜图"

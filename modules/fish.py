@@ -12,7 +12,7 @@ from graia.ariadne.util.saya import listen, decorate
 from graia.saya import Channel
 from graia.saya.channel import ChannelMeta
 
-from utils.var import session
+from utils.cache import session
 
 channel = Channel[ChannelMeta].current()
 channel.meta["name"] = "摸鱼日历"
