@@ -132,7 +132,7 @@ async def req(c: str, name: str, ids: int, message: MessageChain, event: Message
     logger.debug(msg)
     for module in MODULE_LIST:
         try:
-            prompt_token, completion_token, prompt_cost, completion_cost, response = chat(module, msg)
+            prompt_token, completion_token, prompt_cost, completion_cost, response = await chat(module, msg)
             warn = (f"本次共追溯 {len(msg) - 2} 条历史消息，消耗 {prompt_token + completion_token} token！"
                     f"（约为 {(prompt_cost + completion_cost) * decimal.Decimal('1.2') * 7} 元）"
                     f"使用模型：{module}")
@@ -142,7 +142,11 @@ async def req(c: str, name: str, ids: int, message: MessageChain, event: Message
     if event.quote is not None and messages.get(event.quote.id, None) is not None:
         messages[event.quote.id].next_node = node
     messages[event.id] = node
-    return response, warn
+    try:
+        # noinspection PyUnboundLocalVariable
+        return response, warn
+    except UnboundLocalError:  # 在赋值前调用时
+        return "所有模型均无法调用，请查看日志", NOT_GPT_REPLY
 
 
 @listen(GroupMessage)
