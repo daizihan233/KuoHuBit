@@ -74,7 +74,7 @@ async def using_tencent_cloud(content: str, user_id: str) -> str:
         params = {
             "BizType": get_cloud_config("text_biztype"),
             "Content": base64.b64encode(content.encode()).decode(),
-            "User": {"UserId": user_id, "AccountType": "2"},
+            "User": {"UserId": user_id, "AccountType": 2},
         }
         req.from_json_string(json.dumps(params))
         resp = client.TextModeration(req)
