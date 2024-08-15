@@ -14,14 +14,21 @@ from loguru import logger
 
 from utils import depen
 from utils.data import get_all_admin
-from utils.sql import run_sql, select_fetchone
+from utils.sql import run_sql, select_fetchone, sync_run_sql
 
 channel = Channel[ChannelMeta].current()
 channel.meta["name"] = "黑名单"
 channel.meta["description"] = "屑"
 channel.meta["author"] = "KuoHu"
 
-
+sync_run_sql(
+    """create table if not exists blacklist
+(
+    uid bigint unsigned not null
+        primary key,
+    op  bigint unsigned not null
+) ENGINE = innodb DEFAULT CHARACTER SET = "utf8mb4" COLLATE = "utf8mb4_general_ci" """
+)
 @channel.use(
     ListenerSchema(
         listening_events=[GroupMessage],

@@ -2,6 +2,7 @@
 import asyncio
 
 import aiomysql
+import pymysql
 
 from utils.config import get_cloud_config
 
@@ -71,3 +72,62 @@ async def run_sql(sql, arg=None):
     await cur.execute("commit")
     await cur.close()
     conn.close()
+
+
+def sync_run_sql(sql, arg=None):
+    conn = pymysql.connect(
+        host=get_cloud_config("MySQL_Host"),
+        port=get_cloud_config("MySQL_Port"),
+        user=get_cloud_config("MySQL_User"),
+        password=get_cloud_config("MySQL_Pwd"),
+        charset="utf8mb4",
+        database=get_cloud_config("MySQL_db"),
+    )
+    cur = conn.cursor()
+    if arg:
+        cur.execute(sql, arg)
+    else:
+        cur.execute(sql)
+    cur.execute("commit")
+    cur.close()
+    conn.close()
+
+
+def sync_select_fetchone(sql, arg=None):
+    conn = pymysql.connect(
+        host=get_cloud_config("MySQL_Host"),
+        port=get_cloud_config("MySQL_Port"),
+        user=get_cloud_config("MySQL_User"),
+        password=get_cloud_config("MySQL_Pwd"),
+        charset="utf8mb4",
+        database=get_cloud_config("MySQL_db"),
+    )
+    cur = conn.cursor()
+    if arg:
+        cur.execute(sql, arg)
+    else:
+        cur.execute(sql)
+    result = cur.fetchone()
+    cur.close()
+    conn.close()
+    return result
+
+
+def sync_select_fetchall(sql, arg=None):
+    conn = pymysql.connect(
+        host=get_cloud_config("MySQL_Host"),
+        port=get_cloud_config("MySQL_Port"),
+        user=get_cloud_config("MySQL_User"),
+        password=get_cloud_config("MySQL_Pwd"),
+        charset="utf8mb4",
+        database=get_cloud_config("MySQL_db"),
+    )
+    cur = conn.cursor()
+    if arg:
+        cur.execute(sql, arg)
+    else:
+        cur.execute(sql)
+    result = cur.fetchall()
+    cur.close()
+    conn.close()
+    return result

@@ -11,12 +11,24 @@ from graia.saya.channel import ChannelMeta
 
 from utils import depen
 from utils.data import get_all_admin
-from utils.sql import run_sql
+from utils.sql import run_sql, sync_run_sql, sync_select_fetchall
 
 channel = Channel[ChannelMeta].current()
 channel.meta["name"] = "管理员"
 channel.meta["description"] = "对群和机器人进行管理"
 channel.meta["author"] = "KuoHu"
+
+sync_run_sql(
+    """create table if not exists admin
+(
+    uid bigint unsigned default '0' not null
+        primary key
+) ENGINE = innodb DEFAULT CHARACTER SET = "utf8mb4" COLLATE = "utf8mb4_general_ci" """
+)
+
+if not sync_select_fetchall("SELECT uid FROM admin"):
+    admin_uid = int(input("未找到任何一个op！请输入你（op）的QQ号："))
+    sync_run_sql("INSERT INTO admin VALUES (%s)", (admin_uid,))
 
 
 @channel.use(

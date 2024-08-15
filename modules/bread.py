@@ -15,13 +15,25 @@ from graia.saya.builtins.broadcast.schema import ListenerSchema
 from graia.saya.channel import ChannelMeta
 from loguru import logger
 
-from utils.sql import select_fetchone, run_sql
+from utils.sql import select_fetchone, run_sql, sync_run_sql
 
 channel = Channel[ChannelMeta].current()
 channel.meta["name"] = "面包厂"
 channel.meta["description"] = "好吃"
 channel.meta["author"] = "KuoHu"
 get_data_sql = """SELECT id, level, time, bread, experience FROM bread WHERE id = %s"""
+
+sync_run_sql(
+    """create table if not exists bread
+(
+    id         int unsigned auto_increment
+        primary key,
+    level      int unsigned default '0' not null,
+    time       int unsigned default '0' not null,
+    bread      int unsigned default '0' not null,
+    experience int unsigned default '0' not null
+) ENGINE = innodb DEFAULT CHARACTER SET = "utf8mb4" COLLATE = "utf8mb4_general_ci" """
+)
 
 
 @channel.use(ListenerSchema(listening_events=[GroupMessage]))

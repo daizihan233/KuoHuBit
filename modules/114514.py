@@ -16,13 +16,20 @@ from graia.scheduler.saya import SchedulerSchema
 
 from utils import depen, var
 from utils.data import get_all_admin
-from utils.sql import run_sql
+from utils.sql import run_sql, sync_run_sql, sync_select_fetchall
 
 channel = Channel[ChannelMeta].current()
 channel.meta["name"] = "inm"
 channel.meta["description"] = "哼哼哼，啊啊啊啊啊"
 channel.meta["author"] = "KuoHu"
 
+sync_run_sql(
+    """CREATE TABLE IF NOT EXISTS `inm` ( 
+`gid` bigint UNSIGNED NOT NULL PRIMARY KEY COMMENT '群号'
+) ENGINE = innodb DEFAULT CHARACTER SET = "utf8mb4" COLLATE = "utf8mb4_general_ci" """
+)
+
+var.inm = [x[0] for x in sync_select_fetchall("SELECT gid FROM inm")]
 
 @channel.use(SchedulerSchema(timers.crontabify("45 11 * * * 14")))
 async def inm(app: Ariadne):

@@ -11,6 +11,7 @@ from graia.saya.builtins.broadcast import ListenerSchema
 from graia.saya.channel import ChannelMeta
 from loguru import logger
 
+from utils.sql import sync_run_sql
 from .utils import problem, answer
 
 channel = Channel[ChannelMeta].current()
@@ -20,6 +21,25 @@ channel.meta["author"] = "KuoHu"
 
 GET_MAX_ID = "SELECT MAX(ids) FROM vote"
 
+sync_run_sql(
+    """CREATE TABLE IF NOT EXISTS `vote` ( 
+`ids` int UNSIGNED AUTO_INCREMENT NOT NULL PRIMARY KEY COMMENT '投票ID',
+`gid` int UNSIGNED NOT NULL COMMENT '群号',
+`uid` int UNSIGNED NOT NULL COMMENT '发起者QQ号',
+`type` int UNSIGNED NOT NULL COMMENT '投票类型',
+`status` boolean NOT NULL COMMENT '投票状态（正在进行/已结束）',
+`result` int NOT NULL COMMENT '投票结果',
+`title` text NOT NULL COMMENT '投票标题',
+`options` longtext NOT NULL COMMENT '投票选项'
+) ENGINE = innodb DEFAULT CHARACTER SET = "utf8mb4" COLLATE = "utf8mb4_general_ci" """
+)
+sync_run_sql(
+    """CREATE TABLE IF NOT EXISTS `vote_data` (
+`ids` int UNSIGNED NOT NULL COMMENT '投票ID',
+`uid` int UNSIGNED NOT NULL COMMENT 'QQ号',
+`data` longtext NOT NULL COMMENT '投票数据'
+) ENGINE = innodb DEFAULT CHARACTER SET = "utf8mb4" COLLATE = "utf8mb4_general_ci" """
+)
 
 @channel.use(AlconnaSchema(AlconnaDispatcher(problem.single, skip_for_unmatch=False)))
 @channel.use(ListenerSchema(listening_events=[GroupMessage]))
