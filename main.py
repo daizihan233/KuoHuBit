@@ -17,6 +17,7 @@ from graia.ariadne.connection.config import (
 from graia.saya import Saya
 from loguru import logger
 
+import utils.var
 from utils.config import get_config, get_cloud_config
 
 saya = create(Saya)
@@ -30,31 +31,35 @@ app = Ariadne(
         WebsocketClientConfig(host=get_config("mirai_api_http")),
     ),
 )
-try:
-    conn = pymysql.connect(
-        host=get_cloud_config("MySQL_Host"),
-        port=get_cloud_config("MySQL_Port"),
-        user=get_cloud_config("MySQL_User"),
-        password=get_cloud_config("MySQL_Pwd"),
-        charset="utf8mb4",
-        database=get_cloud_config("MySQL_db"),
-    )
-    cursor = conn.cursor()
-except pymysql.err.InternalError:
-    conn = pymysql.connect(
-        host=get_cloud_config("MySQL_Host"),
-        port=get_cloud_config("MySQL_Port"),
-        user=get_cloud_config("MySQL_User"),
-        password=get_cloud_config("MySQL_Pwd"),
-        charset="utf8mb4",
-    )
-    cursor = conn.cursor()
-    cursor.execute(
-        """create database if not exists %s""", (get_cloud_config("MySQL_db"),)
-    )
 
-conn.commit()
-conn.close()
+if get_cloud_config("MySQL_db") != "":
+    try:
+        conn = pymysql.connect(
+            host=get_cloud_config("MySQL_Host"),
+            port=get_cloud_config("MySQL_Port"),
+            user=get_cloud_config("MySQL_User"),
+            password=get_cloud_config("MySQL_Pwd"),
+            charset="utf8mb4",
+            database=get_cloud_config("MySQL_db"),
+        )
+        cursor = conn.cursor()
+    except pymysql.err.InternalError:
+        conn = pymysql.connect(
+            host=get_cloud_config("MySQL_Host"),
+            port=get_cloud_config("MySQL_Port"),
+            user=get_cloud_config("MySQL_User"),
+            password=get_cloud_config("MySQL_Pwd"),
+            charset="utf8mb4",
+        )
+        cursor = conn.cursor()
+        cursor.execute(
+            """create database if not exists %s""", (get_cloud_config("MySQL_db"),)
+        )
+
+    conn.commit()
+    conn.close()
+else:
+    utils.var.DB_MODE = utils.var.SQLITE
 
 with saya.module_context():
     for root, dirs, files in os.walk("./modules", topdown=False):

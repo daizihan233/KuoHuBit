@@ -7,12 +7,17 @@ from loguru import logger
 
 from utils.file import safe_file_write
 
+MYSQL = 1
+SQLITE = 2
+
 sensitive_words = []
 no_6 = []
 inm = []
 cue = {}
 cue_status = {}
 cue_who = {}
+DB_MODE = MYSQL
+
 
 try:
     config_yaml = yaml.load(open('config.yaml', encoding='UTF-8'), Loader=yaml.FullLoader)

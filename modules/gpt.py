@@ -103,20 +103,29 @@ async def req(c: str, name: str, ids: int, message: MessageChain, event: Message
             }
         )
     x.reverse()
-    msg = [
-              {
-                  "role": "system",
-                  "content": c.format(
-                      date=f"{now.year}/{now.month}/{now.day}",
-                      name=name
-                  )
-              }
-          ] + x + [
-              {
-                  "role": "user",
-                  "content": str(node.message)
-              }
-          ]
+    if c != "":
+        msg = [
+                  {
+                      "role": "system",
+                      "content": c.format(
+                          date=f"{now.year}/{now.month}/{now.day}",
+                          name=name
+                      )
+                  }
+              ] + x + [
+                  {
+                      "role": "user",
+                      "content": str(node.message)
+                  }
+              ]
+    else:
+        msg = x + [
+            {
+                "role": "user",
+                "content": str(node.message)
+            }
+        ]
+
     logger.debug(msg)
     for module in MODULE_LIST:
         try:
