@@ -8,7 +8,7 @@ import pymysql
 import utils.var
 from utils.config import get_cloud_config
 
-loop = asyncio.get_event_loop()
+loop = asyncio.new_event_loop()
 SQL_DB_NAME = "data.db"
 
 
