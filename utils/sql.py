@@ -102,6 +102,15 @@ async def run_sql(sql: str, arg=None):
 
 
 def sync_run_sql(sql, arg=None):
+    if utils.var.DB_MODE == utils.var.SQLITE:
+        conn = sqlite3.connect(SQL_DB_NAME)
+        if arg:
+            conn.execute(sql.replace("%s", "?"), arg)
+        else:
+            conn.execute(sql)
+        conn.commit()
+        conn.close()
+        return
     conn = pymysql.connect(
         host=get_cloud_config("MySQL_Host"),
         port=get_cloud_config("MySQL_Port"),
@@ -121,6 +130,14 @@ def sync_run_sql(sql, arg=None):
 
 
 def sync_select_fetchone(sql, arg=None):
+    if utils.var.DB_MODE == utils.var.SQLITE:
+        conn = sqlite3.connect(SQL_DB_NAME)
+        if arg:
+            result = conn.execute(sql.replace("%s", "?"), arg).fetchone()
+        else:
+            result = conn.execute(sql).fetchone()
+        conn.close()
+        return result
     conn = pymysql.connect(
         host=get_cloud_config("MySQL_Host"),
         port=get_cloud_config("MySQL_Port"),
@@ -141,6 +158,14 @@ def sync_select_fetchone(sql, arg=None):
 
 
 def sync_select_fetchall(sql, arg=None):
+    if utils.var.DB_MODE == utils.var.SQLITE:
+        conn = sqlite3.connect(SQL_DB_NAME)
+        if arg:
+            result = conn.execute(sql.replace("%s", "?"), arg).fetchall()
+        else:
+            result = conn.execute(sql).fetchall()
+        conn.close()
+        return result
     conn = pymysql.connect(
         host=get_cloud_config("MySQL_Host"),
         port=get_cloud_config("MySQL_Port"),
