@@ -37,11 +37,11 @@ MODULE_LIST = get_config("model")
 
 sync_run_sql(
     """CREATE TABLE IF NOT EXISTS `cue` ( 
-`ids` int UNSIGNED NOT NULL COMMENT 'ID',
-`words` VARCHAR(2000) NOT NULL COMMENT '提示词',
-`status` BOOLEAN NOT NULL COMMENT '是否通过',
-`who` INT UNSIGNED NOT NULL COMMENT '撰写者'
-) ENGINE = innodb DEFAULT CHARACTER SET = "utf8mb4" COLLATE = "utf8mb4_general_ci" """
+`ids` int UNSIGNED NOT NULL,
+`words` VARCHAR(2000) NOT NULL,
+`status` BOOLEAN NOT NULL,
+`who` INT UNSIGNED NOT NULL
+)"""
 )
 for ids, words, status, who in [x for x in sync_select_fetchall("SELECT ids, words, status, who FROM cue")]:
     var.cue[ids] = words

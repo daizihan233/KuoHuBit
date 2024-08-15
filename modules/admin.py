@@ -21,9 +21,9 @@ channel.meta["author"] = "KuoHu"
 sync_run_sql(
     """create table if not exists admin
 (
-    uid bigint unsigned default '0' not null
+    uid INTEGER default '0' not null
         primary key
-) ENGINE = innodb DEFAULT CHARACTER SET = "utf8mb4" COLLATE = "utf8mb4_general_ci" """
+)"""
 )
 
 if not sync_select_fetchall("SELECT uid FROM admin"):

@@ -26,7 +26,7 @@ get_data_sql = """SELECT id, level, time, bread, experience FROM bread WHERE id 
 sync_run_sql(
     """create table if not exists bread
 (
-    id         int unsigned auto_increment
+    id         INTEGER auto_increment
         primary key,
     level      int unsigned default '0' not null,
     time       int unsigned default '0' not null,

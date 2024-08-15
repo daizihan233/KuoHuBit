@@ -24,10 +24,10 @@ channel.meta["author"] = "KuoHu"
 sync_run_sql(
     """create table if not exists blacklist
 (
-    uid bigint unsigned not null
+    uid INTEGER not null
         primary key,
-    op  bigint unsigned not null
-) ENGINE = innodb DEFAULT CHARACTER SET = "utf8mb4" COLLATE = "utf8mb4_general_ci" """
+    op  INTEGER not null
+)"""
 )
 @channel.use(
     ListenerSchema(

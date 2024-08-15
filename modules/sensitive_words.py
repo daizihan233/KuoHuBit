@@ -65,7 +65,7 @@ sync_run_sql(
 (
     wd    tinytext     null,
     count int unsigned null
-) ENGINE = innodb DEFAULT CHARACTER SET = "utf8mb4" COLLATE = "utf8mb4_general_ci" """
+)"""
 )
 
 var.sensitive_words = [x[0] for x in sync_select_fetchall("SELECT wd, count FROM wd")]

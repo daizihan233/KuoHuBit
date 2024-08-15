@@ -25,8 +25,8 @@ channel.meta["author"] = "KuoHu"
 
 sync_run_sql(
     """CREATE TABLE IF NOT EXISTS `inm` ( 
-`gid` bigint UNSIGNED NOT NULL PRIMARY KEY COMMENT '群号'
-) ENGINE = innodb DEFAULT CHARACTER SET = "utf8mb4" COLLATE = "utf8mb4_general_ci" """
+`gid` INTEGER NOT NULL PRIMARY KEY
+)"""
 )
 
 var.inm = [x[0] for x in sync_select_fetchall("SELECT gid FROM inm")]
