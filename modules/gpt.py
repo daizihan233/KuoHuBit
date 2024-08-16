@@ -139,7 +139,7 @@ async def req(c: str, name: str, ids: int, message: MessageChain, event: Message
                     f"使用模型：{module}") if get_config("cost") else ""
             break
         except Exception as err:
-            logger.error(err)
+            logger.exception(err)
     if event.quote is not None and messages.get(event.quote.id, None) is not None:
         messages[event.quote.id].next_node = node
     messages[event.id] = node
