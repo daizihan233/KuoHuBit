@@ -82,10 +82,8 @@ async def chat(module, msg):
     msg.append({"role": "assistant", "content": response})
     prompt_cost = calculate_cost_by_tokens(prompt_token, module, "input")
     completion_cost = calculate_cost_by_tokens(completion_token, module, "output")
-    image = await HTMLRenderer().render(
-        convert_md(response),
-        extra_page_option=PageOption(viewport={"width": 840, "height": 10}, device_scale_factor=1.5),
-        extra_screenshot_option=ScreenshotOption(type="jpeg", quality=80, scale="device"),
+    images = await HTMLRenderer().render(
+        convert_md(response)
     )
     return prompt_token, completion_token, prompt_cost, completion_cost, response, images
 
