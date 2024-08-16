@@ -4,13 +4,14 @@ import random
 from graia.amnesia.message import MessageChain
 from graia.ariadne.app import Ariadne
 from graia.ariadne.event.message import GroupMessage, FriendMessage, MessageEvent
-from graia.ariadne.message.element import Plain
+from graia.ariadne.message.element import Plain, Image
 from graia.ariadne.message.parser.base import MentionMe, DetectPrefix
 from graia.ariadne.model import Group, Member, Friend
 from graia.ariadne.util.saya import listen
 from graia.saya import Channel
 from graia.saya.builtins.broadcast import ListenerSchema
 from graia.saya.channel import ChannelMeta
+from graiax.text2img.playwright import HTMLRenderer, convert_md, PageOption, ScreenshotOption
 from loguru import logger
 from openai import AsyncOpenAI
 from tokencost.costs import calculate_cost_by_tokens
@@ -81,7 +82,12 @@ async def chat(module, msg):
     msg.append({"role": "assistant", "content": response})
     prompt_cost = calculate_cost_by_tokens(prompt_token, module, "input")
     completion_cost = calculate_cost_by_tokens(completion_token, module, "output")
-    return prompt_token, completion_token, prompt_cost, completion_cost, response
+    image = await HTMLRenderer().render(
+        convert_md(response),
+        extra_page_option=PageOption(viewport={"width": 840, "height": 10}, device_scale_factor=1.5),
+        extra_screenshot_option=ScreenshotOption(type="jpeg", quality=80, scale="device"),
+    )
+    return prompt_token, completion_token, prompt_cost, completion_cost, response, images
 
 
 async def req(c: str, name: str, ids: int, message: MessageChain, event: MessageEvent) -> tuple:
@@ -129,7 +135,7 @@ async def req(c: str, name: str, ids: int, message: MessageChain, event: Message
     logger.debug(msg)
     for module in MODULE_LIST:
         try:
-            prompt_token, completion_token, prompt_cost, completion_cost, response = await chat(module, msg)
+            prompt_token, completion_token, prompt_cost, completion_cost, response, images = await chat(module, msg)
             warn = (f"本次共追溯 {len(msg) - 2} 条历史消息，消耗 {prompt_token + completion_token} token！"
                     f"（约为 {(prompt_cost + completion_cost) * get_config('rate') * 7} 元）\n"
                     f"使用模型：{module}") if get_config("cost") else ""
@@ -141,9 +147,22 @@ async def req(c: str, name: str, ids: int, message: MessageChain, event: Message
     messages[event.id] = node
     try:
         # noinspection PyUnboundLocalVariable
-        return response, warn
+        return response, warn, images
     except UnboundLocalError:  # 在赋值前调用时
-        return "所有模型均无法调用，请查看日志", NOT_GPT_REPLY
+        return "所有模型均无法调用，请查看日志", NOT_GPT_REPLY, NOT_GPT_REPLY
+
+
+async def make_msg_chain(response, warn, img):
+    chain = [Plain("\n"), Plain(response)]
+    if warn != "" or tips != [None]:
+        chain.append(Plain("\n\n\n---\n"))
+        if tips != [None]:
+            chain.append(Plain(f"开发者注：{random.choice(tips)}\n"))
+        if warn != "":
+            chain.append(Plain(f"WARN: {warn}"))
+    if img != NOT_GPT_REPLY:
+        chain.append(Image(data_bytes=img))
+    return chain
 
 
 @listen(GroupMessage)
@@ -157,19 +176,11 @@ async def gpt(
     c = var.cue.get(group.id, cue)
     if var.cue.get(group.id, None) is not None and not var.cue_status[group.id]:
         c = cue
-    response, warn = await req(c, member.name, member.id, message, event)
-    chain = [Plain("\n"), Plain(response)]
-    if warn != "" or tips != [None]:
-        chain.append(Plain("\n\n\n---\n"))
-        if tips != [None]:
-            chain.append(Plain(f"开发者注：{random.choice(tips)}\n"))
-        if warn != "":
-            chain.append(Plain(f"WARN: {warn}"))
-
+    response, warn, img = await req(c, member.name, member.id, message, event)
     m = await app.send_group_message(
         target=group,
         message=MessageChain(
-            chain
+            await make_msg_chain(response, warn, img)
         ),
         quote=event.source,
     )
@@ -195,18 +206,11 @@ async def gpt_f(
     c = var.cue.get(friend.id, cue)
     if var.cue.get(friend.id, None) is not None and not var.cue_status[friend.id]:
         c = cue
-    response, warn = await req(c, friend.nickname, friend.id, message, event)
-    chain = [Plain("\n"), Plain(response)]
-    if warn != "" or tips != [None]:
-        chain.append(Plain("\n\n\n---\n"))
-        if tips != [None]:
-            chain.append(Plain(f"开发者注：{random.choice(tips)}\n"))
-        if warn != "":
-            chain.append(Plain(f"WARN: {warn}"))
+    response, warn, img = await req(c, friend.nickname, friend.id, message, event)
     m = await app.send_friend_message(
         target=friend,
         message=MessageChain(
-            chain
+            await make_msg_chain(response, warn, img)
         ),
         quote=event.source,
     )
