@@ -46,7 +46,6 @@ dependencies = [
     "arclet-alconna-ariadne>=0.14.0",
     "graiax-shortcut>=0.3.0",
     "tokencost>=0.1.11",
-    "graiax-text2img-playwright>=0.4.3",
 ]
 requires-python = ">=3.10,<3.13"
 license = { text = "AGPL-3.0" }
