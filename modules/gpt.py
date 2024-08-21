@@ -79,8 +79,11 @@ async def chat(module, msg):
     completion_token = response.usage.completion_tokens
     response = response.choices[0].message.content
     msg.append({"role": "assistant", "content": response})
-    prompt_cost = calculate_cost_by_tokens(prompt_token, module, "input")
-    completion_cost = calculate_cost_by_tokens(completion_token, module, "output")
+    if get_config("cost"):
+        prompt_cost = calculate_cost_by_tokens(prompt_token, module, "input")
+        completion_cost = calculate_cost_by_tokens(completion_token, module, "output")
+    else:
+        prompt_cost = completion_cost = 0
     return prompt_token, completion_token, prompt_cost, completion_cost, response
 
 
