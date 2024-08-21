@@ -130,6 +130,7 @@ async def req(c: str, name: str, ids: int, message: MessageChain, event: Message
         ]
 
     logger.debug(msg)
+    error = ""
     for module in MODULE_LIST:
         try:
             prompt_token, completion_token, prompt_cost, completion_cost, response = await chat(module, msg)
@@ -141,6 +142,7 @@ async def req(c: str, name: str, ids: int, message: MessageChain, event: Message
                 warn = ""
             break
         except Exception as err:
+            error = repr(err)
             logger.exception(err)
     if event.quote is not None and messages.get(event.quote.id, None) is not None:
         messages[event.quote.id].next_node = node
@@ -149,7 +151,7 @@ async def req(c: str, name: str, ids: int, message: MessageChain, event: Message
         # noinspection PyUnboundLocalVariable
         return response, warn
     except UnboundLocalError:  # 在赋值前调用时
-        return "所有模型均无法调用，请查看日志", NOT_GPT_REPLY
+        return f"所有模型均无法调用，详情信息请查看后台日志，以下为简略信息：\n{error}", NOT_GPT_REPLY
 
 
 @listen(GroupMessage)
