@@ -130,9 +130,12 @@ async def req(c: str, name: str, ids: int, message: MessageChain, event: Message
     for module in MODULE_LIST:
         try:
             prompt_token, completion_token, prompt_cost, completion_cost, response = await chat(module, msg)
-            warn = (f"本次共追溯 {len(msg) - 2} 条历史消息，消耗 {prompt_token + completion_token} token！"
-                    f"（约为 {(prompt_cost + completion_cost) * get_config('rate') * 7} 元）\n"
-                    f"使用模型：{module}") if get_config("cost") else ""
+            if get_config("cost"):
+                warn = (f"本次共追溯 {len(msg) - 2} 条历史消息，消耗 {prompt_token + completion_token} token！"
+                        f"（约为 {(prompt_cost + completion_cost) * get_config('rate') * 7} 元）\n"
+                        f"使用模型：{module}")
+            else:
+                warn = ""
             break
         except Exception as err:
             logger.exception(err)
