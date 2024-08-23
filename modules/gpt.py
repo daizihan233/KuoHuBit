@@ -1,4 +1,5 @@
 import datetime
+import decimal
 import random
 
 from graia.amnesia.message import MessageChain
@@ -136,7 +137,7 @@ async def req(c: str, name: str, ids: int, message: MessageChain, event: Message
             prompt_token, completion_token, prompt_cost, completion_cost, response = await chat(module, msg)
             if get_config("cost"):
                 warn = (f"本次共追溯 {len(msg) - 2} 条历史消息，消耗 {prompt_token + completion_token} token！"
-                        f"（约为 {(prompt_cost + completion_cost) * get_config('rate') * 7} 元）\n"
+                        f"（约为 {decimal.Decimal(prompt_cost + completion_cost) * decimal.Decimal(get_config('rate')) * 7} 元）\n"
                         f"使用模型：{module}")
             else:
                 warn = ""
